@@ -1,0 +1,13 @@
+<div class="grid">
+  @for (row of arrayRows; track row){
+    <div nz-row [nzGutter]="[hGutter,vGutter]">
+      @for (col of arrayCols;track col)
+      {
+        <div nz-col>
+          <app-cell></app-cell>
+        </div>
+      }
+    </div>
+  }
+
+</div>

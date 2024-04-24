@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { NzCardModule } from 'ng-zorro-antd/card';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -13,6 +14,11 @@ import fr from '@angular/common/locales/fr';
 import { FormsModule } from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient } from '@angular/common/http';
+import {WorkspaceComponent} from "./pages/workspace/workspace.component";
+import {SquareComponent} from "./pages/workspace/items/square/square.component";
+import {RhombusComponent} from "./pages/workspace/items/rhombus/rhombus.component";
+import {GridComponent} from "./pages/workspace/grid/grid.component";
+import {CellComponent} from "./pages/workspace/grid/cell/cell.component";
 
 registerLocaleData(fr);
 
@@ -26,7 +32,13 @@ registerLocaleData(fr);
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
-    FormsModule
+    FormsModule,
+    NzCardModule,
+    WorkspaceComponent,
+    SquareComponent,
+    RhombusComponent,
+    GridComponent,
+    CellComponent
   ],
   providers: [
     { provide: NZ_I18N, useValue: fr_FR },
