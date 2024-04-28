@@ -19,6 +19,8 @@ import {SquareComponent} from "./pages/workspace/items/square/square.component";
 import {RhombusComponent} from "./pages/workspace/items/rhombus/rhombus.component";
 import {GridComponent} from "./pages/workspace/grid/grid.component";
 import {CellComponent} from "./pages/workspace/grid/cell/cell.component";
+import {ItemListComponent} from "./pages/workspace/item-list/item-list.component";
+import {CircleComponent} from "./pages/workspace/items/circle/circle.component";
 
 registerLocaleData(fr);
 
@@ -37,8 +39,10 @@ registerLocaleData(fr);
     WorkspaceComponent,
     SquareComponent,
     RhombusComponent,
+    CircleComponent,
     GridComponent,
-    CellComponent
+    CellComponent,
+    ItemListComponent
   ],
   providers: [
     { provide: NZ_I18N, useValue: fr_FR },

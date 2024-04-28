@@ -1,9 +1,12 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
 import {NzCardComponent} from "ng-zorro-antd/card";
 import {SquareComponent} from "./items/square/square.component";
 import {RhombusComponent} from "./items/rhombus/rhombus.component";
-import {NzContentComponent, NzLayoutComponent, NzSiderComponent} from "ng-zorro-antd/layout";
+import {NzContentComponent, NzHeaderComponent, NzLayoutComponent, NzSiderComponent} from "ng-zorro-antd/layout";
 import {GridComponent} from "./grid/grid.component";
+import {ItemListComponent} from "./item-list/item-list.component";
+import {CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
+import {NzButtonComponent} from "ng-zorro-antd/button";
 
 @Component({
   selector: 'app-workspace',
@@ -11,15 +14,27 @@ import {GridComponent} from "./grid/grid.component";
   standalone: true,
   imports: [
     NzCardComponent,
-    SquareComponent,
     RhombusComponent,
     NzLayoutComponent,
     NzContentComponent,
     NzSiderComponent,
-    GridComponent
+    GridComponent,
+    ItemListComponent,
+    CdkDropList,
+    CdkDropListGroup,
+    NzHeaderComponent,
+    NzButtonComponent
   ],
   styleUrl: './workspace.component.css'
 })
 export class WorkspaceComponent {
+  @ViewChild('grid') appGrid!: GridComponent;
 
+  addRow(){
+    this.appGrid.addRow();
+  }
+
+  addCol(){
+    this.appGrid.addCol();
+  }
 }

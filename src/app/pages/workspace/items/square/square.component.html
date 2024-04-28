@@ -1,25 +1,20 @@
 <nz-card id="card"
-         [nzActions]="[actionSetting, actionEdit, actionEllipsis,actionEllipsis2]"
          [nzBorderless]="false"
          [nzHoverable]="true"
+         (click)="displayButtons()"
 >
   <div class="card-container">
-    <svg width="50" height="50">
+    <svg width="30" height="30">
       <rect width="100%" height="100%" fill="black" />
     </svg>
   </div>
 </nz-card>
 
-<ng-template #actionSetting>
-  <span nz-icon nzType="setting" ></span>
-</ng-template>
-<ng-template #actionEdit>
-  <span nz-icon nzType="edit"></span>
-</ng-template>
-<ng-template #actionEllipsis>
-  <span nz-icon nzType="ellipsis"></span>
-</ng-template>
-<ng-template #actionEllipsis2>
-  <span nz-icon nzType="ellipsis"></span>
-</ng-template>
-
+<div class="actions-container" *ngIf="showButtons">
+  <ul class="actions">
+    <li><span nz-icon nzType="setting"></span></li>
+    <li><span nz-icon nzType="edit"></span></li>
+    <li><span nz-icon nzType="ellipsis" style="font-size: 10px"></span></li>
+    <li><span nz-icon nzType="delete" (click)="onClickDelete()"></span></li>
+  </ul>
+</div>

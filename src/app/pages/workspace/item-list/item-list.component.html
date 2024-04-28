@@ -1,1 +1,31 @@
-<p>item-list works!</p>
+<div>
+  <div class="container">
+    <div cdkDropList
+         [cdkDropListData]="items"
+         cdkDropListSortingDisabled
+         class="list"
+    >
+      @for (item of items; track item) {
+        @switch (item.type)
+        {
+          @case ('square')
+          {
+            <app-square cdkDrag></app-square>
+          }
+          @case ('rhombus')
+          {
+            <app-rhombus cdkDrag></app-rhombus>
+          }
+          @case ('circle')
+          {
+            <app-circle cdkDrag></app-circle>
+          }
+          @default {
+            <div class="box" cdkDrag>{{item}}</div>
+          }
+        }
+      }
+    </div>
+  </div>
+
+</div>

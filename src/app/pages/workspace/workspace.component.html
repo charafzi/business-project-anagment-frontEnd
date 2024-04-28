@@ -1,11 +1,20 @@
-<nz-layout >
-  <nz-sider>
-      <br>
-      <br>
-      <br>
-      <br>
-  </nz-sider>
-  <nz-content>main content
-    <app-grid></app-grid>
-  </nz-content>
+<nz-layout>
+  <nz-header>
+    <div class="container">
+      <button nz-button nzType="primary"  (click)="addRow()">Ajouter une ligne</button>
+      <button nz-button nzType="primary" (click)="addCol()">Ajouter une colonne</button>
+    </div>
+  </nz-header>
+  <nz-layout cdkDropListGroup>
+    <nz-sider class="side-menu"
+              [nzWidth]="80"
+    >
+      <app-item-list></app-item-list>
+    </nz-sider>
+    <nz-content
+    >
+      <app-grid #grid
+      ></app-grid>
+    </nz-content>
+  </nz-layout>
 </nz-layout>

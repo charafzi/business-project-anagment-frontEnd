@@ -1,1 +1,8 @@
-<div class="cell">CELL</div>
+<div class="cell"
+     cdkDropList
+     cdkDropListSortingDisabled
+     (cdkDropListDropped)="drop($event)"
+     (click)="onClickCell()"
+>
+  <div #container></div>
+</div>

@@ -1,0 +1,23 @@
+.side-menu{
+  border-radius: 4px;
+  background-color: gray;
+}
+nz-header{
+  background-color: gray;
+}
+
+nz-header .container{
+  display: flex;
+  flex-flow: row nowrap;
+  overflow: auto;
+  justify-content: center;
+}
+
+nz-header .container button{
+  margin: 15px;
+  min-width: 150px;
+}
+nz-content{
+  height: 70vh;
+}
+

@@ -1,3 +1,53 @@
-.grid{
+.grid {
   margin: 10px 10px 10px 50px;
+  width: 95%;
+  height: 95%;
+  overflow-x: auto;
+  overflow-y: auto;
+
+}
+
+.cell {
+  width: 100px;
+  height: 100px;
+  background: #1890ff;
+}
+
+.dot-left{
+  width: 11px;
+  height: 11px;
+  background-color: black;
+  border-radius: 100%;
+  position: relative;
+  top: 46px;
+  left: -5px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.dot-right{
+  width: 11px;
+  height: 11px;
+  background-color: black;
+  border-radius: 100%;
+  position: relative;
+  left: 75px;
+  top: -45px;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.dot-hovered{
+  opacity: 1;
+}
+
+.row{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
+}
+
+.col {
+  margin-right: 50px;
+  margin-bottom: 50px;
 }

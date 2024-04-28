@@ -4,8 +4,8 @@
          (click)="displayButtons()"
 >
   <div class="card-container">
-    <svg width="30" height="30">
-      <rect width="100%" height="100%" fill="black"   />
+    <svg width="30" height="30" >
+      <circle cx="15" cy="15" r="15" fill="black" />
     </svg>
   </div>
 </nz-card>
@@ -18,4 +18,11 @@
     <li><span nz-icon nzType="delete" (click)="onClickDelete()"></span></li>
   </ul>
 </div>
+
+
+<ng-template #actionDelete>
+  <span nz-icon nzType="delete"
+        (click)="onClickDelete()"
+  ></span>
+</ng-template>
 
