@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import {CdkDrag, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {SquareComponent} from "../items/square/square.component";
 import {RhombusComponent} from "../items/rhombus/rhombus.component";
-import {ProcessItem} from "../items/processItem.class";
+import {Etape} from "../items/Etape.class";
 import {CircleComponent} from "../items/circle/circle.component";
+import {NzMenuDirective, NzSubMenuComponent} from "ng-zorro-antd/menu";
 
 @Component({
   selector: 'app-item-list',
@@ -15,12 +16,14 @@ import {CircleComponent} from "../items/circle/circle.component";
     CdkDrag,
     SquareComponent,
     RhombusComponent,
-    CircleComponent
+    CircleComponent,
+    NzMenuDirective,
+    NzSubMenuComponent
   ],
   styleUrl: './item-list.component.css'
 })
 export class ItemListComponent {
-  items:ProcessItem[] = [];
+  items:Etape[] = [];
   constructor() {
     const square = new SquareComponent();
     square.message="YEs";

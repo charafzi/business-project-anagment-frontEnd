@@ -1,20 +1,19 @@
 <nz-layout>
   <nz-header>
     <div class="container">
-      <button nz-button nzType="primary"  (click)="addRow()">Ajouter une ligne</button>
-      <button nz-button nzType="primary" (click)="addCol()">Ajouter une colonne</button>
+      <button nz-button nzType="primary" [nzShape]="'round'" (click)="addRow()">Ajouter une ligne</button>
+      <button nz-button nzType="primary" [nzShape]="'round'" (click)="addCol()">Ajouter une colonne</button>
+      <button nz-button nzType="primary" [nzShape]="'round'" >Sauvegarder</button>
     </div>
   </nz-header>
   <nz-layout cdkDropListGroup>
     <nz-sider class="side-menu"
-              [nzWidth]="80"
+              [nzWidth]="166"
     >
       <app-item-list></app-item-list>
     </nz-sider>
-    <nz-content
-    >
-      <app-grid #grid
-      ></app-grid>
+    <nz-content>
+      <app-grid #grid></app-grid>
     </nz-content>
   </nz-layout>
 </nz-layout>

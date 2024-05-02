@@ -1,4 +1,4 @@
-<div class="grid" (scroll)="updateConnections()" #grid>
+<div class="grid" #grid>
   @for (row of arrayRows; let rowIndex = $index; track row){
     <div class="row">
       @for (col of arrayCols; let colIndex = $index; track col)
@@ -8,17 +8,18 @@
         >
           <div class="dot-left"
                [ngClass]="{'dot-hovered': isDotLeftVisible(rowIndex, colIndex)}"
-               (click)="dotClicked(rowIndex,colIndex)"
+               (click)="dotLeftClicked(rowIndex,colIndex)"
           ></div>
           <app-cell
             [rowIndex]="rowIndex"
             [colIndex]="colIndex"
+            [order]="getOrderByCell(rowIndex,colIndex)"
             [processItem]="processItems[rowIndex][colIndex]"
             (processItemCreated)="updateRefProcessItems($event)"
             (processItemDeleted)="deleteRefProcessItems($event)"
           ></app-cell>
           <div class="dot-right"
-               (mouseenter)="dotHovered(rowIndex,colIndex)"
+               (mouseenter)="dotRightHovered(rowIndex,colIndex)"
                [ngClass]="{'dot-hovered': isDotRightVisible(rowIndex, colIndex)}"
           ></div>
         </div>

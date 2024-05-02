@@ -1,14 +1,15 @@
-import {BaseProcessItem} from "../items/processItem.class";
+import {BaseEtape} from "../items/Etape.class";
 import {Connectable} from "rxjs";
 import LeaderLine from "leader-line-new";
+import LinkerLine from "linkerline";
 
 export abstract class AbstractConnection{
   protected constructor(
     private idFrom:string,
     private idTo:string,
-    private baseProcessItemfrom:(BaseProcessItem | null),
-    private baseProcessItemto:(BaseProcessItem | null),
-    private connection:LeaderLine) {
+    private baseProcessItemfrom:(BaseEtape | null),
+    private baseProcessItemto:(BaseEtape | null),
+    private connection:LinkerLine<any, any>) {
   }
 
   getIdFrom(){
@@ -37,9 +38,9 @@ export class Connection extends AbstractConnection {
   constructor(
     idFrom:string,
     idTo:string,
-    baseProcessItemfrom:(BaseProcessItem | null),
-    baseProcessItemto:(BaseProcessItem | null),
-    connection:LeaderLine) {
+    baseProcessItemfrom:(BaseEtape | null),
+    baseProcessItemto:(BaseEtape | null),
+    connection:LinkerLine<any, any>) {
     super(idFrom, idTo, baseProcessItemfrom, baseProcessItemto,connection);
   }
 

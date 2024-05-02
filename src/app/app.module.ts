@@ -21,6 +21,7 @@ import {GridComponent} from "./pages/workspace/grid/grid.component";
 import {CellComponent} from "./pages/workspace/grid/cell/cell.component";
 import {ItemListComponent} from "./pages/workspace/item-list/item-list.component";
 import {CircleComponent} from "./pages/workspace/items/circle/circle.component";
+import {NzModalModule} from "ng-zorro-antd/modal";
 
 registerLocaleData(fr);
 
@@ -42,7 +43,8 @@ registerLocaleData(fr);
     CircleComponent,
     GridComponent,
     CellComponent,
-    ItemListComponent
+    ItemListComponent,
+    NzModalModule
   ],
   providers: [
     { provide: NZ_I18N, useValue: fr_FR },

@@ -4,27 +4,43 @@
          [cdkDropListData]="items"
          cdkDropListSortingDisabled
          class="list"
+         nz-menu nzMode="inline"
     >
-      @for (item of items; track item) {
-        @switch (item.type)
-        {
-          @case ('square')
-          {
-            <app-square cdkDrag></app-square>
-          }
-          @case ('rhombus')
-          {
-            <app-rhombus cdkDrag></app-rhombus>
-          }
-          @case ('circle')
-          {
-            <app-circle cdkDrag></app-circle>
-          }
-          @default {
-            <div class="box" cdkDrag>{{item}}</div>
-          }
-        }
-      }
+      <ul>
+        <li nz-submenu
+            nzTitle="Catégorie 1"
+            class="menu-title">
+          <ul class="items-menu">
+            @for (item of items; track item) {
+              @switch (item.type)
+              {
+                @case ('square')
+                {
+                  <li>
+                    <app-square cdkDrag></app-square>
+                  </li>
+
+                }
+                @case ('rhombus')
+                {
+                  <li>
+                    <app-rhombus cdkDrag></app-rhombus>
+                  </li>
+                }
+                @case ('circle')
+                {
+                  <li>
+                    <app-circle cdkDrag></app-circle>
+                  </li>
+                }
+                @default {
+                  <div class="box" cdkDrag>{{item}}</div>
+                }
+              }
+            }
+          </ul>
+        </li>
+      </ul>
     </div>
   </div>
 

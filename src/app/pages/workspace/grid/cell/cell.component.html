@@ -4,5 +4,13 @@
      (cdkDropListDropped)="drop($event)"
      (click)="onClickCell()"
 >
-  <div #container></div>
+  <div #container>
+
+  </div>
+  <app-etape-display-modal
+    *ngIf="processItem"
+    [etape]="processItem"
+    [isVisible]="displayInfoModal"
+  >
+  </app-etape-display-modal>
 </div>

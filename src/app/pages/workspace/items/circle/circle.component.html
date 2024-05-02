@@ -14,15 +14,8 @@
   <ul class="actions">
     <li><span nz-icon nzType="setting"></span></li>
     <li><span nz-icon nzType="edit"></span></li>
-    <li><span nz-icon nzType="ellipsis" style="font-size: 10px"></span></li>
+    <li><span nz-icon nzType="info" (click)="onClickDisplayEditModal()"></span></li>
     <li><span nz-icon nzType="delete" (click)="onClickDelete()"></span></li>
   </ul>
 </div>
-
-
-<ng-template #actionDelete>
-  <span nz-icon nzType="delete"
-        (click)="onClickDelete()"
-  ></span>
-</ng-template>
 

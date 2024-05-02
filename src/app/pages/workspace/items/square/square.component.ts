@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {NzCardComponent} from "ng-zorro-antd/card";
 import {NzIconDirective} from "ng-zorro-antd/icon";
-import {BaseProcessItem, ProcessItem} from "../processItem.class";
+import {BaseEtape, Etape} from "../Etape.class";
 import {NgIf} from "@angular/common";
 
 @Component({
@@ -15,7 +15,7 @@ import {NgIf} from "@angular/common";
   ],
   styleUrl: './square.component.css'
 })
-export class SquareComponent extends BaseProcessItem{
+export class SquareComponent extends BaseEtape{
   message:string='Test';
 
   constructor() {
