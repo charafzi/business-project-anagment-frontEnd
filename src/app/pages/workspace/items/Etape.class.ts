@@ -1,4 +1,7 @@
 import {CellComponent} from "../grid/cell/cell.component";
+import {Etape} from "../../../models/etape.model";
+import {Type} from "../../../models/type.model";
+import {Processus} from "../../../models/processus.model";
 
 export enum EStatut{
   EN_COURS=0,
@@ -7,6 +10,22 @@ export enum EStatut{
   TERMINE=3
 }
 
+export enum StatutEtape{
+  COMMENCEE=0,
+  PAS_ENCORE_COMMENCEE=1
+}
+
+export function statutEtapeToString(statut:StatutEtape) {
+  switch (statut){
+    case StatutEtape.COMMENCEE:
+      return "Commencée";
+    case StatutEtape.PAS_ENCORE_COMMENCEE:
+      return "Pas encore commencée";
+    default:
+      return 'Inconnu';
+
+  }
+}
 export function getStatutLabel(staut:EStatut) {
   switch (staut){
     case EStatut.EN_COURS:
@@ -19,8 +38,8 @@ export function getStatutLabel(staut:EStatut) {
       return "Terminée";
   }
 }
-
-export interface Etape {
+/*
+export interface Etapee{
   get description():string;
   get ordre():number;
   get pourcentage():number;
@@ -29,48 +48,83 @@ export interface Etape {
   get isEnd():boolean;
   get isValidate():boolean;
   get isPaid():boolean;
-  get isStarted():boolean;
+  get statutEtape() : StatutEtape;
   get type():string;
   get showButtons() : boolean;
   get enableShowButtons() : boolean;
   displayInfo():void;
-}
+}*/
 
-export abstract class BaseEtape implements Etape{
+export class BaseEtape implements Etape{
+  private _idEtape: number;
+  private _indexColonne: number;
+  private _indexLigne: number;
   private _description: string;
   private _ordre: number;
   private _pourcentage: number;
-  private _duréeEstimée: number;
-  private _délaiAttente: number;
-  private _isFirst: boolean;
-  private _isEnd: boolean;
-  private _isValidate: boolean;
-  private _isPaid: boolean;
-  private _isStarted: boolean;
-  private _type: string;
+  private _dureeEstimee: number;
+  private _delaiAttente: number;
+  private _first: boolean;
+  private _end: boolean;
+  private _validate: boolean;
+  private _paid: boolean;
+  private _statutEtape : StatutEtape;
+  private _type?: Type;
   private _showButtons:boolean;
   private _enableShowButtons:boolean;
+  private _componentName : string;
+  private _processus? : Processus | undefined;
   _displayInfo:boolean;
-  cellRef?: CellComponent;
+  public _cellRef: CellComponent | null;
 
-  protected constructor() {
+  constructor() {
+    this._idEtape=-1;
     this._description='';
     this._ordre=0;
+    this._indexLigne=0;
+    this._indexColonne=0;
     this._pourcentage=0;
-    this._duréeEstimée=0;
-    this._délaiAttente=0;
-    this._isFirst = false;
-    this._isEnd=false;
-    this._isValidate=false;
-    this._isPaid=false;
-    this._isStarted=false;
-    this._type = 'default';
+    this._dureeEstimee=0;
+    this._delaiAttente=0;
+    this._first = false;
+    this._end=false;
+    this._validate=false;
+    this._paid =false;
+    this._statutEtape = StatutEtape.PAS_ENCORE_COMMENCEE;
+    //this._type = 'default';
+    this._componentName='';
     this._showButtons = false;
     this._enableShowButtons=false;
     this._displayInfo=false;
+    this._cellRef=null;
   }
 
 
+  get idEtape(): number {
+    if(this._idEtape)
+      return this._idEtape
+    return -1;
+  }
+
+  set idEtape(value: number) {
+    this._idEtape = value;
+  }
+
+  get indexColonne(): number {
+    return this._indexColonne;
+  }
+
+  set indexColonne(value: number) {
+    this._indexColonne = value;
+  }
+
+  get indexLigne(): number {
+    return this._indexLigne;
+  }
+
+  set indexLigne(value: number) {
+    this._indexLigne = value;
+  }
 
   get description(): string {
     return this._description;
@@ -96,68 +150,60 @@ export abstract class BaseEtape implements Etape{
     this._pourcentage = value;
   }
 
-  get duréeEstimée(): number {
-    return this._duréeEstimée;
+  get dureeEstimee(): number {
+    return this._dureeEstimee;
   }
 
-  set duréeEstimée(value: number) {
-    this._duréeEstimée = value;
+  set dureeEstimee(value: number) {
+    this._dureeEstimee = value;
   }
 
-  get délaiAttente(): number {
-    return this._délaiAttente;
+  get delaiAttente(): number {
+    return this._delaiAttente;
   }
 
-  set délaiAttente(value: number) {
-    this._délaiAttente = value;
+  set delaiAttente(value: number) {
+    this._delaiAttente = value;
   }
 
-  get isFirst(): boolean {
-    return this._isFirst;
+  get first(): boolean {
+    return this._first;
   }
 
-  set isFirst(value: boolean) {
-    this._isFirst = value;
+  set first(value: boolean) {
+    this._first = value;
   }
 
-  get isEnd(): boolean {
-    return this._isEnd;
+  get end(): boolean {
+    return this._end;
   }
 
-  set isEnd(value: boolean) {
-    this._isEnd = value;
+  set end(value: boolean) {
+    this._end = value;
   }
 
-  get isValidate(): boolean {
-    return this._isValidate;
+  get validate(): boolean {
+    return this._validate;
   }
 
-  set isValidate(value: boolean) {
-    this._isValidate = value;
+  set validate(value: boolean) {
+    this._validate = value;
   }
 
-  get isPaid(): boolean {
-    return this._isPaid;
+  get paid(): boolean {
+    return this._paid;
   }
 
-  set isPaid(value: boolean) {
-    this._isPaid = value;
+  set paid(value: boolean) {
+    this._paid = value;
   }
 
-  get isStarted(): boolean {
-    return this._isStarted;
+  get statutEtape(): StatutEtape {
+    return this._statutEtape;
   }
 
-  set isStarted(value: boolean) {
-    this._isStarted = value;
-  }
-
-  get type(): string {
-    return this._type;
-  }
-
-  set type(value: string) {
-    this._type = value;
+  set statutEtape(value: StatutEtape) {
+    this._statutEtape = value;
   }
 
   get showButtons(): boolean {
@@ -185,15 +231,15 @@ export abstract class BaseEtape implements Etape{
   }
 
   onClickDelete(){
-    this.cellRef?.deleteItemProcess();
+    this._cellRef?.deleteItemProcess();
   }
 
   onClickDisplayEditModal(){
-    this.cellRef?.displayEditItemProcess();
+    this._cellRef?.displayEditItemProcess();
   }
 
   onClickHideModal(){
-    this.cellRef?.hideItemProcess();
+    this._cellRef?.hideItemProcess();
   }
 
   displayInfo() {
@@ -204,6 +250,35 @@ export abstract class BaseEtape implements Etape{
     this._displayInfo = false;
   }
 
+  get type(): Type | undefined {
+    if(this._type)
+      return this._type;
+    return undefined;
+  }
+
+  set type(value: Type) {
+    this._type = value;
+  }
+
+
+  get processus(): Processus | undefined{
+    if(this._processus)
+      return this._processus;
+    return undefined;
+  }
+
+  set processus(value: Processus | undefined) {
+    this._processus = value;
+  }
+
+  get componentName(): string {
+    return this._componentName;
+  }
+
+  set componentName(value: string) {
+    this._componentName = value;
+  }
 
 
 }
+

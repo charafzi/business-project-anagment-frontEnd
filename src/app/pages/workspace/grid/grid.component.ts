@@ -1,12 +1,18 @@
-import {Component, ElementRef, Inject, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild} from '@angular/core';
 import {CellComponent} from "./cell/cell.component";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {CdkDropList} from "@angular/cdk/drag-drop";
-import {BaseEtape} from "../items/Etape.class";
+import {BaseEtape, StatutEtape} from "../items/Etape.class";
 import {NzFlexDirective} from "ng-zorro-antd/flex";
-import {DOCUMENT, NgClass} from "@angular/common";
-import {Connection} from "./connection.class";
+import {DOCUMENT, NgClass, NgIf} from "@angular/common";
+import {Connection, ConnectionSet} from "./connection.class";
 import LinkerLine from "linkerline";
+import {ProcessusService} from "../../../services/processus.service";
+import {Etape} from "../../../models/etape.model";
+import {NzSpinComponent} from "ng-zorro-antd/spin";
+import {ConnexionService} from "../../../services/connexion.service";
+import {Connexion} from "../../../models/connexion.model";
+import {NzModalService} from "ng-zorro-antd/modal";
 
 @Component({
   selector: 'app-grid',
@@ -17,13 +23,16 @@ import LinkerLine from "linkerline";
     NzRowDirective,
     CdkDropList,
     NzFlexDirective,
-    NgClass
+    NgClass,
+    NzSpinComponent,
+    NgIf
   ],
   standalone: true,
   styleUrl: './grid.component.css'
 })
-export class GridComponent implements OnInit{
+export class GridComponent implements OnInit,AfterViewInit{
   @ViewChild('grid', { read: ElementRef }) grid!: ElementRef;
+  @Output('loading')  loading = new EventEmitter<boolean>;
   nbRows:number = 3;
   nbCols:number = 3;
   indexRowDotCurr:number =-1;
@@ -35,20 +44,89 @@ export class GridComponent implements OnInit{
   gridComponentInstance! : GridComponent;
   processItems:(BaseEtape | null)[][] = [];
   connetions : Connection[] = [];
+  connexions : ConnectionSet;
+  isLoading:boolean =false;
 
-  constructor(@Inject(DOCUMENT) private document:Document) {
+  constructor(@Inject(DOCUMENT) private document:Document,
+              private modalService: NzModalService,
+              private processusService : ProcessusService,
+              private connexionService : ConnexionService) {
+    this.connexions = new ConnectionSet();
     this.gridComponentInstance = this;
     setTimeout(() => {
-    this.printProcessItems()
+      console.log("PRINT ATFER 8s")
+      this.printProcessItems()
+      this.printConnexions();
 
-    }, 5000);
-  }
-  ngOnInit(): void {
+
+    }, 10000);
+    if(this.processusService.processus && this.processusService.processus.idProcessus){
+      this.nbRows = this.processusService.processus.nbLignes;
+      this.nbCols = this.processusService.processus.nbColonnes;
+    }
     this.processItems =
       new Array(this.nbRows)
         .fill(null)
         .map(()=> new Array(this.nbCols).fill(null));
+
   }
+
+  ngAfterViewInit(): void {
+    this.isLoading=true;
+    /**
+     *  build connecxions on view initialization
+     */
+    if(this.processusService.processus.idProcessus){
+      this.connexionService.getConnexionsByprocess(this.processusService.processus.idProcessus)
+        .subscribe(connexions=>{
+          //create connexions
+          connexions.forEach(cnx=>{
+            this.createConnexion(
+              cnx.from.indexLigne,
+              cnx.from.indexColonne,
+              cnx.to.indexLigne,
+              cnx.to.indexColonne
+            )
+          })
+        },
+        error => {
+          console.error("Error at building connexions for 'Etapes' at grid AfterViewInit");
+        },
+          ()=>{
+            this.isLoading=false;
+          }
+          )
+    }
+    }
+  ngOnInit(): void {
+    if(this.processusService.processus && this.processusService.processus.idProcessus){
+      this.isLoading=true;
+      this.processusService.retrieveProcessById(this.processusService.processus.idProcessus);
+
+      /**
+       * get "Etapes" from database and initialize grid matrix for processItems
+       to initilize the view
+       */
+
+      this.processusService.retrieveEtapesByProcess(this.processusService.processus.idProcessus)
+        .subscribe(processItems=>{
+            processItems.forEach((etape:Etape)=>{
+              this.processItems[etape.indexLigne][etape.indexColonne]= (etape as BaseEtape);
+            });
+          },
+          error => {
+            console.error("Error at fetching 'Etapes' at grid OnInit");
+          },
+          ()=>{
+            this.isLoading=false;
+          }
+        )
+
+    }
+
+  }
+
+
 
   printProcessItems()
   {
@@ -59,7 +137,8 @@ export class GridComponent implements OnInit{
         if (this.processItems[i][j] == null) {
           console.log("["+i+"]["+j+"]NULL");
         } else {
-          console.log("["+i+"]["+j+"] TYPE is at grid: " + (this.processItems[i][j] as BaseEtape).description);
+          console.log("["+i+"]["+j+"] TYPE is at grid: " + (this.processItems[i][j] as BaseEtape).description," MY ID = "+(this.processItems[i][j] as BaseEtape).idEtape);
+          console.log("PROCESS = "+(this.processItems[i][j] as BaseEtape).processus?.nom);
         }
       }
     }
@@ -85,7 +164,7 @@ export class GridComponent implements OnInit{
     return -1;
   }
 
-  deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
+  /*deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
   {
     let index:number = this.getConnectionIndexByProcessItemIndex(eventData.rowIndex,eventData.colIndex);
     //delete all connections found
@@ -97,8 +176,22 @@ export class GridComponent implements OnInit{
     console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"] BEFORE DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
     this.processItems[eventData.rowIndex][eventData.colIndex] = null;
     console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"]  AFTER DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
-  }
+  }*/
 
+  deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
+  {
+    let conn = this.connexions.getConnectionByIndexAtGrid(eventData.rowIndex,eventData.colIndex);
+    //delete all connections found
+    while(conn != undefined){
+      conn.getLineConnection().remove();
+      this.connexions.remove(conn);
+      conn = this.connexions.getConnectionByIndexAtGrid(eventData.rowIndex,eventData.colIndex);
+    }
+    this.connexions.print();
+    console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"] BEFORE DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
+    this.processItems[eventData.rowIndex][eventData.colIndex] = null;
+    console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"]  AFTER DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
+  }
 
   addRow(){
     console.log('ROW ADDED')
@@ -112,7 +205,174 @@ export class GridComponent implements OnInit{
     this.processItems.forEach(row => row.push(null));
   }
 
-  dotLeftClicked(indexRow:number,indexCol:number){
+  sauvegarderEtapes(){
+    this.loading.emit(true);
+
+    if(this.processusService.processus && this.processusService.processus.idProcessus){
+      //update list of "Etape" (Add,delete,update)
+      let etapesModel : Etape[] = [];
+
+      for (let i = 0; i < this.nbRows; i++) {
+        for (let j = 0; j < this.nbCols; j++) {
+          if(this.processItems[i][j] != null){
+            const etape = this.processItems[i][j] as Etape;
+            etapesModel.push({
+              idEtape : etape.idEtape,
+              description : etape.description,
+              indexLigne : etape.indexLigne,
+              indexColonne: etape.indexColonne,
+              ordre : etape.ordre,
+              delaiAttente : etape.delaiAttente,
+              dureeEstimee : etape.dureeEstimee,
+              first : etape.first,
+              end : etape.end,
+              paid : etape.paid,
+              validate : etape.validate,
+              statutEtape : etape.statutEtape,
+              pourcentage : etape.pourcentage,
+              type : etape.type,
+              processus : etape.processus
+            });
+          }
+        }
+      }
+
+      console.log("ETAPES TO SAVE : ");
+      console.log(etapesModel)
+      /** Update Etapes **/
+      this.processusService.updateProcessEtapes(this.processusService.processus.idProcessus,etapesModel)
+        .subscribe(responseData=>{
+            console.log("RESPONSE PUT : "+responseData);
+            /** Get Id for new "Etapes" **/
+            // @ts-ignore
+            this.processusService.retrieveEtapesByProcess(this.processusService.processus.idProcessus)
+              .subscribe(etapes=>{
+                etapes.forEach(etape=>{
+                  const processItem = this.processItems[etape.indexLigne][etape.indexColonne];
+                  if (processItem && processItem.idEtape === -1) {
+                    processItem.idEtape = etape.idEtape;
+                  }
+                })
+
+                /** Update connexions **/
+                this.connexions.print();
+                let connexionsModel : Connexion[] = [];
+                this.connexions.getConnexionsList().forEach(cnx=>{
+                  let etapeFrom = (cnx.getFrom() as Etape)
+                  let etapeTo = (cnx.getTo() as Etape);
+                  //id assigned here only the id
+                  if(etapeFrom && etapeTo){
+                    // @ts-ignore
+                    connexionsModel.push({
+                      from : {
+                        idEtape: etapeFrom.idEtape,
+                        description: '',
+                        indexLigne: 0,
+                        indexColonne: 0,
+                        ordre: 0,
+                        pourcentage: 0,
+                        dureeEstimee: 0,
+                        delaiAttente: 0,
+                        statutEtape: StatutEtape.COMMENCEE,
+                        first: false,
+                        validate: false,
+                        end: false,
+                        paid: false
+                      },
+                      to : {
+                        idEtape: etapeTo.idEtape,
+                        description: '',
+                        indexLigne: 0,
+                        indexColonne: 0,
+                        ordre: 0,
+                        pourcentage: 0,
+                        dureeEstimee: 0,
+                        delaiAttente: 0,
+                        statutEtape: StatutEtape.COMMENCEE,
+                        first: false,
+                        validate: false,
+                        end: false,
+                        paid: false
+                      }
+                    })
+                  }
+                })
+
+                // @ts-ignore
+                this.connexionService.updateConnexionsByProcess(this.processusService.processus.idProcessus,connexionsModel)
+                  .subscribe(response => {
+                      console.log("Response PUT connexions : "+response);
+                    },
+                    error => {
+                      this.modalService.error({
+                        nzTitle : "Erreur dans le serveur :",
+                        nzContent : "Erreur lors de l'enregistrement du processus",
+                        nzFooter : null,
+                        nzOnCancel : ()=>{
+                          return false;
+                        }
+                      })
+                      this.loading.emit(false);
+                      console.error("Error at updating Connexions :  "+error);
+                    },
+                    ()=>{
+                    this.modalService.success({
+                      nzTitle : "Sauvegarde réussite",
+                      nzContent : "<p>Le processus est bien enregistré !</p>",
+                      nzFooter : null,
+                      nzOnCancel : ()=>{
+                        return false;
+                      }
+                    })
+                      this.loading.emit(false);
+                      /*
+                       * Linker needs upadte here because of spin for loading
+                       */
+                    })
+              },error => {
+                this.modalService.error({
+                  nzTitle : "Erreur dans le serveur :",
+                  nzContent : "Erreur lors de l'enregistrement du processus",
+                  nzFooter : null,
+                  nzOnCancel : ()=>{
+                    return false;
+                  }
+                })
+                this.loading.emit(false);
+                console.error("Error at retrieving Etapes IDS :  "+error);
+              })
+          },
+          error => {
+            this.modalService.error({
+              nzTitle : "Erreur dans le serveur !",
+              nzContent : "Erreur lors de l'enregistrement du processus",
+              nzFooter : null,
+              nzOnCancel : ()=>{
+                return false;
+              }
+            })
+            this.loading.emit(false);
+            console.error("Error at updating Etapes : "+error);
+          },()=>{
+            /**
+             * Linker needs upadte here because of spin for loading
+             */
+          })
+    }else{
+      this.modalService.error({
+        nzTitle : "Erreur !",
+        nzContent : "Aucun processus est associé.",
+        nzFooter : null,
+        nzOnCancel : ()=>{
+          return false;
+        }
+      })
+      this.loading.emit(false);
+      console.error("Error at retrieving Etapes IDS: Processus Id is undefined");
+    }
+  }
+
+ /* dotLeftClicked(indexRow:number,indexCol:number){
     if(this.indexRowDotCurr !=-1
       && this.indexColDotCurr!=-1
     ){
@@ -157,13 +417,33 @@ export class GridComponent implements OnInit{
             })
           );
         this.connetions.push(conn);
-        conn.getLineConnection().element.addEventListener('click', (event) => {
+        this.printConnexions();
+        /!*conn.getLineConnection().element.addEventListener('click', (event) => {
           console.log('Line clicked!', event);
-        });
+        });*!/
         this.printProcessItems();
       } else {
         console.error('One or both elements not found OR There is no processItem at ['+rowCurr+']['+colCurr+']');
       }
+    }
+  }*/
+
+  dotLeftClicked(indexRow:number,indexCol:number){
+    if(this.indexRowDotCurr !=-1
+      && this.indexColDotCurr!=-1
+    ){
+      this.indexRowDotNext = indexRow;
+      this.indexColDotNext = indexCol;
+
+      let rowCurr = this.indexRowDotCurr;
+      let colCurr =this.indexColDotCurr;
+      let rowNext = this.indexRowDotNext;
+      let colNext = this.indexColDotNext;
+
+      this.createConnexion(rowCurr,colCurr,rowNext,colNext);
+      this.indexRowDotCurr = this.indexRowDotNext = this.indexRowDotCurr= this.indexColDotNext = -1;
+      this.connexions.print();
+
     }
   }
 
@@ -213,6 +493,14 @@ export class GridComponent implements OnInit{
     return false;
   }
 
+  printConnexions():void {
+    console.log("****************************** CONNEXIONS :")
+    for(let i=0;i<this.connetions.length;i++){
+      console.log("FROM["+this.connetions[i].getFrom()?.indexLigne+"]["+this.connetions[i].getFrom()?.indexColonne+"] id = ",
+        this.connetions[i].getFrom()?.idEtape,":: TO["+this.connetions[i].getTo()?.indexColonne+"]["+this.connetions[i].getTo()?.indexColonne+"] id=",this.connetions[i].getTo()?.idEtape);
+  }
+}
+
   /*updateConnections(){
     this.connetions.forEach(connection=>{
       const elemFrom = document.getElementById(connection.getIdFrom());
@@ -254,4 +542,54 @@ export class GridComponent implements OnInit{
 
     });
   }*/
+  createConnexion(indexRowFrom:number,
+                  indexColFrom:number,
+                  indexRowTo:number,
+                  indexColTo:number
+                  ):void{
+    let idFrom:string = 'cell-'+indexRowFrom+'-'+indexColFrom;
+    let idTo:string = 'cell-'+indexRowTo+'-'+indexColTo;
+
+    const el1 = document.getElementById(idFrom);
+    const el2 = document.getElementById(idTo);
+    const grid = this.grid.nativeElement;
+    if (el1 && el2
+      && this.processItems[indexRowFrom][indexColFrom]
+      && this.processItems[indexRowTo][indexColTo]) {
+      const conn :Connection = new Connection(
+        idFrom,
+        idTo,
+        this.processItems[indexRowFrom][indexColFrom],
+        this.processItems[indexRowTo][indexColTo],
+        new LinkerLine<any, any>(
+          {
+            parent: grid,
+            start: el1,
+            end: el2,
+            color: '#ff0000',
+            outline: true,
+            outlineColor : '#000000',
+            endPlugOutline: true,
+            endPlugSize: 1.1,
+            startPlug : "disc",
+            endPlug : "arrow2",
+            startSocket : "right",
+            endSocket : "left",
+            path : "straight"
+          })
+      );
+      //this.connetions.push(conn);
+      this.connexions.add(conn);
+      this.printConnexions();
+      /*conn.getLineConnection().element.addEventListener('click', (event) => {
+        console.log('Line clicked!', event);
+      });*/
+      this.printProcessItems();
+    }else{
+      console.error('One or both elements not found OR There is no processItem at ['+indexRowFrom+']['+indexColFrom+'] or  ['+indexRowTo+']['+indexColTo+']');
+    }
+
+
+  }
 }
+

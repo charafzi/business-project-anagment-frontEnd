@@ -1,0 +1,49 @@
+<form nz-form [formGroup]="processForm">
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="24">
+        <nz-form-item>
+        <div nz-col [nzSpan]="6">
+          <nz-form-label nzRequired>Nom&nbsp;</nz-form-label>
+        </div>
+        <div nz-col [nzSpan]="18">
+          <nz-form-control nzHasFeedback [nzErrorTip]="nomErrorTpl">
+            <input formControlName="nom" nz-input placeholder="Basic usage" type="text" />
+            <ng-template #nomErrorTpl let-control>
+              @if (control.errors?.['required']) {
+                Veuillez remplir le champ de la description
+              }
+              @if (control.errors?.['maxlength']) {
+                Veuillez ne pas dépasser 255 caractères
+              }
+            </ng-template>
+          </nz-form-control>
+        </div>
+        </nz-form-item>
+    </div>
+  </div>
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="24">
+      <nz-form-item>
+
+      <div nz-col [nzSpan]="6">
+        <nz-form-label nzRequired>Description&nbsp;</nz-form-label>
+      </div>
+      <div nz-col [nzSpan]="18">
+        <nz-form-control nzHasFeedback [nzErrorTip]="descriptionErrorTpl">
+          <nz-textarea-count class="text-area">
+            <textarea formControlName="description" nz-input rows="2" placeholder="Description..."></textarea>
+            <ng-template #descriptionErrorTpl let-control>
+              @if (control.errors?.['required']) {
+                Veuillez remplir le champ de la description
+              }
+              @if (control.errors?.['maxlength']) {
+                Veuillez ne pas dépasser 255 caractères
+              }
+            </ng-template>
+          </nz-textarea-count>
+        </nz-form-control>
+      </div>
+      </nz-form-item>
+    </div>
+  </div>
+</form>

@@ -1,20 +1,13 @@
-import {Component, Input, OnInit, setTestabilityGetter} from '@angular/core';
-import {BaseEtape, EStatut, getStatutLabel} from "../Etape.class";
-import {NzModalComponent, NzModalContentDirective, NzModalFooterDirective, NzModalRef} from "ng-zorro-antd/modal";
+import {Component, Input, OnInit} from '@angular/core';
+import {BaseEtape, StatutEtape, statutEtapeToString} from "../Etape.class";
+import {NzModalComponent, NzModalContentDirective, NzModalFooterDirective} from "ng-zorro-antd/modal";
 import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
 import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from "ng-zorro-antd/form";
 import {NzInputDirective, NzTextareaCountComponent} from "ng-zorro-antd/input";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-  Validators
-} from "@angular/forms";
+import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {NzProgressComponent} from "ng-zorro-antd/progress";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
@@ -51,7 +44,6 @@ export class EtapeDisplayModalComponent implements OnInit{
   @Input('isVisible') isVisible!:boolean;
   isModifiable:boolean = false;
   percent = 0;
-
   etapeForm!: FormGroup;
 
   constructor(private fb: FormBuilder) {}
@@ -60,24 +52,25 @@ export class EtapeDisplayModalComponent implements OnInit{
     etapeForm: FormGroup<{
       description:FormControl<string>;
       ordre: FormControl<number>;
-      statut : FormControl<EStatut>;
+      statutEtape : FormControl<string>;
       dureeEstimee: FormControl<number>;
       delaiAttente: FormControl<number>;
       isFirst:FormControl<boolean>;
       isEnd:FormControl<boolean>;
       isValidate:FormControl<boolean>;
       isPaid:FormControl<boolean>;
+
     }>
     this.etapeForm = this.fb.group({
       description : [this.etape.description,[Validators.required,Validators.maxLength(255)]],
-      delaiAttente : [this.etape.délaiAttente,[Validators.required,Validators.min(0)]],
-      dureeEstimee : [this.etape.duréeEstimée,[Validators.required,Validators.min(0)]],
+      delaiAttente : [this.etape.delaiAttente,[Validators.required,Validators.min(0)]],
+      dureeEstimee : [this.etape.dureeEstimee,[Validators.required,Validators.min(0)]],
       ordre : [this.etape.ordre,Validators.required],
-      isStarted : [this.etape.isStarted ? 'Commencée' : 'Par encore commencée',Validators.required],
-      isFirst : [this.etape.isFirst],
-      isEnd : [this.etape.isEnd],
-      isValidate : [this.etape.isValidate],
-      isPaid : [this.etape.isPaid]
+      statutEtape : [statutEtapeToString(this.etape.statutEtape),Validators.required],
+      isFirst : [this.etape.first],
+      isEnd : [this.etape.end],
+      isValidate : [this.etape.validate],
+      isPaid : [this.etape.paid]
     })
     this.percent=this.etape.pourcentage;
   }
@@ -104,13 +97,13 @@ export class EtapeDisplayModalComponent implements OnInit{
       this.etape.description = this.etapeForm.value.description;
       this.etape.ordre=this.etapeForm.value.ordre;
       this.etape.pourcentage=this.percent;
-      this.etape.duréeEstimée=this.etapeForm.value.dureeEstimee;
-      this.etape.délaiAttente=this.etapeForm.value.delaiAttente;
-      this.etape.isFirst=this.etapeForm.value.isFirst;
-      this.etape.isEnd=this.etapeForm.value.isEnd;
-      this.etape.isPaid=this.etapeForm.value.isPaid;
-      this.etape.isValidate=this.etapeForm.value.isValidate;
-      this.etape.isStarted = this.etapeForm.value.isStarted == 'Commencée';
+      this.etape.dureeEstimee=this.etapeForm.value.dureeEstimee;
+      this.etape.delaiAttente=this.etapeForm.value.delaiAttente;
+      this.etape.first=this.etapeForm.value.isFirst;
+      this.etape.end=this.etapeForm.value.isEnd;
+      this.etape.paid=this.etapeForm.value.isPaid;
+      this.etape.validate=this.etapeForm.value.isValidate;
+      this.etape.statutEtape = this.etapeForm.value.statutEtape == 'Commencée' ? StatutEtape.COMMENCEE: StatutEtape.PAS_ENCORE_COMMENCEE;
       this.etape.onClickHideModal();
     }
   }

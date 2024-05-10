@@ -1,4 +1,11 @@
-<div class="grid" #grid>
+<div
+  *ngIf="isLoading"
+  class="grid loading-spin">
+  <nz-spin nzSimple></nz-spin>
+</div>
+<div class="grid"
+     *ngIf="!isLoading"
+     #grid>
   @for (row of arrayRows; let rowIndex = $index; track row){
     <div class="row">
       @for (col of arrayCols; let colIndex = $index; track col)

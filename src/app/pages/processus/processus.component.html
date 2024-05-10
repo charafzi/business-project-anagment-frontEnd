@@ -1,0 +1,39 @@
+<nz-layout>
+  <nz-header>
+    <h1>Liste des processus</h1>
+    <div class="container"
+         dir="ltr"
+    >
+      <button nz-button nzType="primary" [nzShape]="'round'" (click)="onAddProcess()">Ajouter un processus</button>
+    </div>
+  </nz-header>
+  <nz-layout>
+    <nz-content>
+      <nz-table #nestedTable [nzData]="ProcessList"
+                [nzLoading]="isLoading"
+      >
+        <thead>
+        <tr>
+          <th>Nom</th>
+          <th>Description</th>
+          <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of ProcessList">
+          <td>{{ data.nom }}</td>
+          <td>{{ data.description }}</td>
+          <td>
+            <div class="icons-container">
+              <a><span nz-icon nzType="eye" nzTheme="outline" (click)="viewSchema(data.idProcessus ?? -1)"></span></a>
+              <a><span nz-icon nzType="edit" nzTheme="outline" (click)="displayEditModal(data.idProcessus?? -1)"></span></a>
+              <a><span nz-icon nzType="delete" nzTheme="outline" (click)="delete(data.idProcessus?? -1)"></span></a>
+            </div>
+          </td>
+        </tr>
+        </tbody>
+      </nz-table>
+
+    </nz-content>
+  </nz-layout>
+</nz-layout>

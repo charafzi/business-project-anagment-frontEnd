@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import {BaseEtape, Etape} from "../Etape.class";
+import {BaseEtape} from "../Etape.class";
 import {NzCardComponent} from "ng-zorro-antd/card";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NgIf} from "@angular/common";
+import {BaseItem} from "../item.model";
 
 @Component({
   selector: 'app-circle',
@@ -15,14 +16,12 @@ import {NgIf} from "@angular/common";
     ],
   styleUrl: './circle.component.css'
 })
-export class CircleComponent extends BaseEtape{
+export class CircleComponent extends BaseItem{
 
   constructor() {
     super();
-    this.type = 'circle';
+    this._componentName= 'circle';
   }
-  getType(): string {
-    return this.type;
-  }
+
 
 }

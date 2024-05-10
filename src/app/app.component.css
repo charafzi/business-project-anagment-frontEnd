@@ -5,6 +5,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.menu-sidebar{
+  background-color: #fafafa;
+}
+
+.menu{
+  background-color: #fafafa;
+}
+
 .app-layout {
   height: 100vh;
 }
@@ -34,7 +42,7 @@
   padding-left: 24px;
   overflow: hidden;
   line-height: 64px;
-  background: #001529;
+  background: #fafafa;
   transition: all .3s;
 }
 
@@ -75,6 +83,6 @@ nz-content {
 
 .inner-content {
   padding: 24px;
-  background: #fff;
+  background: #fafafa;
   height: 100%;
 }

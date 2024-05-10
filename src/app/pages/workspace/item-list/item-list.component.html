@@ -1,5 +1,12 @@
 <div>
-  <div class="container">
+  <div
+    *ngIf="isLoading"
+    class="grid loading-spin">
+    <nz-spin nzSimple></nz-spin>
+  </div>
+  <div class="container"
+       *ngIf="!isLoading"
+  >
     <div cdkDropList
          [cdkDropListData]="items"
          cdkDropListSortingDisabled
@@ -8,11 +15,11 @@
     >
       <ul>
         <li nz-submenu
-            nzTitle="Catégorie 1"
+            nzTitle="Types d'étape"
             class="menu-title">
           <ul class="items-menu">
             @for (item of items; track item) {
-              @switch (item.type)
+              @switch (item._componentName)
               {
                 @case ('square')
                 {
@@ -34,7 +41,7 @@
                   </li>
                 }
                 @default {
-                  <div class="box" cdkDrag>{{item}}</div>
+                  <div class="box" cdkDrag><h6>{{item._componentName}}</h6></div>
                 }
               }
             }

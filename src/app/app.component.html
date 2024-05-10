@@ -11,26 +11,23 @@
         <h1></h1>
       </a>
     </div>
-    <ul nz-menu nzTheme="dark" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
-      <li nz-submenu nzOpen nzTitle="Dashboard" nzIcon="dashboard">
-        <ul>
+    <ul class="menu" nz-menu nzTheme="light" nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+      <li nz-submenu nzOpen nzTitle="Workflows" nzIcon="dashboard">
+        <ul class="menu">
           <li nz-menu-item nzMatchRouter>
-            <a routerLink="/welcome">Welcome</a>
+            <a routerLink="/welcome">Dashboard</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a>Monitor</a>
+            <a routerLink="processus">Workflow Management</a>
           </li>
           <li nz-menu-item nzMatchRouter>
-            <a>Workplace</a>
+            <a>Categories Management</a>
           </li>
         </ul>
       </li>
-      <li nz-submenu nzOpen nzTitle="Form" nzIcon="form">
-        <ul>
-          <li nz-menu-item nzMatchRouter>
-            <a>Basic Form</a>
-          </li>
-        </ul>
+      <li nz-menu-item>
+        <span nz-icon nzType="unordered-list"></span>
+        <span>Tasks Management</span>
       </li>
     </ul>
   </nz-sider>
@@ -47,7 +44,7 @@
     </nz-header>
     <nz-content>
       <div class="inner-content">
-        <app-workspace></app-workspace>
+        <router-outlet></router-outlet>
       </div>
     </nz-content>
   </nz-layout>

@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output, ViewChild} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output, ViewChild} from '@angular/core';
 import {NzCardComponent} from "ng-zorro-antd/card";
 import {SquareComponent} from "./items/square/square.component";
 import {RhombusComponent} from "./items/rhombus/rhombus.component";
@@ -27,8 +27,14 @@ import {NzButtonComponent} from "ng-zorro-antd/button";
   ],
   styleUrl: './workspace.component.css'
 })
-export class WorkspaceComponent {
+export class WorkspaceComponent implements OnInit{
   @ViewChild('grid') appGrid!: GridComponent;
+  isLoading:boolean = false;
+
+  ngOnInit() {
+    if(this.appGrid)
+      this.isLoading=this.appGrid.isLoading;
+  }
 
   addRow(){
     this.appGrid.addRow();
@@ -36,5 +42,13 @@ export class WorkspaceComponent {
 
   addCol(){
     this.appGrid.addCol();
+  }
+
+  sauvegarder(){
+    this.appGrid.sauvegarderEtapes();
+  }
+
+  setLoading(eventData:boolean){
+    this.isLoading = eventData.valueOf();
   }
 }

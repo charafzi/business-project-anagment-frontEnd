@@ -3,7 +3,7 @@
   [nzTitle]="modalTitle"
   [nzContent]="modalContent"
   [nzFooter]="modalFooter"
-  (nzOnCancel)="etape.onClickHideModal()"
+  (nzOnCancel)="this.etape.onClickHideModal()"
 >
   <ng-template #modalTitle>Informations sur l'étape :</ng-template>
 
@@ -44,9 +44,9 @@
           <nz-form-item>
             <nz-form-label>Statut</nz-form-label>
             <nz-form-control>
-              <nz-select formControlName="isStarted">
-                <nz-option nzValue="Commenée" nzLabel="Commenée"></nz-option>
-                <nz-option nzValue="Par encore commencée" nzLabel="Par encore commencée"></nz-option>
+              <nz-select formControlName="statutEtape">
+                <nz-option nzValue="Commencée" nzLabel="Commencée"></nz-option>
+                <nz-option nzValue="Pas encore commencée" nzLabel="Pas encore commencée"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>

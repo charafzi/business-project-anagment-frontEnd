@@ -1,8 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {NzCardComponent} from "ng-zorro-antd/card";
 import {NzIconDirective} from "ng-zorro-antd/icon";
-import {BaseEtape, Etape} from "../Etape.class";
+import {BaseEtape} from "../Etape.class";
 import {NgIf} from "@angular/common";
+import {BaseItem} from "../item.model";
 
 @Component({
   selector: 'app-square',
@@ -15,18 +16,15 @@ import {NgIf} from "@angular/common";
   ],
   styleUrl: './square.component.css'
 })
-export class SquareComponent extends BaseEtape{
+export class SquareComponent extends BaseItem {
   message:string='Test';
 
   constructor() {
     super();
-    this.type = 'square';
+    this._componentName='square';
   }
 
 
-  getType(): string {
-    return this.type;
-  }
 
   onClick()
   {

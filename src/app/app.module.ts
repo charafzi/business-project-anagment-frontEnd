@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NzCardModule } from 'ng-zorro-antd/card';
+import { Routes,RouterModule} from "@angular/router";
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -22,9 +23,16 @@ import {CellComponent} from "./pages/workspace/grid/cell/cell.component";
 import {ItemListComponent} from "./pages/workspace/item-list/item-list.component";
 import {CircleComponent} from "./pages/workspace/items/circle/circle.component";
 import {NzModalModule} from "ng-zorro-antd/modal";
-
+import {WelcomeComponent} from "./pages/welcome/welcome.component";
+import {ProcessusComponent} from "./pages/processus/processus.component";
+import {NzTableComponent, NzTableModule} from "ng-zorro-antd/table";
 registerLocaleData(fr);
 
+const appRoutes : Routes =[
+  {path : '', component : WelcomeComponent },
+  {path : 'workspace', component : WorkspaceComponent},
+  {path : 'processus', component : ProcessusComponent}
+]
 @NgModule({
   declarations: [
     AppComponent
@@ -32,6 +40,7 @@ registerLocaleData(fr);
   imports: [
     BrowserModule,
     AppRoutingModule,
+    RouterModule.forRoot(appRoutes),
     IconsProviderModule,
     NzLayoutModule,
     NzMenuModule,
@@ -44,7 +53,9 @@ registerLocaleData(fr);
     GridComponent,
     CellComponent,
     ItemListComponent,
-    NzModalModule
+    NzModalModule,
+    NzTableModule,
+    NzTableComponent,
   ],
   providers: [
     { provide: NZ_I18N, useValue: fr_FR },

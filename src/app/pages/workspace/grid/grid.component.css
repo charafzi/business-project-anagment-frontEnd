@@ -9,6 +9,14 @@
 
 }
 
+.loading-spin{
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  background-color: transparent;
+  margin-top: 200px;
+}
+
 .cell {
   width: 100px;
   height: 100px;
