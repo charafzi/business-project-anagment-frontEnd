@@ -7,6 +7,7 @@ import {Connexion} from "../models/connexion.model";
   providedIn : 'root'
 })
 export class ConnexionService{
+
   url:string = 'http://localhost:8100/connexions';
   constructor(private http:HttpClient) {
   }
@@ -18,4 +19,6 @@ export class ConnexionService{
   updateConnexionsByProcess(processId:number,conenxions: Connexion[]){
     return this.http.put(this.url+"/processus/"+processId,conenxions);
   }
+
+
 }

@@ -36,10 +36,10 @@ export abstract class BaseItem{
 
   displayButtons()
   {
-    if(this._enableShowButtons)
+    /*if(this._enableShowButtons)
     {
       this._showButtons = !this._showButtons;
-    }
+    }*/
   }
 
 

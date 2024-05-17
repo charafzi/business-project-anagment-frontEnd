@@ -4,6 +4,7 @@ import {NzIconDirective} from "ng-zorro-antd/icon";
 import {BaseEtape} from "../Etape.class";
 import {NgIf} from "@angular/common";
 import {BaseItem} from "../item.model";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @Component({
   selector: 'app-square',
@@ -12,7 +13,8 @@ import {BaseItem} from "../item.model";
   imports: [
     NzCardComponent,
     NzIconDirective,
-    NgIf
+    NgIf,
+    NzTooltipDirective
   ],
   styleUrl: './square.component.css'
 })

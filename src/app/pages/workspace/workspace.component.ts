@@ -7,6 +7,10 @@ import {GridComponent} from "./grid/grid.component";
 import {ItemListComponent} from "./item-list/item-list.component";
 import {CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {NzButtonComponent} from "ng-zorro-antd/button";
+import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
+import {Processus} from "../../models/processus.model";
+import {ProcessusService} from "../../services/processus.service";
+import {NzIconDirective} from "ng-zorro-antd/icon";
 
 @Component({
   selector: 'app-workspace',
@@ -23,13 +27,23 @@ import {NzButtonComponent} from "ng-zorro-antd/button";
     CdkDropList,
     CdkDropListGroup,
     NzHeaderComponent,
-    NzButtonComponent
+    NzButtonComponent,
+    NzRowDirective,
+    NzColDirective,
+    NzIconDirective
   ],
   styleUrl: './workspace.component.css'
 })
 export class WorkspaceComponent implements OnInit{
   @ViewChild('grid') appGrid!: GridComponent;
   isLoading:boolean = false;
+  processName:string = '';
+  processDesc:string = '';
+
+  constructor(private processusService:ProcessusService) {
+    this.processName = this.processusService.processus.nom;
+    this.processDesc = this.processusService.processus.description;
+  }
 
   ngOnInit() {
     if(this.appGrid)
@@ -50,5 +64,9 @@ export class WorkspaceComponent implements OnInit{
 
   setLoading(eventData:boolean){
     this.isLoading = eventData.valueOf();
+  }
+
+  updateProcessusValues(eventData:Processus){
+
   }
 }

@@ -55,6 +55,7 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
   @Input('rowIndex') rowIndex! : number;
   @Input('colIndex') colIndex! : number;
   @Input('order') order!:number;
+  @Input('onDotClicked') onDotClicked:boolean = false;
   @ViewChild('container',{read : ViewContainerRef})
   container! : ViewContainerRef;
   displayInfoModal:boolean =false;
@@ -85,38 +86,38 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
   * */
 
   ngAfterViewInit(): void {
-      if(this.processItem) {
-        //timeout to avoid Angular error for changing properties before view is initialized
-        setTimeout(()=>{
-          /*if(this.processItem?.type){
-            const componentType = this.typeService.getComponentByType(this.processItem.type.nom);
-            if (componentType) {
-              const componentFactory = this.CFR.resolveComponentFactory(componentType);
-              const childComponentRef = this.container?.createComponent(componentFactory);
-              /!*!//enable showing buttons
-              (childComponentRef?.instance as BaseItem).enableShowButtons=true;
-              //link this cell to the component at this cell
-              (childComponentRef?.instance as BaseItem).cellRef = this;
-              //link "Etape" to the componeent
-              (childComponentRef?.instance as BaseItem).etape=this.processItem;*!/
-              (childComponentRef?.instance as BaseItem)._etape=this.processItem;
-              (childComponentRef?.instance as BaseItem)._enableShowButtons=true;
-              console.log("ITEMM : "+(childComponentRef?.instance as BaseItem)._etape?.description)
-          }
-        }*/
-          if(this.processItem){
-            if(this.processItem.type){
-              this.createItemProcess(1);
-            }
-          }else{
-            console.error("Error at creating component at Cell AfterViewInit ["+this.rowIndex+"]["+this.colIndex+"] : Cell is null or Type is undefined.")
-          }
-        },10)
-      }
+
     }
 
   ngOnInit(): void {
-
+    if(this.processItem) {
+      //timeout to avoid Angular error for changing properties before view is initialized
+      setTimeout(()=>{
+        /*if(this.processItem?.type){
+          const componentType = this.typeService.getComponentByType(this.processItem.type.nom);
+          if (componentType) {
+            const componentFactory = this.CFR.resolveComponentFactory(componentType);
+            const childComponentRef = this.container?.createComponent(componentFactory);
+            /!*!//enable showing buttons
+            (childComponentRef?.instance as BaseItem).enableShowButtons=true;
+            //link this cell to the component at this cell
+            (childComponentRef?.instance as BaseItem).cellRef = this;
+            //link "Etape" to the componeent
+            (childComponentRef?.instance as BaseItem).etape=this.processItem;*!/
+            (childComponentRef?.instance as BaseItem)._etape=this.processItem;
+            (childComponentRef?.instance as BaseItem)._enableShowButtons=true;
+            console.log("ITEMM : "+(childComponentRef?.instance as BaseItem)._etape?.description)
+        }
+      }*/
+        if(this.processItem){
+          if(this.processItem.type){
+            this.createItemProcess(1);
+          }
+        }else{
+          console.error("Error at creating component at Cell AfterViewInit ["+this.rowIndex+"]["+this.colIndex+"] : Cell is null or Type is undefined.")
+        }
+      },10)
+    }
   }
 
   ngAfterContentInit(): void {
@@ -144,11 +145,11 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
     // show the modal warning before replacing a processItem
     this.warningModal().then(message => {
       const modalRef = this.modalService.create({
-        nzTitle: 'Veuillez remplir les informations de l\'étape :',
+        nzTitle: 'Please fill in the informations about the step :',
         nzContent: EtapeModalComponent,
         nzWidth : 550,
-        nzOkText : "Confirmer",
-        nzCancelText : "Annuler",
+        nzOkText : "Ok",
+        nzCancelText : "Cancel",
         nzKeyboard: true,
         nzOnOk :()=>{
           const modalComponentInst = modalRef.componentRef?.instance as EtapeModalComponent;
@@ -158,15 +159,50 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
           if(formIsValid){
             try
             {
+              let periodDureeEstime = <string>modalComponentInst.etapeForm.value.radioDureeEstimee;
+              let periodDelaiAttente = <string>modalComponentInst.etapeForm.value.radioDelaiAttente;
+              let selectedFIE = <string>modalComponentInst.etapeForm.value.radioFIE;
+              let dureeEstime = <number>modalComponentInst.etapeForm.value.dureeEstimee;
+              let delaiAttente = <number>modalComponentInst.etapeForm.value.delaiAttente;
               this.processItem = new BaseEtape();
               this.processItem.componentName = event.item.dropContainer.data[event.previousIndex]._componentName;
               this.processItem.description = <string>modalComponentInst.etapeForm.value.description;
-              this.processItem.dureeEstimee = <number>modalComponentInst.etapeForm.value.dureeEstimee;
-              this.processItem.delaiAttente = <number>modalComponentInst.etapeForm.value.delaiAttente;
-              this.processItem.first = <boolean>modalComponentInst.etapeForm.value.isFirst;
-              this.processItem.end = <boolean>modalComponentInst.etapeForm.value.isEnd;
               this.processItem.validate = <boolean>modalComponentInst.etapeForm.value.isValidate;
               this.processItem.paid = <boolean>modalComponentInst.etapeForm.value.isPaid;
+              switch (periodDureeEstime){
+                case 'H':
+                  break;
+                case 'D':
+                  dureeEstime = dureeEstime * 24;
+                  break;
+                case 'M':
+                  dureeEstime = dureeEstime * 24 * 31;
+                  break;
+              }
+
+              this.processItem.dureeEstimee = dureeEstime;
+              switch (periodDelaiAttente){
+                case 'H':
+                  break;
+                case 'D':
+                  delaiAttente = delaiAttente * 24;
+                  break;
+                case 'M':
+                  delaiAttente = delaiAttente * 24 * 31;
+                  break;
+              }
+              this.processItem.delaiAttente = delaiAttente;
+              switch (selectedFIE){
+                case 'F':
+                  this.processItem.first = true;
+                  break;
+                case 'I':
+                  this.processItem.intermediate = true;
+                  break;
+                case 'E':
+                  this.processItem.end = true;
+                  break;
+              }
               this.createItemProcess(0);
             } catch (error) {
               console.error(error);
@@ -216,6 +252,7 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
         newProcessItem.delaiAttente=this.processItem.delaiAttente;
         newProcessItem.ordre=this.order;
         newProcessItem.first=this.processItem.first
+        newProcessItem.intermediate = this.processItem.intermediate;
         newProcessItem.end=this.processItem.end
         newProcessItem.validate=this.processItem.validate;
         newProcessItem.paid=this.processItem.paid;
@@ -233,8 +270,9 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
           newProcessItem.ordre=this.processItem.ordre;
           newProcessItem.dureeEstimee=this.processItem.dureeEstimee;
           newProcessItem.delaiAttente=this.processItem.delaiAttente;
-          newProcessItem.first=this.processItem.first
-          newProcessItem.end=this.processItem.end
+          newProcessItem.first = this.processItem.first;
+          newProcessItem.intermediate = this.processItem.intermediate;
+          newProcessItem.end=this.processItem.end;
           newProcessItem.validate=this.processItem.validate;
           newProcessItem.paid=this.processItem.paid;
           newProcessItem.indexLigne=this.processItem.indexLigne;
@@ -247,6 +285,7 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
         }
       }
       newProcessItem.enableShowButtons=true;
+      newProcessItem.showButtons = true;
 
       //newProcessItem.showButtons=true;
       let T = this.typeService.getTypeByName(typeName)
@@ -273,10 +312,10 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
     if(this.processItem != null){
 
       const deleteModal = this.modalService.warning({
-        nzTitle: "Attention : Vous voulez supprimer une étape !",
-        nzContent: "Voulez-vous toujours supprimer cette étape?",
+        nzTitle: "Attention !",
+        nzContent: "All connections associated with this step will be lost, do you still want to delete?",
         nzWidth : 450,
-        nzOkText : "Valider",
+        nzOkText : "Ok",
         nzOnOk: () => {
           this.container.clear();
           console.log("PROCESS ITEM AT CELL BEFORE DELETE : "+this.processItem);
@@ -286,6 +325,9 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
             rowIndex : this.rowIndex,
             colIndex : this.colIndex
           });
+          this.modalService.success({
+            nzTitle : "Step deleted successfully !"
+          })
         },
         nzOnCancel: () => {
           deleteModal.close();
@@ -298,9 +340,9 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
     if (this.processItem != null) {
       return new Promise<void>((resolve, reject) => {
         const warningModal = this.modalService.warning({
-          nzTitle: "Attention : Vous désirez substituer une étape déjà créée",
-          nzContent: "Voulez-vous toujours remplacer l'étape actuelle?",
-          nzOkText : "Valider",
+          nzTitle: "Attention: You want to replace an already created step !",
+          nzContent: "Do you still want to replace the current step?",
+          nzOkText : "Ok",
           nzWidth : 450,
           nzOnOk: () => {
             this.container.clear();

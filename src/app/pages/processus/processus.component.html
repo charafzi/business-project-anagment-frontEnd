@@ -1,39 +1,52 @@
 <nz-layout>
   <nz-header>
-    <h1>Liste des processus</h1>
-    <div class="container"
-         dir="ltr"
-    >
-      <button nz-button nzType="primary" [nzShape]="'round'" (click)="onAddProcess()">Ajouter un processus</button>
+    <div nz-row>
+      <div nz-col [nzSpan]="6">
+        <h1>List of processes</h1>
+      </div>
+    </div>
+
+    <div nz-row>
+      <div nz-col [nzSpan]="6">
+        <button nz-button nzType="primary" [nzShape]="'round'" (click)="onAddProcess()">
+          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+          Add new process
+        </button>
+      </div>
     </div>
   </nz-header>
   <nz-layout>
     <nz-content>
-      <nz-table #nestedTable [nzData]="ProcessList"
+      <nz-table #basicTable [nzData]="ProcessList"
+                [nzShowPagination]="true"
+                [nzFrontPagination]="true"
                 [nzLoading]="isLoading"
+                nzTableLayout="fixed"
+                [nzPaginationType]="'small'"
+                [nzPaginationPosition]="'bottom'"
+
       >
         <thead>
         <tr>
-          <th>Nom</th>
+          <th>Name</th>
           <th>Description</th>
-          <th>Action</th>
+          <th [nzAlign]="'right'">Actions</th>
         </tr>
         </thead>
         <tbody>
-        <tr *ngFor="let data of ProcessList">
+        <tr *ngFor="let data of basicTable.data">
           <td>{{ data.nom }}</td>
           <td>{{ data.description }}</td>
           <td>
             <div class="icons-container">
-              <a><span nz-icon nzType="eye" nzTheme="outline" (click)="viewSchema(data.idProcessus ?? -1)"></span></a>
-              <a><span nz-icon nzType="edit" nzTheme="outline" (click)="displayEditModal(data.idProcessus?? -1)"></span></a>
-              <a><span nz-icon nzType="delete" nzTheme="outline" (click)="delete(data.idProcessus?? -1)"></span></a>
+              <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'" (click)="viewSchema(data.idProcessus ?? -1)"></span></a>
+              <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'" (click)="displayEditModal(data.idProcessus?? -1)"></span></a>
+              <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'" (click)="delete(data.idProcessus?? -1)"></span></a>
             </div>
           </td>
         </tr>
         </tbody>
       </nz-table>
-
     </nz-content>
   </nz-layout>
 </nz-layout>

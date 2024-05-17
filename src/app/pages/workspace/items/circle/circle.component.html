@@ -5,17 +5,25 @@
 >
   <div class="card-container">
     <svg width="30" height="30" >
-      <circle cx="15" cy="15" r="15" fill="black" />
+      <circle cx="15" cy="15" r="15" fill="#2e2730" />
     </svg>
   </div>
 </nz-card>
 
 <div class="actions-container" *ngIf="showButtons">
   <ul class="actions">
-    <li><span nz-icon nzType="setting"></span></li>
-    <li><span nz-icon nzType="edit"></span></li>
-    <li><span nz-icon nzType="info" (click)="onClickDisplayEditModal()"></span></li>
-    <li><span nz-icon nzType="delete" (click)="onClickDelete()"></span></li>
+    <!--<li><span nz-icon nzType="setting"></span></li>
+    <li><span nz-icon nzType="edit"></span></li>-->
+    <li><span nz-icon nzType="info"
+              (click)="onClickDisplayEditModal()"
+              nz-tooltip
+              nzTooltipTitle="Show informations"
+    ></span></li>
+    <li><span nz-icon nzType="delete"
+              (click)="onClickDelete()"
+              nz-tooltip
+              nzTooltipTitle="Delete"
+    ></span></li>
   </ul>
 </div>
 

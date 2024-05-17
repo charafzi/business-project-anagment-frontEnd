@@ -8,10 +8,10 @@
             <textarea formControlName="description" nz-input rows="2" placeholder="Description..."></textarea>
             <ng-template #descriptionErrorTpl let-control>
               @if (control.errors?.['required']) {
-                Veuillez remplir le champ de la description
+                Please fill in the description field
               }
               @if (control.errors?.['maxlength']) {
-                Veuillez ne pas dépasser 255 caractères
+                Please do not exceed 255 characters
               }
             </ng-template>
           </nz-textarea-count>
@@ -20,59 +20,115 @@
     </div>
   </div>
   <div nz-row class="row">
-    <div nz-col [nzSpan]="12">
+    <div nz-col [nzSpan]="8">
       <nz-form-item>
-        <nz-form-label nzRequired>Durée estimée&nbsp;<span>(Heures)</span>&nbsp;</nz-form-label>
-        <nz-form-control >
-          <nz-input-number formControlName="dureeEstimee" [nzMin]="1" [nzStep]="1"></nz-input-number>
+        <nz-form-label nzRequired>Estimated duration&nbsp;</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="3">
+      <nz-form-item>
+        <nz-input-number formControlName="dureeEstimee" [nzMin]="0" [nzStep]="1"></nz-input-number>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12" [nzOffset]="1">
+      <nz-form-control>
+        <nz-radio-group formControlName="radioDureeEstimee">
+          <label nz-radio nzValue="H">Hour<span>(s)</span></label>
+          <label nz-radio nzValue="D">Day<span>(s)</span></label>
+          <label nz-radio nzValue="M">Month<span>(s)</span></label>
+        </nz-radio-group>
+      </nz-form-control>
+    </div>
+  </div>
+  <div nz-row class="row">
+      <div nz-col [nzSpan]="8">
+        <nz-form-item>
+          <nz-form-label>Waiting period&nbsp;</nz-form-label>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="3">
+        <nz-form-item>
+          <nz-input-number formControlName="delaiAttente" [nzMin]="0" [nzStep]="1"></nz-input-number>
+        </nz-form-item>
+      </div>
+      <div nz-col [nzSpan]="12" [nzOffset]="1">
+        <nz-form-control>
+          <nz-radio-group formControlName="radioDelaiAttente">
+            <label nz-radio nzValue="H">Hour<span>(s)</span></label>
+            <label nz-radio nzValue="D">Day<span>(s)</span></label>
+            <label nz-radio nzValue="M">Month<span>(s)</span></label>
+          </nz-radio-group>
+        </nz-form-control>
+      </div>
+  </div>
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-label nzRequired>Is this a &nbsp;</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="16">
+      <nz-form-control>
+        <nz-radio-group formControlName="radioFIE">
+          <label nz-radio nzValue="F">First</label>
+          <label nz-radio nzValue="I">Intermediate</label>
+          <label nz-radio nzValue="E">End</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </div>
+  </div>
+  <div nz-row class="row"
+       [nzJustify]="'space-evenly'"
+  >
+    <div nz-col [nzSpan]="4" [nzOffset]="8">
+      <nz-form-item>
+        <nz-form-control>
+          <label nz-checkbox formControlName="isPaid">Paid</label>
         </nz-form-control>
       </nz-form-item>
     </div>
-    <div nz-col [nzSpan]="12">
+    <div nz-col [nzSpan]="4" [nzOffset]="1">
       <nz-form-item>
-        <nz-form-label nzRequired>Délai d'attente&nbsp;<span>(Heures)</span>&nbsp;</nz-form-label>
-        <nz-form-control >
-          <nz-input-number formControlName="delaiAttente" [nzMin]="0" [nzStep]="1"></nz-input-number>
+        <nz-form-control>
+          <label nz-checkbox formControlName="isValidate">Validated</label>
         </nz-form-control>
       </nz-form-item>
     </div>
   </div>
-  <div nz-row class="row"
-       [nzGutter]="48"
+  <div class="row"
+       nz-row
   >
-    <div nz-col
-         [nzSpan]="6"
-    >
+    <div nz-col [nzSpan]="8">
+      <nz-form-item>
+        <nz-form-label>Steps before &nbsp;</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="16">
       <nz-form-item>
         <nz-form-control>
-          <label nz-checkbox formControlName="isFirst">Première</label>
+          <nz-select>
+            nzMode="multiple"
+            nzPlaceHolder="Please select the steps before this step"
+          </nz-select>
         </nz-form-control>
       </nz-form-item>
     </div>
-    <div nz-col
-         [nzSpan]="6"
-    >
+  </div>
+  <div class="row"
+       nz-row
+  >
+    <div nz-col [nzSpan]="8">
       <nz-form-item>
-        <nz-form-control>
-          <label nz-checkbox formControlName="isEnd">Dernière</label>
-        </nz-form-control>
+        <nz-form-label>Steps after &nbsp;</nz-form-label>
       </nz-form-item>
     </div>
-    <div nz-col
-         [nzSpan]="6"
-    >
+    <div nz-col [nzSpan]="16">
       <nz-form-item>
         <nz-form-control>
-          <label nz-checkbox formControlName="isValidate">Validée</label>
-        </nz-form-control>
-      </nz-form-item>
-    </div>
-    <div nz-col
-         [nzSpan]="6"
-    >
-      <nz-form-item>
-        <nz-form-control>
-          <label nz-checkbox formControlName="isPaid">Payée</label>
+          <nz-select>
+            nzMode="multiple"
+            nzPlaceHolder="Please select the steps after this step"
+          </nz-select>
         </nz-form-control>
       </nz-form-item>
     </div>

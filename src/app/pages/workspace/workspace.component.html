@@ -1,9 +1,19 @@
 <nz-layout>
   <nz-header>
+    <div nz-row
+    >
+      <div nz-col class="label" [nzSpan]="6">Name&nbsp;:</div>
+      <div nz-col  class="value" [nzSpan]="18">{{processName}}</div>
+    </div>
+    <div nz-row
+    >
+      <div nz-col class="label" [nzSpan]="6">Description&nbsp;:</div>
+      <div nz-col class="value" [nzSpan]="18">{{processDesc}}</div>
+    </div>
     <div class="container">
-      <button nz-button nzType="primary" [nzShape]="'round'" (click)="addRow()">Ajouter une ligne</button>
-      <button nz-button nzType="primary" [nzShape]="'round'" (click)="addCol()">Ajouter une colonne</button>
-      <button nz-button nzType="primary" [nzShape]="'round'" (click)="sauvegarder()" [nzLoading]="isLoading">Sauvegarder</button>
+      <button nz-button nzType="primary" [nzShape]="'round'" (click)="addRow()"><span nz-icon nzType="insert-row-below" nzTheme="outline"></span>Add new row</button>
+      <button nz-button nzType="primary" [nzShape]="'round'" (click)="addCol()"><span nz-icon nzType="insert-row-right" nzTheme="outline"></span>Add new column</button>
+      <button nz-button nzType="primary" [nzShape]="'round'" (click)="sauvegarder()" [nzLoading]="isLoading"><span nz-icon nzType="save" nzTheme="outline"></span>Save</button>
     </div>
   </nz-header>
   <nz-layout cdkDropListGroup>
@@ -15,6 +25,7 @@
     <nz-content>
       <app-grid
         (loading)="setLoading($event)"
+        (processValues)="updateProcessusValues($event)"
         #grid></app-grid>
     </nz-content>
   </nz-layout>

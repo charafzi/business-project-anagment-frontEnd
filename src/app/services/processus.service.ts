@@ -18,7 +18,7 @@ export class ProcessusService{
               private modalService : NzModalService
   ) {
     this.processus = {
-      idProcessus : 1,
+      idProcessus : 22,
       nbColonnes: 4,
       nbLignes : 4,
       nom : "test",
@@ -55,21 +55,12 @@ export class ProcessusService{
             console.log("Id rerived : "+etape.idEtape)
           })
           return responseData;
-          /*const processItems: (BaseEtape | null)[][] = new Array(nbLignes)
-            .fill(null)
-            .map(()=> new Array(nbColonnes).fill(null));
-
-          responseData.forEach((etape:Etape)=>{
-            const baseEtape = (etape as BaseEtape);
-            processItems[etape.indexLigne][etape.indexColonne]=baseEtape;
-          })
-          return processItems;*/
         })
       )
   }
 
   saveProcessus(process:Processus){
-    return this.http.post(this.url,process);
+    return this.http.post<Processus>(this.url,process);
   }
 
   updateProcessus(process : Processus){

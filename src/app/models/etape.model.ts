@@ -15,6 +15,7 @@ export interface Etape{
   type? :Type,
   first: boolean,
   validate: boolean,
+  intermediate : boolean,
   end: boolean,
   paid: boolean,
   processus?:Processus;

@@ -8,21 +8,17 @@ nz-header{
 nz-header h1{
   color: #fafafa;
 }
-nz-header .container{
-  display: flex;
-  flex-flow: row nowrap;
-  overflow: auto;
-  flex-direction: row;
-}
-
-
-nz-header .container button{
-  margin: 15px;
-  min-width: 150px;
-}
 
 .icons-container{
   display: flex;
   flex-flow: row nowrap;
-  justify-content: space-around;
+  justify-content: right;
+}
+
+.icons-container a{
+  margin-left: 20px;
+}
+
+.icons-container a span{
+  color: lightslategray;
 }

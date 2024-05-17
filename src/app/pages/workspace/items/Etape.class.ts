@@ -21,10 +21,17 @@ export function statutEtapeToString(statut:StatutEtape) {
       return "Commencée";
     case StatutEtape.PAS_ENCORE_COMMENCEE:
       return "Pas encore commencée";
-    default:
-      return 'Inconnu';
-
   }
+}
+
+export function statutfromJSONToString(statut:string) {
+  switch (statut){
+    case "COMMENCEE":
+      return "Commencée";
+    case "PAS_ENCORE_COMMENCEE":
+      return "Pas encore commencée";
+  }
+  return "UNKNOWN";
 }
 export function getStatutLabel(staut:EStatut) {
   switch (staut){
@@ -65,6 +72,7 @@ export class BaseEtape implements Etape{
   private _dureeEstimee: number;
   private _delaiAttente: number;
   private _first: boolean;
+  private _intermediate:boolean;
   private _end: boolean;
   private _validate: boolean;
   private _paid: boolean;
@@ -87,6 +95,7 @@ export class BaseEtape implements Etape{
     this._dureeEstimee=0;
     this._delaiAttente=0;
     this._first = false;
+    this._intermediate = false;
     this._end=false;
     this._validate=false;
     this._paid =false;
@@ -172,6 +181,15 @@ export class BaseEtape implements Etape{
 
   set first(value: boolean) {
     this._first = value;
+  }
+
+
+  get intermediate(): boolean {
+    return this._intermediate;
+  }
+
+  set intermediate(value: boolean) {
+    this._intermediate = value;
   }
 
   get end(): boolean {

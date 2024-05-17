@@ -15,9 +15,12 @@
     >
       <ul>
         <li nz-submenu
-            nzTitle="Types d'étape"
-            class="menu-title">
-          <ul class="items-menu">
+            nzTitle="Step type"
+            class="menu-title"
+            nz-tooltip
+            nzTooltipTitle="Drag and drop an item"
+        >
+          <ul class="items-menu" >
             @for (item of items; track item) {
               @switch (item._componentName)
               {

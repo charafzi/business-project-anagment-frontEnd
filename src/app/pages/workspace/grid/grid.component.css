@@ -23,30 +23,36 @@
   background: #1890ff;
 }
 
-.dot-left{
+
+.dot{
+  position: relative;
   width: 11px;
   height: 11px;
   background-color: black;
   border-radius: 100%;
-  position: relative;
-  top: 46px;
-  left: -5px;
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 5;
 }
 
+.dot-left{
+  top: 46.5px;
+  left: -5px;
+}
+
 .dot-right{
-  width: 11px;
-  height: 11px;
-  background-color: black;
-  border-radius: 100%;
-  position: relative;
   left: 75px;
-  top: -45px;
-  opacity: 0;
-  transition: opacity 0.3s;
-  z-index: 5;
+  top: -45.5px;
+}
+
+.dot-top{
+  left: 34.5px;
+  top: -95px;
+}
+
+.dot-bottom{
+  left: 34.5px;
+  top: -28px;
 }
 
 .dot-hovered{
@@ -64,3 +70,4 @@
   margin-right: 50px;
   margin-bottom: 50px;
 }
+

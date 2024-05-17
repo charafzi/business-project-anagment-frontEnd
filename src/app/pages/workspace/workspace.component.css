@@ -6,6 +6,7 @@ nz-header{
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
   background-color: #001529;
+  height: max-content;
 }
 
 nz-content{
@@ -24,5 +25,24 @@ nz-header .container button{
   min-width: 150px;
 }
 nz-content {
-  height: 70vh;
+  height: 100%;
+}
+
+nz-layout{
+  height: 80vh;
+}
+
+.label{
+  font-weight: bold;
+  font-size: 1em;
+  color: #fafafa;
+}
+
+.value{
+  font-size: 1em;
+  color: #fafafa;
+}
+
+.linker-line {
+  background-color: #1890ff !important;
 }

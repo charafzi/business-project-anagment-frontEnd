@@ -11,11 +11,11 @@
       @for (col of arrayCols; let colIndex = $index; track col)
       {
         <div class="col"
-             [id]="'cell-'+rowIndex+'-'+colIndex"
         >
-          <div class="dot-left"
-               [ngClass]="{'dot-hovered': isDotLeftVisible(rowIndex, colIndex)}"
-               (click)="dotLeftClicked(rowIndex,colIndex)"
+          <div
+            class="dot dot-left"
+               [ngClass]="{'dot-hovered':isDotVisible(rowIndex,colIndex,3)  && isDotsVisible}"
+               (click)="dotClicked(rowIndex,colIndex)"
           ></div>
           <app-cell
             [rowIndex]="rowIndex"
@@ -24,10 +24,21 @@
             [processItem]="processItems[rowIndex][colIndex]"
             (processItemCreated)="updateRefProcessItems($event)"
             (processItemDeleted)="deleteRefProcessItems($event)"
+            [onDotClicked]="onDotClickedCSS(rowIndex,colIndex)"
+            (click)="onCellClicked()"
           ></app-cell>
-          <div class="dot-right"
-               (mouseenter)="dotRightHovered(rowIndex,colIndex)"
-               [ngClass]="{'dot-hovered': isDotRightVisible(rowIndex, colIndex)}"
+          <div class="dot dot-right"
+               [ngClass]="{'dot-hovered':isDotVisible(rowIndex,colIndex,1)  && isDotsVisible}"
+               (click)="dotClicked(rowIndex,colIndex)"
+          ></div>
+          <div
+            class="dot dot-top"
+               [ngClass]="{'dot-hovered': isDotVisible(rowIndex,colIndex,0)  && isDotsVisible}"
+               (click)="dotClicked(rowIndex,colIndex)"
+          ></div>
+          <div class="dot dot-bottom"
+               [ngClass]="{'dot-hovered': isDotVisible(rowIndex,colIndex,2)  && isDotsVisible}"
+               (click)="dotClicked(rowIndex,colIndex)"
           ></div>
         </div>
       }

@@ -11,6 +11,7 @@ import {ItemComponentService} from "../../../services/itemComponent.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {NzSpinComponent} from "ng-zorro-antd/spin";
 import {BaseItem} from "../items/item.model";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @Component({
   selector: 'app-item-list',
@@ -27,7 +28,8 @@ import {BaseItem} from "../items/item.model";
     NzSubMenuComponent,
     NgForOf,
     NgIf,
-    NzSpinComponent
+    NzSpinComponent,
+    NzTooltipDirective
   ],
   styleUrl: './item-list.component.css'
 })

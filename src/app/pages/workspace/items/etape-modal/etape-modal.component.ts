@@ -21,6 +21,8 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from "ng-zorro-antd/form";
 import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
+import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
+import {NzSelectComponent} from "ng-zorro-antd/select";
 
 @Component({
   selector: 'app-etape-modal',
@@ -44,7 +46,10 @@ import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
     NzFormLabelComponent,
     ReactiveFormsModule,
     NzCheckboxComponent,
-    NzInputNumberComponent
+    NzInputNumberComponent,
+    NzRadioGroupComponent,
+    NzRadioComponent,
+    NzSelectComponent
   ],
   styleUrl: './etape-modal.component.css'
 })
@@ -56,10 +61,11 @@ export class EtapeModalComponent {
     //pourcentage: FormControl<string>;
     dureeEstimee: FormControl<number>;
     delaiAttente: FormControl<number>;
-    isFirst:FormControl<boolean>;
-    isEnd:FormControl<boolean>;
     isValidate:FormControl<boolean>;
     isPaid:FormControl<boolean>;
+    radioDureeEstimee:FormControl<string>
+    radioDelaiAttente:FormControl<string>;
+    radioFIE:FormControl<string>;
   }>
   /*description: (string | null)=null;
   ordre: number=0;
@@ -80,11 +86,12 @@ export class EtapeModalComponent {
     this.etapeForm = this.fb.group({
       description : ['',[Validators.required,Validators.maxLength(255)]],
       dureeEstimee : [1,[Validators.required,Validators.min(0)]],
-      delaiAttente : [0,[Validators.required,Validators.min(0)]],
-      isFirst : [false],
-      isEnd : [false],
+      delaiAttente : [0,[Validators.min(0)]],
       isValidate : [false],
-      isPaid : [false]
+      isPaid : [false],
+      radioDureeEstimee : ['',[Validators.required]],
+      radioDelaiAttente : ['',[Validators.required]],
+      radioFIE : ['',[Validators.required]]
     })
   }
 

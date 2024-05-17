@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, Outp
 import {CellComponent} from "./cell/cell.component";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {CdkDropList} from "@angular/cdk/drag-drop";
-import {BaseEtape, StatutEtape} from "../items/Etape.class";
+import {BaseEtape, StatutEtape, statutEtapeToString, statutfromJSONToString} from "../items/Etape.class";
 import {NzFlexDirective} from "ng-zorro-antd/flex";
 import {DOCUMENT, NgClass, NgIf} from "@angular/common";
 import {Connection, ConnectionSet} from "./connection.class";
@@ -13,6 +13,8 @@ import {NzSpinComponent} from "ng-zorro-antd/spin";
 import {ConnexionService} from "../../../services/connexion.service";
 import {Connexion} from "../../../models/connexion.model";
 import {NzModalService} from "ng-zorro-antd/modal";
+import {Processus} from "../../../models/processus.model";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-grid',
@@ -33,6 +35,7 @@ import {NzModalService} from "ng-zorro-antd/modal";
 export class GridComponent implements OnInit,AfterViewInit{
   @ViewChild('grid', { read: ElementRef }) grid!: ElementRef;
   @Output('loading')  loading = new EventEmitter<boolean>;
+  @Output('processValues') processValues = new EventEmitter<Processus>;
   nbRows:number = 3;
   nbCols:number = 3;
   indexRowDotCurr:number =-1;
@@ -45,34 +48,38 @@ export class GridComponent implements OnInit,AfterViewInit{
   processItems:(BaseEtape | null)[][] = [];
   connetions : Connection[] = [];
   connexions : ConnectionSet;
+  isDotsVisible:boolean = false;
   isLoading:boolean =false;
 
   constructor(@Inject(DOCUMENT) private document:Document,
               private modalService: NzModalService,
               private processusService : ProcessusService,
-              private connexionService : ConnexionService) {
+              private connexionService : ConnexionService,
+              private router : Router) {
+    this.isLoading = true;
     this.connexions = new ConnectionSet();
     this.gridComponentInstance = this;
     setTimeout(() => {
       console.log("PRINT ATFER 8s")
       this.printProcessItems()
       this.printConnexions();
-
-
     }, 10000);
-    if(this.processusService.processus && this.processusService.processus.idProcessus){
+
+    if(this.processusService.processus.idProcessus === -1)
+      this.router.navigate(['/processus']);
+    else{
       this.nbRows = this.processusService.processus.nbLignes;
       this.nbCols = this.processusService.processus.nbColonnes;
+      this.arrayRows = new Array(this.nbRows);
+      this.arrayCols = new Array(this.nbCols);
+      this.processItems =
+        new Array(this.nbRows)
+          .fill(null)
+          .map(()=> new Array(this.nbCols).fill(null));
     }
-    this.processItems =
-      new Array(this.nbRows)
-        .fill(null)
-        .map(()=> new Array(this.nbCols).fill(null));
-
   }
 
   ngAfterViewInit(): void {
-    this.isLoading=true;
     /**
      *  build connecxions on view initialization
      */
@@ -90,7 +97,7 @@ export class GridComponent implements OnInit,AfterViewInit{
           })
         },
         error => {
-          console.error("Error at building connexions for 'Etapes' at grid AfterViewInit");
+          console.error("Error at building connexions for 'Etapes' at grid AfterViewInit : "+error);
         },
           ()=>{
             this.isLoading=false;
@@ -107,7 +114,6 @@ export class GridComponent implements OnInit,AfterViewInit{
        * get "Etapes" from database and initialize grid matrix for processItems
        to initilize the view
        */
-
       this.processusService.retrieveEtapesByProcess(this.processusService.processus.idProcessus)
         .subscribe(processItems=>{
             processItems.forEach((etape:Etape)=>{
@@ -115,7 +121,7 @@ export class GridComponent implements OnInit,AfterViewInit{
             });
           },
           error => {
-            console.error("Error at fetching 'Etapes' at grid OnInit");
+            console.error("Error at fetching 'Etapes' at grid OnInit : "+error);
           },
           ()=>{
             this.isLoading=false;
@@ -139,6 +145,7 @@ export class GridComponent implements OnInit,AfterViewInit{
         } else {
           console.log("["+i+"]["+j+"] TYPE is at grid: " + (this.processItems[i][j] as BaseEtape).description," MY ID = "+(this.processItems[i][j] as BaseEtape).idEtape);
           console.log("PROCESS = "+(this.processItems[i][j] as BaseEtape).processus?.nom);
+          console.log("STATUT = "+statutfromJSONToString((this.processItems[i][j] as BaseEtape).statutEtape.toString()));
         }
       }
     }
@@ -191,10 +198,10 @@ export class GridComponent implements OnInit,AfterViewInit{
     console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"] BEFORE DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
     this.processItems[eventData.rowIndex][eventData.colIndex] = null;
     console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"]  AFTER DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
+
   }
 
   addRow(){
-    console.log('ROW ADDED')
     this.nbRows++;
     this.arrayRows = new Array(this.nbRows);
     this.processItems.push(new Array(this.nbCols).fill(null));
@@ -208,6 +215,9 @@ export class GridComponent implements OnInit,AfterViewInit{
   sauvegarderEtapes(){
     this.loading.emit(true);
 
+    /** get max indexRow and max IndexCols to save only the numbers of occupied rows and columns **/
+    let maxRow = 0;
+    let maxCol = 0;
     if(this.processusService.processus && this.processusService.processus.idProcessus){
       //update list of "Etape" (Add,delete,update)
       let etapesModel : Etape[] = [];
@@ -225,6 +235,7 @@ export class GridComponent implements OnInit,AfterViewInit{
               delaiAttente : etape.delaiAttente,
               dureeEstimee : etape.dureeEstimee,
               first : etape.first,
+              intermediate : etape.intermediate,
               end : etape.end,
               paid : etape.paid,
               validate : etape.validate,
@@ -233,12 +244,28 @@ export class GridComponent implements OnInit,AfterViewInit{
               type : etape.type,
               processus : etape.processus
             });
+            maxRow = Math.max(maxRow,etape.indexLigne);
+            maxCol = Math.max(maxCol,etape.indexColonne);
           }
         }
       }
 
-      console.log("ETAPES TO SAVE : ");
       console.log(etapesModel)
+      /**  update Process rows and cols**/
+      this.processusService.updateProcessus({
+        idProcessus : this.processusService.processus.idProcessus,
+        nom : this.processusService.processus.nom,
+        description : this.processusService.processus.description,
+        nbLignes : maxRow+1,
+        nbColonnes : maxCol+1
+      })
+        .subscribe(responseData=>{
+          console.log("Processus updated succefully : "+responseData);
+        },
+          error => {
+          console.error(error);
+          })
+
       /** Update Etapes **/
       this.processusService.updateProcessEtapes(this.processusService.processus.idProcessus,etapesModel)
         .subscribe(responseData=>{
@@ -260,7 +287,7 @@ export class GridComponent implements OnInit,AfterViewInit{
                 this.connexions.getConnexionsList().forEach(cnx=>{
                   let etapeFrom = (cnx.getFrom() as Etape)
                   let etapeTo = (cnx.getTo() as Etape);
-                  //id assigned here only the id
+                  // here only the id is assigned
                   if(etapeFrom && etapeTo){
                     // @ts-ignore
                     connexionsModel.push({
@@ -275,6 +302,7 @@ export class GridComponent implements OnInit,AfterViewInit{
                         delaiAttente: 0,
                         statutEtape: StatutEtape.COMMENCEE,
                         first: false,
+                        intermediate : false,
                         validate: false,
                         end: false,
                         paid: false
@@ -290,6 +318,7 @@ export class GridComponent implements OnInit,AfterViewInit{
                         delaiAttente: 0,
                         statutEtape: StatutEtape.COMMENCEE,
                         first: false,
+                        intermediate : false,
                         validate: false,
                         end: false,
                         paid: false
@@ -477,6 +506,60 @@ export class GridComponent implements OnInit,AfterViewInit{
     this.indexColDotCurr=-1;
   }
 
+  /**
+   * position :
+   0 : top
+   1 : right
+   2: bottom
+   3: left
+   * */
+  isDotVisible(indexRow:number,indexCol:number,position:number){
+    if(this.processItems[indexRow][indexCol]){
+      switch (position){
+        case 0:
+          return indexRow != 0;
+        case 1:
+          return true;
+        case 2:
+          return true;
+        case 3:
+          return indexCol != 0;
+        default:
+          return false;
+      }
+    }
+    return false;
+  }
+
+  dotClicked(indexRow:number,indexCol:number){
+    if(this.indexRowDotCurr==indexRow && this.indexColDotCurr==indexCol){
+      this.indexRowDotCurr = -1;
+      this.indexColDotCurr = -1;
+    }
+    else if(this.indexRowDotCurr==-1 && this.indexColDotCurr==-1){
+      this.indexRowDotCurr = indexRow;
+      this.indexColDotCurr = indexCol;
+    }
+    else{
+      this.indexRowDotNext = indexRow;
+      this.indexColDotNext = indexCol;
+      this.createConnexion( this.indexRowDotCurr,this.indexColDotCurr, this.indexRowDotNext,this.indexColDotNext);
+      this.indexRowDotCurr = -1;
+      this.indexColDotCurr = -1;
+      this.indexRowDotNext = -1;
+      this.indexColDotNext = -1;
+    }
+
+  }
+
+  /**
+   * To allow border css on the cell where a dot is clicked
+   * */
+  onDotClickedCSS(indexRow:number,indexCol:number){
+    return this.indexRowDotCurr == indexRow && this.indexColDotCurr == indexCol;
+  }
+
+
   isDotLeftVisible(indexRow:number,indexCol:number){
     if(this.indexRowDotCurr !=-1 && this.indexColDotCurr !=-1 && this.processItems[indexRow][indexCol]){
       if(indexCol == this.indexColDotCurr+1)
@@ -566,16 +649,18 @@ export class GridComponent implements OnInit,AfterViewInit{
             parent: grid,
             start: el1,
             end: el2,
-            color: '#ff0000',
+            color: '#000000',
             outline: true,
             outlineColor : '#000000',
             endPlugOutline: true,
-            endPlugSize: 1.1,
+            startPlugSize : 0.8,
+            endPlugSize: 0.8,
             startPlug : "disc",
-            endPlug : "arrow2",
-            startSocket : "right",
-            endSocket : "left",
-            path : "straight"
+            endPlug : "arrow1",
+            startSocket : "auto",
+            endSocket : "auto",
+            path : "straight",
+            size : 3
           })
       );
       //this.connetions.push(conn);
@@ -591,5 +676,9 @@ export class GridComponent implements OnInit,AfterViewInit{
 
 
   }
-}
 
+  onCellClicked(){
+    this.isDotsVisible = !this.isDotsVisible;
+  }
+
+}

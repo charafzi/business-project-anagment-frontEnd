@@ -1,46 +1,14 @@
 import {Component, OnInit} from '@angular/core';
-import {
-  NzTableComponent,
-  NzThAddOnComponent
-} from 'ng-zorro-antd/table';
-import {NgForOf} from "@angular/common";
-import {CdkDropListGroup} from "@angular/cdk/drag-drop";
-import {GridComponent} from "../workspace/grid/grid.component";
-import {ItemListComponent} from "../workspace/item-list/item-list.component";
-import {NzButtonComponent} from "ng-zorro-antd/button";
-import {NzContentComponent, NzHeaderComponent, NzLayoutComponent, NzSiderComponent} from "ng-zorro-antd/layout";
 import {Processus} from "../../models/processus.model";
-import {NzIconDirective} from "ng-zorro-antd/icon";
 import {ProcessusService} from "../../services/processus.service";
 import {NzModalService} from "ng-zorro-antd/modal";
-import {ProcessusModalComponent} from "./processus-modal/processus-modal.component";
 import {Router} from "@angular/router";
+import {ProcessusModalComponent} from "./processus-modal/processus-modal.component";
 
-
-interface Person {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
 @Component({
   selector: 'app-processus',
   templateUrl: './processus.component.html',
-  standalone: true,
-  imports: [
-    NgForOf,
-    NzThAddOnComponent,
-    NzTableComponent,
-    CdkDropListGroup,
-    GridComponent,
-    ItemListComponent,
-    NzButtonComponent,
-    NzContentComponent,
-    NzHeaderComponent,
-    NzLayoutComponent,
-    NzSiderComponent,
-    NzIconDirective
-  ],
+  standalone: false,
   styleUrl: './processus.component.css'
 })
 export class ProcessusComponent implements OnInit{
@@ -51,19 +19,19 @@ export class ProcessusComponent implements OnInit{
   constructor(private processusService: ProcessusService,
               private modalService : NzModalService,
               private router : Router) {
-    this.fetchProcessus();
   }
 
   ngOnInit(): void {
+    this.fetchProcessus();
   }
 
   onAddProcess(){
     const modalRef = this.modalService.create({
-      nzTitle: 'Veuillez remplir les informations sur processus :',
+      nzTitle: 'Please fill in the informations about the process :',
       nzContent: ProcessusModalComponent,
       nzWidth : 550,
-      nzOkText : "Confirmer",
-      nzCancelText : "Annuler",
+      nzOkText : "Ok",
+      nzCancelText : "Cancel",
       nzKeyboard: true,
       nzOnOk :()=>{
         const modalComponentInst = modalRef.componentRef?.instance as ProcessusModalComponent;
@@ -81,15 +49,16 @@ export class ProcessusComponent implements OnInit{
             }
             this.processusService.saveProcessus(process)
               .subscribe(response=>{
-                this.modalService.success({
+                /*this.modalService.success({
                   nzTitle : "Processus enregistré !",
-                })
-                this.fetchProcessus();
+                })*/
+                this.processusService.processus = response;
+                this.router.navigate(['/workspace']);
               },
                 error =>{
                 this.modalService.error({
-                  nzTitle : "Erreur d'enregistrement",
-                  nzContent : "Erreur lors d'enregistrement, veuillez réessayer"
+                  nzTitle : "Registration error !",
+                  nzContent : "Error during registration, please try again"
                 })
             })
           } catch (error) {
@@ -114,11 +83,11 @@ export class ProcessusComponent implements OnInit{
         this.processusService.processusEdit.description = process.description;
 
         const modalRef = this.modalService.create({
-          nzTitle: 'Informations sur le processus :',
+          nzTitle: 'Modify the information about the process :',
           nzContent: ProcessusModalComponent,
           nzWidth : 550,
-          nzOkText : "Confirmer",
-          nzCancelText : "Annuler",
+          nzOkText : "Ok",
+          nzCancelText : "Cancel",
           nzKeyboard: true,
           nzOnOk :()=>{
             const modalComponentInst = modalRef.componentRef?.instance as ProcessusModalComponent;
@@ -133,7 +102,7 @@ export class ProcessusComponent implements OnInit{
                 this.processusService.updateProcessus(process)
                   .subscribe(response=>{
                       this.modalService.success({
-                        nzTitle : "Processus modifié avec succées !",
+                        nzTitle : "Process modified successfully !",
                       })
                       this.processusService.processusEdit.nom='';
                       this.processusService.processusEdit.description='';
@@ -141,8 +110,8 @@ export class ProcessusComponent implements OnInit{
                     },
                     error =>{
                       this.modalService.error({
-                        nzTitle : "Impossible de modifier le processus",
-                        nzContent : "Erreur lors du modification, veuillez réessayer"
+                        nzTitle : "Unable to modify the process !",
+                        nzContent : "Error during modification, please try again"
                       })
                       console.error(error);
                     })
@@ -168,20 +137,20 @@ export class ProcessusComponent implements OnInit{
     if(processId != -1){
       this.modalService.warning({
         nzTitle : "Attention !",
-        nzContent : "En supprimant, vous perdez toutes les informations du processus, voulez-vous toujours supprimer ?",
+        nzContent : "By deleting, you lose all the information about the process including the schema, do you still want to delete?",
         nzWidth: 600,
         nzOnOk : ()=>{
           this.processusService.deleteProcessus(processId)
             .subscribe(responseData=>{
                 this.modalService.success({
-                  nzTitle : "Processus supprimé avec succées !"
+                  nzTitle : "Process deleted successfully !"
                 })
                 this.fetchProcessus();
               },
               error =>{
                 this.modalService.error({
-                  nzTitle : "Impossible de supprimer le processus",
-                  nzContent : "Erreur lors du suppresion, veuillez réessayer"
+                  nzTitle : "Unable to modify the process !",
+                  nzContent : "Error during suppression, please try again"
                 })
               })
         },
@@ -190,18 +159,31 @@ export class ProcessusComponent implements OnInit{
     }
   }
 
+  /*generateData(): Processus[] {
+    const data:Processus[] = [];
+    for (let i = 1; i <= 100; i++) {
+      data.push({
+        nom : "test"+i,
+        description : ".....",
+        idProcessus : -1,
+        nbColonnes : 0,
+        nbLignes : 0
+      });
+    }
+    return data;
+  }*/
+
   fetchProcessus(){
-    this.ProcessList = [];
+    this.isLoading = true;
     this.processusService.retrieveAllProcessus()
       .subscribe(processus=>{
-          processus.forEach(process=>{
-            this.ProcessList.push(process);
-          })
+          this.ProcessList = processus;
         },
         error => {
           console.error("Error at fetching processus :"+error);
         }
         ,()=>{
+          this.isLoading=false;
         })
   }
 

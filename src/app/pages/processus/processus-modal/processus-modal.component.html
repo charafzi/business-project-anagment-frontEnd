@@ -3,17 +3,17 @@
     <div nz-col [nzSpan]="24">
         <nz-form-item>
         <div nz-col [nzSpan]="6">
-          <nz-form-label nzRequired>Nom&nbsp;</nz-form-label>
+          <nz-form-label nzRequired>Name</nz-form-label>
         </div>
         <div nz-col [nzSpan]="18">
           <nz-form-control nzHasFeedback [nzErrorTip]="nomErrorTpl">
-            <input formControlName="nom" nz-input placeholder="Basic usage" type="text" />
+            <input formControlName="nom" nz-input placeholder="Name..." type="text" />
             <ng-template #nomErrorTpl let-control>
               @if (control.errors?.['required']) {
-                Veuillez remplir le champ de la description
+                Please fill in the name field
               }
               @if (control.errors?.['maxlength']) {
-                Veuillez ne pas dépasser 255 caractères
+                Please do not exceed 255 characters
               }
             </ng-template>
           </nz-form-control>
@@ -34,10 +34,10 @@
             <textarea formControlName="description" nz-input rows="2" placeholder="Description..."></textarea>
             <ng-template #descriptionErrorTpl let-control>
               @if (control.errors?.['required']) {
-                Veuillez remplir le champ de la description
+                Please fill in the description field
               }
               @if (control.errors?.['maxlength']) {
-                Veuillez ne pas dépasser 255 caractères
+                Please do not exceed 255 characters
               }
             </ng-template>
           </nz-textarea-count>

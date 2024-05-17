@@ -1,9 +1,14 @@
 .row{
-  margin-bottom: 30px;
+  margin-bottom: 20px;
 }
 
-nz-form-label span{
+label span{
   padding-top: 4px;
-  font-size: 10px;
+  font-size: 11px;
+}
+
+nz-radio-group{
+  display: flex;
+  justify-content: space-between;
 }
 
