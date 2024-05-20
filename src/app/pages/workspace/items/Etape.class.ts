@@ -15,20 +15,24 @@ export enum StatutEtape{
   PAS_ENCORE_COMMENCEE=1
 }
 
-export function statutEtapeToString(statut:StatutEtape) {
+/*export function statutEtapeToString(statut:StatutEtape) {
   switch (statut){
     case StatutEtape.COMMENCEE:
       return "Commencée";
     case StatutEtape.PAS_ENCORE_COMMENCEE:
       return "Pas encore commencée";
   }
-}
+}*/
 
-export function statutfromJSONToString(statut:string) {
+export function statutEtapeToString(statut:string) {
   switch (statut){
     case "COMMENCEE":
       return "Commencée";
     case "PAS_ENCORE_COMMENCEE":
+      return "Pas encore commencée";
+    case "0":
+      return "Commencée";
+    case "1":
       return "Pas encore commencée";
   }
   return "UNKNOWN";

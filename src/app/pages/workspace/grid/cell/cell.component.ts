@@ -46,12 +46,14 @@ import {ProcessusService} from "../../../../services/processus.service";
   ],
   styleUrl: './cell.component.css'
 })
-export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterContentInit{
+export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
 
   @Input('processItem') processItem: BaseEtape | null = null;
   @Output('processItemCreated') processItemCreated = new EventEmitter<{processItem:BaseEtape ,rowIndex:number,colIndex:number}>();
   @Output('processItemShowButtons') processItemShowButtons = new EventEmitter<{show:boolean ,rowIndex:number,colIndex:number}>();
   @Output('processItemDeleted') processItemDeleted = new EventEmitter<{rowIndex:number,colIndex:number}>();
+  @Output('processItemDropped') processItemDropped = new EventEmitter<{}>;
+  @Output('connectProcessItems') connectProcessItems = new EventEmitter<{indexRow:number,indexCol:number,stepsBefore : string[],stepsAfter : string[]}>
   @Input('rowIndex') rowIndex! : number;
   @Input('colIndex') colIndex! : number;
   @Input('order') order!:number;
@@ -78,58 +80,29 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
     }, 8000);
   }
 
-  ///////////////////////////////////////////////////////////////CHOUF HNA
-  /*
-  * RIGEL LBLAN DYL modal (etape from databse is not synchronized with componenet and modal)
-  *
-  * !!!! chuf blan dyl t7eyed extends fcomponeent dyl base Etape o t3ewedo battribut dyl process item
-  * */
-
   ngAfterViewInit(): void {
-
-    }
-
-  ngOnInit(): void {
     if(this.processItem) {
       //timeout to avoid Angular error for changing properties before view is initialized
       setTimeout(()=>{
-        /*if(this.processItem?.type){
-          const componentType = this.typeService.getComponentByType(this.processItem.type.nom);
-          if (componentType) {
-            const componentFactory = this.CFR.resolveComponentFactory(componentType);
-            const childComponentRef = this.container?.createComponent(componentFactory);
-            /!*!//enable showing buttons
-            (childComponentRef?.instance as BaseItem).enableShowButtons=true;
-            //link this cell to the component at this cell
-            (childComponentRef?.instance as BaseItem).cellRef = this;
-            //link "Etape" to the componeent
-            (childComponentRef?.instance as BaseItem).etape=this.processItem;*!/
-            (childComponentRef?.instance as BaseItem)._etape=this.processItem;
-            (childComponentRef?.instance as BaseItem)._enableShowButtons=true;
-            console.log("ITEMM : "+(childComponentRef?.instance as BaseItem)._etape?.description)
-        }
-      }*/
         if(this.processItem){
           if(this.processItem.type){
+            console.log("YES BRO I GOT IT")
             this.createItemProcess(1);
           }
         }else{
           console.error("Error at creating component at Cell AfterViewInit ["+this.rowIndex+"]["+this.colIndex+"] : Cell is null or Type is undefined.")
         }
-      },10)
+      },0)
     }
+  }
+
+  ngOnInit(): void {
+
   }
 
   ngAfterContentInit(): void {
 
   }
-
-  ngOnChanges(changes: SimpleChanges): void {
-
-  }
-
-
-
 
   onClickCell() {
     console.log("Cell["+this.rowIndex+"]["+this.colIndex+"]  clicked !")
@@ -140,7 +113,7 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
                 Cell already contains a proessItem (Etape)
    **/
   drop(event :CdkDragDrop<BaseItem>) {
-    console.log(event.item.dropContainer.data[event.previousIndex]);
+    this.processItemDropped.emit({});
 
     // show the modal warning before replacing a processItem
     this.warningModal().then(message => {
@@ -204,6 +177,13 @@ export class CellComponent implements OnInit,OnChanges,AfterViewInit,AfterConten
                   break;
               }
               this.createItemProcess(0);
+              //send this emitter to grid to create connexions after the creation of this process
+              this.connectProcessItems.emit({
+                indexRow : this.rowIndex,
+                indexCol : this.colIndex,
+                stepsBefore : <string[]>modalComponentInst.etapeForm.value.stepsBefore,
+                stepsAfter : <string[]>modalComponentInst.etapeForm.value.stepsAfter,
+              })
             } catch (error) {
               console.error(error);
             }

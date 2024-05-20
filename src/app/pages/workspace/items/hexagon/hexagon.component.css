@@ -13,6 +13,7 @@
 }
 
 .shape {
+  border-radius: 20px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -22,7 +23,7 @@
 }
 
 .shape path{
-  fill: #FFC94A;
+  fill: #0E46A3;
 }
 
 
@@ -75,5 +76,6 @@ nz-card:hover{
   cursor: pointer;
   font-size: 14px;
 }
+
 
 

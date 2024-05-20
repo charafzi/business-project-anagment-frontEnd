@@ -19,12 +19,9 @@ import {SquareComponent} from "./pages/workspace/items/square/square.component";
 import {RhombusComponent} from "./pages/workspace/items/rhombus/rhombus.component";
 import {GridComponent} from "./pages/workspace/grid/grid.component";
 import {CellComponent} from "./pages/workspace/grid/cell/cell.component";
-import {ItemListComponent} from "./pages/workspace/item-list/item-list.component";
 import {CircleComponent} from "./pages/workspace/items/circle/circle.component";
-import {NzModalModule} from "ng-zorro-antd/modal";
 import {WelcomeComponent} from "./pages/welcome/welcome.component";
 import {ProcessusComponent} from "./pages/processus/processus.component";
-import {NzTableComponent, NzTableModule} from "ng-zorro-antd/table";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import {ScrollingModule} from "@angular/cdk/scrolling";
 import {DragDropModule} from "@angular/cdk/drag-drop";
@@ -35,6 +32,9 @@ import { IconDefinition } from '@ant-design/icons-angular';
 import * as AllIcons from '@ant-design/icons-angular/icons';
 import {ProcessusModalComponent} from "./pages/processus/processus-modal/processus-modal.component";
 import {ProcessusModule} from "./pages/processus/processus.module";
+import {PlusComponent} from "./pages/workspace/items/plus/plus.component";
+import {ItemListComponent} from "./pages/workspace/item-list/item-list.component";
+import {HexagonComponent} from "./pages/workspace/items/hexagon/hexagon.component";
 
 registerLocaleData(fr);
 
@@ -73,7 +73,9 @@ const appRoutes : Routes =[
     ItemListComponent,
     DemoNgZorroAntdModule,
     ProcessusModalComponent,
-    ProcessusModule
+    ProcessusModule,
+    PlusComponent,
+    HexagonComponent
   ],
   providers: [
     { provide: NZ_I18N, useValue: fr_FR },

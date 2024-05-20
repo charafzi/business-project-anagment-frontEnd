@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {CdkDrag, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {SquareComponent} from "../items/square/square.component";
 import {RhombusComponent} from "../items/rhombus/rhombus.component";
@@ -12,6 +12,8 @@ import {NgForOf, NgIf} from "@angular/common";
 import {NzSpinComponent} from "ng-zorro-antd/spin";
 import {BaseItem} from "../items/item.model";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {PlusComponent} from "../items/plus/plus.component";
+import {HexagonComponent} from "../items/hexagon/hexagon.component";
 
 @Component({
   selector: 'app-item-list',
@@ -29,13 +31,16 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
     NgForOf,
     NgIf,
     NzSpinComponent,
-    NzTooltipDirective
+    NzTooltipDirective,
+    PlusComponent,
+    HexagonComponent
   ],
   styleUrl: './item-list.component.css'
 })
 export class ItemListComponent implements OnInit{
   types:Type[] = []
   items:BaseItem[] = [];
+  @Input('isCollapsed') isCollapsed:boolean = false;
   isLoading:boolean=false;
   constructor(protected typeService:TypeService,
               protected itemComponentService: ItemComponentService) {
@@ -48,9 +53,6 @@ export class ItemListComponent implements OnInit{
       .subscribe(types=>{
         this.types = types;
         this.types.forEach(type=>{
-          console.log("TYPE : "+type.nom)
-          console.log('Component : '+this.typeService.getComponentNameByType(type.nom));
-          //console.log('Component : '+this.itemComponentService.createComponentByName(this.typeService.getComponentNameByType(type.nom)));
 
           switch (this.typeService.getComponentNameByType(type.nom)){
             case 'square':
@@ -61,6 +63,12 @@ export class ItemListComponent implements OnInit{
               break;
             case 'circle':
               this.items.push(new CircleComponent());
+              break;
+            case 'plus':
+              this.items.push(new PlusComponent());
+              break;
+            case 'hexagon':
+              this.items.push(new HexagonComponent());
               break;
             default:
               throw new Error('Error at item-list : Unknown component name for type :'+type.nom);
@@ -74,5 +82,9 @@ export class ItemListComponent implements OnInit{
         this.isLoading=false;
         }
       )
+  }
+
+  getToolTipInfo(componentName:string){
+    return this.typeService.getTypeByComponentname(componentName);
   }
 }

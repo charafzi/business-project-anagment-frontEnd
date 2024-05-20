@@ -13,6 +13,7 @@
 }
 
 .shape {
+  border-radius: 20px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -22,7 +23,7 @@
 }
 
 .shape path{
-  fill: #FFC94A;
+  fill: #6D2932;
 }
 
 

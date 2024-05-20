@@ -4,7 +4,7 @@
   <nz-spin nzSimple></nz-spin>
 </div>
 <div class="grid"
-     *ngIf="!isLoading"
+     *ngIf="!isLoading && etapesRetrived"
      #grid>
   @for (row of arrayRows; let rowIndex = $index; track row){
     <div class="row">
@@ -24,6 +24,8 @@
             [processItem]="processItems[rowIndex][colIndex]"
             (processItemCreated)="updateRefProcessItems($event)"
             (processItemDeleted)="deleteRefProcessItems($event)"
+            (processItemDropped)="updateProcessItems($event)"
+            (connectProcessItems)="connectProcessItems($event)"
             [onDotClicked]="onDotClickedCSS(rowIndex,colIndex)"
             (click)="onCellClicked()"
           ></app-cell>

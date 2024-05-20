@@ -1,8 +1,7 @@
 .grid {
-  margin: 10px 10px 10px 10px;
-  min-width: 90%;
-  width: 95%;
-  height: 95%;
+  padding: 10px;
+  width: 100%;
+  height: 100%;
   overflow-x: auto;
   overflow-y: auto;
   background-color: #f2f2f2;
@@ -17,17 +16,10 @@
   margin-top: 200px;
 }
 
-.cell {
-  width: 100px;
-  height: 100px;
-  background: #1890ff;
-}
-
-
 .dot{
-  position: relative;
-  width: 11px;
-  height: 11px;
+  position: absolute;
+  width: 10px;
+  height: 10px;
   background-color: black;
   border-radius: 100%;
   opacity: 0;
@@ -36,23 +28,33 @@
 }
 
 .dot-left{
-  top: 46.5px;
-  left: -5px;
+  top: 50%;
+  left: 0;
+  transform: translate(-50%, -50%);
 }
 
 .dot-right{
-  left: 75px;
-  top: -45.5px;
+  /*left: 75px;
+  top: -45.5px;*/
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
 }
 
 .dot-top{
-  left: 34.5px;
-  top: -95px;
+  /*left: 34.5px;
+  top: -95px;*/
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .dot-bottom{
-  left: 34.5px;
-  top: -28px;
+  /*left: 34.5px;
+  top: -28px;*/
+  bottom: 0;
+  left: 50%;
+  transform: translate(-50%, 50%);
 }
 
 .dot-hovered{
@@ -67,6 +69,7 @@
 }
 
 .col {
+  position: relative;
   margin-right: 50px;
   margin-bottom: 50px;
 }

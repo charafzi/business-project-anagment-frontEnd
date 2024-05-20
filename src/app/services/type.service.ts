@@ -4,6 +4,8 @@ import {HttpClient} from "@angular/common/http";
 import {SquareComponent} from "../pages/workspace/items/square/square.component";
 import {RhombusComponent} from "../pages/workspace/items/rhombus/rhombus.component";
 import {CircleComponent} from "../pages/workspace/items/circle/circle.component";
+import {PlusComponent} from "../pages/workspace/items/plus/plus.component";
+import {HexagonComponent} from "../pages/workspace/items/hexagon/hexagon.component";
 
 @Injectable({providedIn : "root"})
 export class TypeService{
@@ -32,22 +34,26 @@ export class TypeService{
 
   getTypeByComponentname(compName: string): string {
     const components: { [key: string]: string } = {
-      'square': 'Type 1',
-      'rhombus':  'Type 2',
-      'circle': 'Type 3'
+      'square': 'Survey',
+      'rhombus':  'Acceptance',
+      'circle': 'Inspection',
+      'plus' : 'Corrective',
+      'hexagon' : 'Preventive'
     };
     if (components[compName]) {
       return components[compName];
     }
     //default
-    return 'Type 1';
+    return 'Survey';
   }
 
   getComponentByType(type: string): any {
     const components: { [key: string]: any } = {
-      'Type 1': SquareComponent,
-      'Type 2': RhombusComponent,
-      'Type 3': CircleComponent
+      'Survey': SquareComponent,
+      'Acceptance': RhombusComponent,
+      'Inspection': CircleComponent,
+      'Corrective' : PlusComponent,
+      'Preventive' : HexagonComponent
     };
     if (components[type]) {
       return components[type];
@@ -58,9 +64,11 @@ export class TypeService{
 
   getComponentNameByType(type: string): string {
     const components: { [key: string]: any } = {
-      'Type 1': 'square',
-      'Type 2': 'rhombus',
-      'Type 3': 'circle'
+      'Survey': 'square',
+      'Acceptance': 'rhombus',
+      'Inspection': 'circle',
+      'Corrective' : 'plus',
+      'Preventive':'hexagon'
     };
     if (components[type]) {
       return components[type];

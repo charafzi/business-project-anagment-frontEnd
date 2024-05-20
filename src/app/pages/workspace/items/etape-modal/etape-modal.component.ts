@@ -1,4 +1,4 @@
-import {Component, EventEmitter, Output} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {NzModalComponent, NzModalContentDirective, NzModalRef} from "ng-zorro-antd/modal";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
@@ -22,7 +22,10 @@ import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from "ng-
 import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
 import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
-import {NzSelectComponent} from "ng-zorro-antd/select";
+import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
+import {ConnexionService} from "../../../../services/connexion.service";
+import {BaseEtape} from "../Etape.class";
+import {NgForOf} from "@angular/common";
 
 @Component({
   selector: 'app-etape-modal',
@@ -49,12 +52,15 @@ import {NzSelectComponent} from "ng-zorro-antd/select";
     NzInputNumberComponent,
     NzRadioGroupComponent,
     NzRadioComponent,
-    NzSelectComponent
+    NzSelectComponent,
+    NzOptionComponent,
+    NgForOf
   ],
   styleUrl: './etape-modal.component.css'
 })
-export class EtapeModalComponent {
+export class EtapeModalComponent implements OnInit{
   @Output() formDataConfirmed: EventEmitter<any> = new EventEmitter<any>();
+  etapes : BaseEtape [] = [];
   etapeForm: FormGroup<{
     description:FormControl<string>;
    // ordre: FormControl<number>;
@@ -66,6 +72,8 @@ export class EtapeModalComponent {
     radioDureeEstimee:FormControl<string>
     radioDelaiAttente:FormControl<string>;
     radioFIE:FormControl<string>;
+    stepsBefore : FormControl<string[]>;
+    stepsAfter : FormControl<string[]>;
   }>
   /*description: (string | null)=null;
   ordre: number=0;
@@ -82,7 +90,8 @@ export class EtapeModalComponent {
 
 
   constructor(private modalRef: NzModalRef,
-              private fb: NonNullableFormBuilder) {
+              private fb: NonNullableFormBuilder,
+              private connexionService : ConnexionService) {
     this.etapeForm = this.fb.group({
       description : ['',[Validators.required,Validators.maxLength(255)]],
       dureeEstimee : [1,[Validators.required,Validators.min(0)]],
@@ -91,17 +100,24 @@ export class EtapeModalComponent {
       isPaid : [false],
       radioDureeEstimee : ['',[Validators.required]],
       radioDelaiAttente : ['',[Validators.required]],
-      radioFIE : ['',[Validators.required]]
+      radioFIE : ['',[Validators.required]],
+      stepsAfter : [['']],
+      stepsBefore : [['']]
     })
   }
 
-  formIsValid():boolean{
+  ngOnInit(): void {
+    this.etapes = this.connexionService.getEtapesFromGrid();
+
+  }
+
+  /*formIsValid():boolean{
     return this.etapeForm.valid;
-}
+}*/
 
-  submitForm(): void {
+  formIsValid(): boolean {
     if (this.etapeForm.valid) {
-
+      return true;
     } else
     {
       Object.values(this.etapeForm.controls).forEach(control => {
@@ -110,6 +126,9 @@ export class EtapeModalComponent {
           control.updateValueAndValidity({ onlySelf: true });
         }
       });
+      return false;
     }
   }
+
+
 }

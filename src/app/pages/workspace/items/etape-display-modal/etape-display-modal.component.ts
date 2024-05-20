@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {BaseEtape, StatutEtape, statutEtapeToString, statutfromJSONToString} from "../Etape.class";
+import {BaseEtape, StatutEtape, statutEtapeToString} from "../Etape.class";
 import {NzModalComponent, NzModalContentDirective, NzModalFooterDirective, NzModalService} from "ng-zorro-antd/modal";
 import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
 import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
@@ -110,7 +110,7 @@ export class EtapeDisplayModalComponent implements OnInit{
       delaiAttente : [this.etape.delaiAttente,[Validators.min(0)]],
       dureeEstimee : [this.etape.dureeEstimee,[Validators.required,Validators.min(0)]],
       ordre : [this.etape.ordre,Validators.required],
-      statutEtape : [statutfromJSONToString(this.etape.statutEtape.toString()),Validators.required],
+      statutEtape : [statutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
       isFirst : [this.etape.first],
       isEnd : [this.etape.end],
       isValidate : [this.etape.validate],

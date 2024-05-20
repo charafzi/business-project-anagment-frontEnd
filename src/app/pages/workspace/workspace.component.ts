@@ -11,6 +11,7 @@ import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {Processus} from "../../models/processus.model";
 import {ProcessusService} from "../../services/processus.service";
 import {NzIconDirective} from "ng-zorro-antd/icon";
+import {NzMenuDirective} from "ng-zorro-antd/menu";
 
 @Component({
   selector: 'app-workspace',
@@ -30,7 +31,8 @@ import {NzIconDirective} from "ng-zorro-antd/icon";
     NzButtonComponent,
     NzRowDirective,
     NzColDirective,
-    NzIconDirective
+    NzIconDirective,
+    NzMenuDirective
   ],
   styleUrl: './workspace.component.css'
 })
@@ -39,10 +41,16 @@ export class WorkspaceComponent implements OnInit{
   isLoading:boolean = false;
   processName:string = '';
   processDesc:string = '';
+  isCollapsed = false;
+
 
   constructor(private processusService:ProcessusService) {
     this.processName = this.processusService.processus.nom;
     this.processDesc = this.processusService.processus.description;
+  }
+
+  toggleCollapsed(): void {
+    this.isCollapsed = !this.isCollapsed;
   }
 
   ngOnInit() {

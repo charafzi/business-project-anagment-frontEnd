@@ -7,51 +7,83 @@
   <div class="container"
        *ngIf="!isLoading"
   >
-    <div cdkDropList
-         [cdkDropListData]="items"
-         cdkDropListSortingDisabled
-         class="list"
-         nz-menu nzMode="inline"
+    <ul
+      class="list"
+      cdkDropList
+      [cdkDropListData]="items"
+      cdkDropListSortingDisabled
+      nz-menu nzMode="inline"
+      [nzInlineCollapsed]="isCollapsed"
     >
-      <ul>
-        <li nz-submenu
-            nzTitle="Step type"
-            class="menu-title"
-            nz-tooltip
-            nzTooltipTitle="Drag and drop an item"
-        >
-          <ul class="items-menu" >
-            @for (item of items; track item) {
-              @switch (item._componentName)
+      <li nz-submenu
+          nzTitle="Step types"
+          class="menu-title"
+          nz-tooltip
+          nzTooltipTitle="Drag and drop an item"
+          nzIcon="apartment"
+      >
+        <ul class="items-menu" >
+          @for (item of items; track item) {
+            @switch (item._componentName)
+            {
+              @case ('square')
               {
-                @case ('square')
-                {
-                  <li>
-                    <app-square cdkDrag></app-square>
-                  </li>
+                <li
+                  nz-tooltip
+                  nzTooltipPlacement="bottom"
+                  [nzTooltipTitle]="getToolTipInfo(item._componentName)"
+                >
+                  <app-square cdkDrag></app-square>
+                </li>
 
-                }
-                @case ('rhombus')
-                {
-                  <li>
-                    <app-rhombus cdkDrag></app-rhombus>
-                  </li>
-                }
-                @case ('circle')
-                {
-                  <li>
-                    <app-circle cdkDrag></app-circle>
-                  </li>
-                }
-                @default {
-                  <div class="box" cdkDrag><h6>{{item._componentName}}</h6></div>
-                }
+              }
+              @case ('rhombus')
+              {
+                <li
+                  nz-tooltip
+                  nzTooltipPlacement="bottom"
+                  [nzTooltipTitle]="getToolTipInfo(item._componentName)"
+                >
+                  <app-rhombus cdkDrag></app-rhombus>
+                </li>
+              }
+              @case ('circle')
+              {
+                <li
+                  nz-tooltip
+                  nzTooltipPlacement="bottom"
+                  [nzTooltipTitle]="getToolTipInfo(item._componentName)"
+                >
+                  <app-circle cdkDrag></app-circle>
+                </li>
+              }
+              @case ('plus')
+              {
+                <li
+                  nz-tooltip
+                  nzTooltipPlacement="bottom"
+                  [nzTooltipTitle]="getToolTipInfo(item._componentName)"
+                >
+                  <app-plus cdkDrag></app-plus>
+                </li>
+              }
+              @case ('hexagon')
+              {
+                <li
+                  nz-tooltip
+                  nzTooltipPlacement="bottom"
+                  [nzTooltipTitle]="getToolTipInfo(item._componentName)"
+                >
+                  <app-hexagon cdkDrag></app-hexagon>
+                </li>
+              }
+              @default {
+                <div class="box" cdkDrag><h6>{{item._componentName}}</h6></div>
               }
             }
-          </ul>
-        </li>
-      </ul>
-    </div>
+          }
+        </ul>
+      </li>
+    </ul>
   </div>
-
 </div>

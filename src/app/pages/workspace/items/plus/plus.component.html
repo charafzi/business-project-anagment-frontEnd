@@ -1,0 +1,27 @@
+<nz-card id="card"
+         [nzBorderless]="false"
+         [nzHoverable]="true"
+         (click)="displayButtons()"
+>
+  <div class="card-container">
+    <svg class="shape" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" version="1.1"><g clip-path="url(#clip0_105_315)"><path fill="url(&quot;#SvgjsLinearGradient1083&quot;)" fill-rule="evenodd" d="M135.714 0H64.286v64.286H0v71.428h64.286V200h71.428v-64.286H200V64.286h-64.286V0Z" clip-rule="evenodd"></path></g><defs><linearGradient gradientTransform="rotate(0 0.5 0.5)" id="SvgjsLinearGradient1083"><stop stop-opacity=" 1" stop-color="rgba(105, 234, 203)" offset="0"></stop><stop stop-opacity=" 1" stop-color="rgba(234, 204, 248)" offset="0.48"></stop><stop stop-opacity=" 1" stop-color="rgba(102, 84, 241)" offset="1"></stop></linearGradient></defs></svg>
+  </div>
+</nz-card>
+
+<div class="actions-container" *ngIf="showButtons">
+  <ul class="actions">
+    <!-- <li><span nz-icon nzType="setting"></span></li>
+     <li><span nz-icon nzType="edit"></span></li>-->
+    <li><span nz-icon nzType="info"
+              (click)="onClickDisplayEditModal()"
+              nz-tooltip
+              nzTooltipTitle="Show informations"
+    ></span></li>
+    <li><span nz-icon nzType="delete"
+              (click)="onClickDelete()"
+              nz-tooltip
+              nzTooltipTitle="Delete"
+    ></span></li>
+  </ul>
+</div>
+

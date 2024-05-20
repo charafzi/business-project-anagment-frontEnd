@@ -2,6 +2,7 @@ import {BaseEtape} from "../items/Etape.class";
 import {Connectable} from "rxjs";
 import LeaderLine from "leader-line-new";
 import LinkerLine from "linkerline";
+import {isFromDtsFile} from "@angular/compiler-cli/src/ngtsc/util/src/typescript";
 
 export abstract class AbstractConnection{
   protected constructor(
@@ -73,13 +74,15 @@ export class ConnectionSet{
   }
 
   add(con : Connection):void{
-    console.log("I WILL ADD HTML IDs :",con.getIdFrom(),"->",con.getIdTo());
-
     let found = this.connections.find(connection=> connection.getIdFrom()===con.getIdFrom()
       && connection.getIdTo()===con.getIdTo())
-
     if(found == undefined)
       this.connections.push(con);
+  }
+
+  foundConnection(idFrom:string,idTo:string){
+    return this.connections.find(connection=> connection.getIdFrom()===idFrom
+      && connection.getIdTo()===idTo)
   }
 
   remove(con:Connection):void{

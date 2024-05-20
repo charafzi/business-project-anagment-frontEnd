@@ -20,18 +20,20 @@
     </div>
   </div>
   <div nz-row class="row">
-    <div nz-col [nzSpan]="8">
+    <div nz-col [nzSpan]="7">
       <nz-form-item>
         <nz-form-label nzRequired>Estimated duration&nbsp;</nz-form-label>
       </nz-form-item>
     </div>
-    <div nz-col [nzSpan]="3">
+    <div nz-col [nzSpan]="4">
       <nz-form-item>
-        <nz-input-number formControlName="dureeEstimee" [nzMin]="0" [nzStep]="1"></nz-input-number>
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-input-number formControlName="dureeEstimee" [nzMin]="0" [nzStep]="1"></nz-input-number>
+        </nz-form-control>
       </nz-form-item>
     </div>
     <div nz-col [nzSpan]="12" [nzOffset]="1">
-      <nz-form-control>
+      <nz-form-control nzErrorTip="This field is required !">
         <nz-radio-group formControlName="radioDureeEstimee">
           <label nz-radio nzValue="H">Hour<span>(s)</span></label>
           <label nz-radio nzValue="D">Day<span>(s)</span></label>
@@ -41,18 +43,20 @@
     </div>
   </div>
   <div nz-row class="row">
-      <div nz-col [nzSpan]="8">
+      <div nz-col [nzSpan]="7">
         <nz-form-item>
           <nz-form-label>Waiting period&nbsp;</nz-form-label>
         </nz-form-item>
       </div>
-      <div nz-col [nzSpan]="3">
+      <div nz-col [nzSpan]="4">
         <nz-form-item>
-          <nz-input-number formControlName="delaiAttente" [nzMin]="0" [nzStep]="1"></nz-input-number>
+        <nz-form-control>
+            <nz-input-number formControlName="delaiAttente" [nzMin]="0" [nzStep]="1"></nz-input-number>
+        </nz-form-control>
         </nz-form-item>
       </div>
       <div nz-col [nzSpan]="12" [nzOffset]="1">
-        <nz-form-control>
+        <nz-form-control nzErrorTip="This field is required !">
           <nz-radio-group formControlName="radioDelaiAttente">
             <label nz-radio nzValue="H">Hour<span>(s)</span></label>
             <label nz-radio nzValue="D">Day<span>(s)</span></label>
@@ -68,7 +72,7 @@
       </nz-form-item>
     </div>
     <div nz-col [nzSpan]="16">
-      <nz-form-control>
+      <nz-form-control nzErrorTip="This field is required !">
         <nz-radio-group formControlName="radioFIE">
           <label nz-radio nzValue="F">First</label>
           <label nz-radio nzValue="I">Intermediate</label>
@@ -106,9 +110,11 @@
     <div nz-col [nzSpan]="16">
       <nz-form-item>
         <nz-form-control>
-          <nz-select>
-            nzMode="multiple"
-            nzPlaceHolder="Please select the steps before this step"
+          <nz-select formControlName="stepsBefore"
+                     nzMode="multiple"
+                     nzPlaceHolder="Please select the steps before this step"
+          >
+            <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -125,9 +131,11 @@
     <div nz-col [nzSpan]="16">
       <nz-form-item>
         <nz-form-control>
-          <nz-select>
-            nzMode="multiple"
-            nzPlaceHolder="Please select the steps after this step"
+          <nz-select formControlName="stepsAfter"
+                     nzMode="multiple"
+                     nzPlaceHolder="Please select the steps after this step"
+          >
+            <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>

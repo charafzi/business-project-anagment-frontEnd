@@ -12,3 +12,6 @@ nz-radio-group{
   justify-content: space-between;
 }
 
+ng-template{
+  background-color: rebeccapurple;
+}

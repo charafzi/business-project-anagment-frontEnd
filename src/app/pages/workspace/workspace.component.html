@@ -1,11 +1,13 @@
 <nz-layout>
   <nz-header>
     <div nz-row
+         [nzGutter]="[48,0]"
     >
       <div nz-col class="label" [nzSpan]="6">Name&nbsp;:</div>
       <div nz-col  class="value" [nzSpan]="18">{{processName}}</div>
     </div>
     <div nz-row
+         [nzGutter]="[48,0]"
     >
       <div nz-col class="label" [nzSpan]="6">Description&nbsp;:</div>
       <div nz-col class="value" [nzSpan]="18">{{processDesc}}</div>
@@ -18,9 +20,18 @@
   </nz-header>
   <nz-layout cdkDropListGroup>
     <nz-sider class="side-menu"
-              [nzWidth]="166"
+              nzCollapsible
+              nzWidth="158px"
+              nzBreakpoint="sm"
+              [(nzCollapsed)]="isCollapsed"
+
+
     >
-      <app-item-list></app-item-list>
+      <ul class="menu" nz-menu nzMode="inline" [nzInlineCollapsed]="isCollapsed">
+        <app-item-list
+          [isCollapsed]="isCollapsed"
+        ></app-item-list>
+      </ul>
     </nz-sider>
     <nz-content>
       <app-grid

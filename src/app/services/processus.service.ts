@@ -18,9 +18,9 @@ export class ProcessusService{
               private modalService : NzModalService
   ) {
     this.processus = {
-      idProcessus : 22,
-      nbColonnes: 4,
-      nbLignes : 4,
+      idProcessus : 7,
+      nbColonnes: 6,
+      nbLignes : 6,
       nom : "test",
       description : "test"
     }

@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, Outp
 import {CellComponent} from "./cell/cell.component";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {CdkDropList} from "@angular/cdk/drag-drop";
-import {BaseEtape, StatutEtape, statutEtapeToString, statutfromJSONToString} from "../items/Etape.class";
+import {BaseEtape, StatutEtape, statutEtapeToString} from "../items/Etape.class";
 import {NzFlexDirective} from "ng-zorro-antd/flex";
 import {DOCUMENT, NgClass, NgIf} from "@angular/common";
 import {Connection, ConnectionSet} from "./connection.class";
@@ -46,9 +46,9 @@ export class GridComponent implements OnInit,AfterViewInit{
   arrayCols = new Array(this.nbCols);
   gridComponentInstance! : GridComponent;
   processItems:(BaseEtape | null)[][] = [];
-  connetions : Connection[] = [];
   connexions : ConnectionSet;
   isDotsVisible:boolean = false;
+  etapesRetrived:boolean = false;
   isLoading:boolean =false;
 
   constructor(@Inject(DOCUMENT) private document:Document,
@@ -81,7 +81,7 @@ export class GridComponent implements OnInit,AfterViewInit{
 
   ngAfterViewInit(): void {
     /**
-     *  build connecxions on view initialization
+     *  build connexions on view initialization
      */
     if(this.processusService.processus.idProcessus){
       this.connexionService.getConnexionsByprocess(this.processusService.processus.idProcessus)
@@ -106,10 +106,10 @@ export class GridComponent implements OnInit,AfterViewInit{
     }
     }
   ngOnInit(): void {
+    this.isLoading=true;
     if(this.processusService.processus && this.processusService.processus.idProcessus){
-      this.isLoading=true;
       this.processusService.retrieveProcessById(this.processusService.processus.idProcessus);
-
+      console.log("ID PROCESS TRERIVED ="+this.processusService.processus.idProcessus);
       /**
        * get "Etapes" from database and initialize grid matrix for processItems
        to initilize the view
@@ -125,6 +125,7 @@ export class GridComponent implements OnInit,AfterViewInit{
           },
           ()=>{
             this.isLoading=false;
+            this.etapesRetrived = true;
           }
         )
 
@@ -145,7 +146,6 @@ export class GridComponent implements OnInit,AfterViewInit{
         } else {
           console.log("["+i+"]["+j+"] TYPE is at grid: " + (this.processItems[i][j] as BaseEtape).description," MY ID = "+(this.processItems[i][j] as BaseEtape).idEtape);
           console.log("PROCESS = "+(this.processItems[i][j] as BaseEtape).processus?.nom);
-          console.log("STATUT = "+statutfromJSONToString((this.processItems[i][j] as BaseEtape).statutEtape.toString()));
         }
       }
     }
@@ -156,34 +156,6 @@ export class GridComponent implements OnInit,AfterViewInit{
     this.processItems[eventData.rowIndex][eventData.colIndex] = eventData.processItem;
     this.printProcessItems();
   }
-
-  getConnectionIndexByProcessItemIndex(rowIndex:number,colIndex:number){
-    let index=0;
-    for(let conn of this.connetions){
-      if(conn.getFrom() == this.processItems[rowIndex][colIndex]
-        || conn.getTo() == this.processItems[rowIndex][colIndex]
-      ){
-        return index;
-      }
-      index++;
-    }
-    // no connections found for this processItem
-    return -1;
-  }
-
-  /*deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
-  {
-    let index:number = this.getConnectionIndexByProcessItemIndex(eventData.rowIndex,eventData.colIndex);
-    //delete all connections found
-    while(index != -1){
-      this.connetions[index].getLineConnection().remove();
-      this.connetions.splice(index,1);
-      index = this.getConnectionIndexByProcessItemIndex(eventData.rowIndex,eventData.colIndex);
-    }
-    console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"] BEFORE DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
-    this.processItems[eventData.rowIndex][eventData.colIndex] = null;
-    console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"]  AFTER DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
-  }*/
 
   deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
   {
@@ -383,9 +355,6 @@ export class GridComponent implements OnInit,AfterViewInit{
             this.loading.emit(false);
             console.error("Error at updating Etapes : "+error);
           },()=>{
-            /**
-             * Linker needs upadte here because of spin for loading
-             */
           })
     }else{
       this.modalService.error({
@@ -578,11 +547,8 @@ export class GridComponent implements OnInit,AfterViewInit{
 
   printConnexions():void {
     console.log("****************************** CONNEXIONS :")
-    for(let i=0;i<this.connetions.length;i++){
-      console.log("FROM["+this.connetions[i].getFrom()?.indexLigne+"]["+this.connetions[i].getFrom()?.indexColonne+"] id = ",
-        this.connetions[i].getFrom()?.idEtape,":: TO["+this.connetions[i].getTo()?.indexColonne+"]["+this.connetions[i].getTo()?.indexColonne+"] id=",this.connetions[i].getTo()?.idEtape);
+    this.connexions.print();
   }
-}
 
   /*updateConnections(){
     this.connetions.forEach(connection=>{
@@ -628,7 +594,7 @@ export class GridComponent implements OnInit,AfterViewInit{
   createConnexion(indexRowFrom:number,
                   indexColFrom:number,
                   indexRowTo:number,
-                  indexColTo:number
+                  indexColTo:number,
                   ):void{
     let idFrom:string = 'cell-'+indexRowFrom+'-'+indexColFrom;
     let idTo:string = 'cell-'+indexRowTo+'-'+indexColTo;
@@ -639,37 +605,43 @@ export class GridComponent implements OnInit,AfterViewInit{
     if (el1 && el2
       && this.processItems[indexRowFrom][indexColFrom]
       && this.processItems[indexRowTo][indexColTo]) {
-      const conn :Connection = new Connection(
-        idFrom,
-        idTo,
-        this.processItems[indexRowFrom][indexColFrom],
-        this.processItems[indexRowTo][indexColTo],
-        new LinkerLine<any, any>(
-          {
-            parent: grid,
-            start: el1,
-            end: el2,
-            color: '#000000',
-            outline: true,
-            outlineColor : '#000000',
-            endPlugOutline: true,
-            startPlugSize : 0.8,
-            endPlugSize: 0.8,
-            startPlug : "disc",
-            endPlug : "arrow1",
-            startSocket : "auto",
-            endSocket : "auto",
-            path : "straight",
-            size : 3
-          })
-      );
-      //this.connetions.push(conn);
-      this.connexions.add(conn);
-      this.printConnexions();
-      /*conn.getLineConnection().element.addEventListener('click', (event) => {
-        console.log('Line clicked!', event);
-      });*/
-      this.printProcessItems();
+      let found = this.connexions.foundConnection(idFrom,idTo);
+      if(found == undefined){
+        const conn :Connection = new Connection(
+          idFrom,
+          idTo,
+          this.processItems[indexRowFrom][indexColFrom],
+          this.processItems[indexRowTo][indexColTo],
+          new LinkerLine<any, any>(
+            {
+              parent: grid,
+              start: el1,
+              end: el2,
+              color: this.generateRandomColor(),
+              outline: true,
+              outlineColor : '#000000',
+              endPlugOutline: true,
+              startPlugSize : 0.8,
+              endPlugSize: 0.8,
+              startPlug : "disc",
+              endPlug : "arrow1",
+              startSocket : "auto",
+              endSocket : "auto",
+              path : "straight",
+              size : 3
+            })
+        );
+        this.connexions.add(conn);
+        this.printConnexions();
+        /*conn.getLineConnection().element.addEventListener('click', (event) => {
+          console.log('Line clicked!', event);
+        });*/
+        this.printProcessItems();
+      }else{
+        this.modalService.warning({
+          nzTitle : "This connection has already been set up !",
+        })
+      }
     }else{
       console.error('One or both elements not found OR There is no processItem at ['+indexRowFrom+']['+indexColFrom+'] or  ['+indexRowTo+']['+indexColTo+']');
     }
@@ -677,8 +649,46 @@ export class GridComponent implements OnInit,AfterViewInit{
 
   }
 
+  updateProcessItems(eventData:{}){
+    //update the matrix of steps on connexion service when an item is dropped in grid
+    this.connexionService.processItems=this.processItems;
+  }
+
+  connectProcessItems(eventData:{indexRow:number,indexCol:number,stepsBefore : string[],stepsAfter : string[]}){
+    if(eventData.stepsBefore.length != 1){
+      for(let i=1; i<eventData.stepsBefore.length;i++){
+        let indexs = eventData.stepsBefore[i].split("-");
+        this.createConnexion(parseInt(indexs[0]),parseInt(indexs[1]),eventData.indexRow,eventData.indexCol)
+      }
+    }
+
+    if(eventData.stepsAfter.length != 1){
+      for(let i=1; i<eventData.stepsAfter.length;i++){
+        let indexs = eventData.stepsAfter[i].split("-");
+        this.createConnexion(eventData.indexRow,eventData.indexCol,parseInt(indexs[0]),parseInt(indexs[1]))
+      }
+    }
+  }
+
   onCellClicked(){
     this.isDotsVisible = !this.isDotsVisible;
+  }
+
+  generateRandomColor(): string {
+    // Génère trois valeurs de couleur aléatoires pour les composantes rouge, vert et bleu
+    const red = Math.floor(Math.random() * 256); // Valeur entre 0 et 255
+    const green = Math.floor(Math.random() * 256); // Valeur entre 0 et 255
+    const blue = Math.floor(Math.random() * 256); // Valeur entre 0 et 255
+
+    // Convertit les valeurs de couleur en représentation hexadécimale
+    const redHex = red.toString(16).padStart(2, '0'); // Convertit en hexadécimal et assure une longueur de 2 chiffres
+    const greenHex = green.toString(16).padStart(2, '0'); // Convertit en hexadécimal et assure une longueur de 2 chiffres
+    const blueHex = blue.toString(16).padStart(2, '0'); // Convertit en hexadécimal et assure une longueur de 2 chiffres
+
+    // Combine les composantes rouge, vert et bleu pour former un code couleur hexadécimal
+    const colorHex = `#${redHex}${greenHex}${blueHex}`;
+
+    return colorHex;
   }
 
 }

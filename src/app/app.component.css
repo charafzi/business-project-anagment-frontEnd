@@ -1,4 +1,3 @@
-
 :host {
   display: flex;
   text-rendering: optimizeLegibility;
@@ -6,17 +5,20 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.menu-sidebar{
+nz-layout{
   background-color: #fafafa;
+  width: 100vw;
+  height: 100vh;
 }
 
 .menu{
   background-color: #fafafa;
 }
 
-.app-layout {
-  height: 100vh;
+.menu-sidebar{
+  background-color: #fafafa;
 }
+
 
 .menu-sidebar {
   position: relative;
@@ -78,13 +80,10 @@ nz-header {
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 }
 
-nz-content {
-  margin: 24px;
-}
-
 .inner-content {
-  padding: 24px;
-  background: #fafafa;
   height: 100%;
+  width: 100%;
+  padding: 10px;
+  background: transparent;
 }
 
