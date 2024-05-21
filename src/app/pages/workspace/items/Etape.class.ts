@@ -71,6 +71,7 @@ export class BaseEtape implements Etape{
   private _componentName : string;
   private _processus? : Processus | undefined;
   private _editModalIsVisibe:boolean;
+  private _connectionsModalIsVisibe:boolean;
   _displayInfo:boolean;
   public _cellRef: CellComponent | null;
 
@@ -96,6 +97,7 @@ export class BaseEtape implements Etape{
     this._displayInfo=false;
     this._cellRef=null;
     this._editModalIsVisibe=false;
+    this._connectionsModalIsVisibe=false;
   }
 
 
@@ -273,6 +275,15 @@ export class BaseEtape implements Etape{
 
   set editModalIsVisibe(value: boolean) {
     this._editModalIsVisibe = value;
+  }
+
+
+  get connectionsModalIsVisibe(): boolean {
+    return this._connectionsModalIsVisibe;
+  }
+
+  set connectionsModalIsVisibe(value: boolean) {
+    this._connectionsModalIsVisibe = value;
   }
 
   onClickHideModal(){

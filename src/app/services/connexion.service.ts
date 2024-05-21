@@ -3,12 +3,13 @@ import {HttpClient} from "@angular/common/http";
 
 import {Connexion} from "../models/connexion.model";
 import {BaseEtape} from "../pages/workspace/items/Etape.class";
+import {ConnectionSet} from "../pages/workspace/grid/connection.class";
 
 @Injectable({
   providedIn : 'root'
 })
 export class ConnexionService{
-
+  connectionSet : ConnectionSet = new ConnectionSet();
   url:string = 'http://localhost:8100/connexions';
   /**
    it's used to hold temporarily the matrix of "Etape" to help to transfer it from the grid component
@@ -18,6 +19,18 @@ export class ConnexionService{
   constructor(private http:HttpClient) {
   }
 
+  getConnectionSet():ConnectionSet{
+    return this.connectionSet;
+  }
+  deleteAllConnectionsToCell(rowIndex:number,colIndex:number){
+    let conn = this.connectionSet.getConnectionByIndexAtGrid(rowIndex,colIndex);
+    //delete all connections found
+    while(conn != undefined){
+      conn.getLineConnection().remove();
+      this.connectionSet.remove(conn);
+      conn = this.connectionSet.getConnectionByIndexAtGrid(rowIndex,colIndex);
+    }
+  }
   getConnexionsByprocess(processId:number){
    return this.http.get<Connexion[]>(this.url+"/processus/"+processId);
   }

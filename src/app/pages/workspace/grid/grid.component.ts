@@ -44,9 +44,7 @@ export class GridComponent implements OnInit,AfterViewInit{
   indexColDotNext:number =-1;
   arrayRows = new Array(this.nbRows);
   arrayCols = new Array(this.nbCols);
-  gridComponentInstance! : GridComponent;
   processItems:(BaseEtape | null)[][] = [];
-  connexions : ConnectionSet;
   isDotsVisible:boolean = false;
   etapesRetrived:boolean = false;
   isLoading:boolean =false;
@@ -57,14 +55,13 @@ export class GridComponent implements OnInit,AfterViewInit{
               private connexionService : ConnexionService,
               private router : Router) {
     this.isLoading = true;
-    this.connexions = new ConnectionSet();
-    this.gridComponentInstance = this;
     setTimeout(() => {
-      console.log("PRINT ATFER 8s")
+      console.log("PRINT ATFER 5s")
       this.printProcessItems()
       this.printConnexions();
-    }, 10000);
+    }, 5000);
 
+    //this page is accessed directly
     if(this.processusService.processus.idProcessus === -1)
       this.router.navigate(['/processus']);
     else{
@@ -79,37 +76,11 @@ export class GridComponent implements OnInit,AfterViewInit{
     }
   }
 
-  ngAfterViewInit(): void {
-    /**
-     *  build connexions on view initialization
-     */
-    if(this.processusService.processus.idProcessus){
-      this.connexionService.getConnexionsByprocess(this.processusService.processus.idProcessus)
-        .subscribe(connexions=>{
-          //create connexions
-          connexions.forEach(cnx=>{
-            this.createConnexion(
-              cnx.from.indexLigne,
-              cnx.from.indexColonne,
-              cnx.to.indexLigne,
-              cnx.to.indexColonne
-            )
-          })
-        },
-        error => {
-          console.error("Error at building connexions for 'Etapes' at grid AfterViewInit : "+error);
-        },
-          ()=>{
-            this.isLoading=false;
-          }
-          )
-    }
-    }
   ngOnInit(): void {
     this.isLoading=true;
+    //if the processus exist
     if(this.processusService.processus && this.processusService.processus.idProcessus){
       this.processusService.retrieveProcessById(this.processusService.processus.idProcessus);
-      console.log("ID PROCESS TRERIVED ="+this.processusService.processus.idProcessus);
       /**
        * get "Etapes" from database and initialize grid matrix for processItems
        to initilize the view
@@ -128,13 +99,38 @@ export class GridComponent implements OnInit,AfterViewInit{
             this.etapesRetrived = true;
           }
         )
-
     }
-
   }
 
 
-
+  ngAfterViewInit(): void {
+    /**
+     *  build connexions on view initialization
+     */
+    if(this.processusService.processus.idProcessus){
+      this.connexionService.getConnexionsByprocess(this.processusService.processus.idProcessus)
+        .subscribe(connetions=>{
+          //clear the connectionSet to be filled with the connections of a selected process
+          this.connexionService.connectionSet.clear();
+          //Create connetions
+          connetions.forEach(cnx=>{
+            this.createConnexion(
+              cnx.from.indexLigne,
+              cnx.from.indexColonne,
+              cnx.to.indexLigne,
+              cnx.to.indexColonne
+            )
+          })
+        },
+        error => {
+          console.error("Error at building connexions for 'Etapes' at grid AfterViewInit : "+error);
+        },
+          ()=>{
+            this.isLoading=false;
+          }
+          )
+    }
+    }
   printProcessItems()
   {
     for(let i=0; i<this.nbRows; i++)
@@ -159,18 +155,10 @@ export class GridComponent implements OnInit,AfterViewInit{
 
   deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
   {
-    let conn = this.connexions.getConnectionByIndexAtGrid(eventData.rowIndex,eventData.colIndex);
-    //delete all connections found
-    while(conn != undefined){
-      conn.getLineConnection().remove();
-      this.connexions.remove(conn);
-      conn = this.connexions.getConnectionByIndexAtGrid(eventData.rowIndex,eventData.colIndex);
-    }
-    this.connexions.print();
+    this.connexionService.deleteAllConnectionsToCell(eventData.rowIndex,eventData.colIndex);
     console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"] BEFORE DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
     this.processItems[eventData.rowIndex][eventData.colIndex] = null;
     console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"]  AFTER DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
-
   }
 
   addRow(){
@@ -233,78 +221,99 @@ export class GridComponent implements OnInit,AfterViewInit{
       })
         .subscribe(responseData=>{
           console.log("Processus updated succefully : "+responseData);
-        },
-          error => {
-          console.error(error);
-          })
-
-      /** Update Etapes **/
-      this.processusService.updateProcessEtapes(this.processusService.processus.idProcessus,etapesModel)
-        .subscribe(responseData=>{
-            console.log("RESPONSE PUT : "+responseData);
-            /** Get Id for new "Etapes" **/
+            /** Update Etapes **/
             // @ts-ignore
-            this.processusService.retrieveEtapesByProcess(this.processusService.processus.idProcessus)
-              .subscribe(etapes=>{
-                etapes.forEach(etape=>{
-                  const processItem = this.processItems[etape.indexLigne][etape.indexColonne];
-                  if (processItem && processItem.idEtape === -1) {
-                    processItem.idEtape = etape.idEtape;
-                  }
-                })
+            this.processusService.updateProcessEtapes(this.processusService.processus.idProcessus,etapesModel)
+              .subscribe (responseData=>{
+                  console.log("RESPONSE PUT : "+responseData);
+                  /** Get Id for new "Etapes" **/
+                  // @ts-ignore
+                  this.processusService.retrieveEtapesByProcess(this.processusService.processus.idProcessus)
+                    .subscribe(etapes=>{
+                      etapes.forEach(etape=>{
+                        const processItem = this.processItems[etape.indexLigne][etape.indexColonne];
+                        if (processItem && processItem.idEtape === -1) {
+                          processItem.idEtape = etape.idEtape;
+                        }
+                      })
 
-                /** Update connexions **/
-                this.connexions.print();
-                let connexionsModel : Connexion[] = [];
-                this.connexions.getConnexionsList().forEach(cnx=>{
-                  let etapeFrom = (cnx.getFrom() as Etape)
-                  let etapeTo = (cnx.getTo() as Etape);
-                  // here only the id is assigned
-                  if(etapeFrom && etapeTo){
-                    // @ts-ignore
-                    connexionsModel.push({
-                      from : {
-                        idEtape: etapeFrom.idEtape,
-                        description: '',
-                        indexLigne: 0,
-                        indexColonne: 0,
-                        ordre: 0,
-                        pourcentage: 0,
-                        dureeEstimee: 0,
-                        delaiAttente: 0,
-                        statutEtape: StatutEtape.COMMENCEE,
-                        first: false,
-                        intermediate : false,
-                        validate: false,
-                        end: false,
-                        paid: false
-                      },
-                      to : {
-                        idEtape: etapeTo.idEtape,
-                        description: '',
-                        indexLigne: 0,
-                        indexColonne: 0,
-                        ordre: 0,
-                        pourcentage: 0,
-                        dureeEstimee: 0,
-                        delaiAttente: 0,
-                        statutEtape: StatutEtape.COMMENCEE,
-                        first: false,
-                        intermediate : false,
-                        validate: false,
-                        end: false,
-                        paid: false
-                      }
-                    })
-                  }
-                })
+                      /** Update connexions **/
+                      let connexionsModel : Connexion[] = [];
+                      this.connexionService.getConnectionSet().connections.forEach(cnx=>{
+                        let etapeFrom = (cnx.getFrom() as Etape)
+                        let etapeTo = (cnx.getTo() as Etape);
+                        // here only the id is assigned
+                        if(etapeFrom && etapeTo){
+                          // @ts-ignore
+                          connexionsModel.push({
+                            from : {
+                              idEtape: etapeFrom.idEtape,
+                              description: '',
+                              indexLigne: 0,
+                              indexColonne: 0,
+                              ordre: 0,
+                              pourcentage: 0,
+                              dureeEstimee: 0,
+                              delaiAttente: 0,
+                              statutEtape: StatutEtape.COMMENCEE,
+                              first: false,
+                              intermediate : false,
+                              validate: false,
+                              end: false,
+                              paid: false
+                            },
+                            to : {
+                              idEtape: etapeTo.idEtape,
+                              description: '',
+                              indexLigne: 0,
+                              indexColonne: 0,
+                              ordre: 0,
+                              pourcentage: 0,
+                              dureeEstimee: 0,
+                              delaiAttente: 0,
+                              statutEtape: StatutEtape.COMMENCEE,
+                              first: false,
+                              intermediate : false,
+                              validate: false,
+                              end: false,
+                              paid: false
+                            }
+                          })
+                        }
+                      })
 
-                // @ts-ignore
-                this.connexionService.updateConnexionsByProcess(this.processusService.processus.idProcessus,connexionsModel)
-                  .subscribe(response => {
-                      console.log("Response PUT connexions : "+response);
-                    },
-                    error => {
+                      // @ts-ignore
+                      this.connexionService.updateConnexionsByProcess(this.processusService.processus.idProcessus,connexionsModel)
+                        .subscribe(response => {
+                            console.log("Response PUT connexions : "+response);
+                          },
+                          error => {
+                            this.modalService.error({
+                              nzTitle : "Erreur dans le serveur :",
+                              nzContent : "Erreur lors de l'enregistrement du processus",
+                              nzFooter : null,
+                              nzOnCancel : ()=>{
+                                return false;
+                              }
+                            })
+                            this.loading.emit(false);
+                            console.error("Error at updating Connexions :  "+error);
+                          },
+                          ()=>{
+                            this.modalService.success({
+                              nzTitle : "Sauvegarde réussite",
+                              nzContent : "<p>Le processus est bien enregistré !</p>",
+                              nzFooter : null,
+                              nzOnCancel : ()=>{
+                                return false;
+                              }
+                            })
+                            this.loading.emit(false);
+                            /*
+                             * Linker needs upadte here because of spin for loading
+                             */
+                          })
+                    },error => {
                       this.modalService.error({
                         nzTitle : "Erreur dans le serveur :",
                         nzContent : "Erreur lors de l'enregistrement du processus",
@@ -314,47 +323,26 @@ export class GridComponent implements OnInit,AfterViewInit{
                         }
                       })
                       this.loading.emit(false);
-                      console.error("Error at updating Connexions :  "+error);
-                    },
-                    ()=>{
-                    this.modalService.success({
-                      nzTitle : "Sauvegarde réussite",
-                      nzContent : "<p>Le processus est bien enregistré !</p>",
-                      nzFooter : null,
-                      nzOnCancel : ()=>{
-                        return false;
-                      }
+                      console.error("Error at retrieving Etapes IDS :  "+error);
                     })
-                      this.loading.emit(false);
-                      /*
-                       * Linker needs upadte here because of spin for loading
-                       */
-                    })
-              },error => {
-                this.modalService.error({
-                  nzTitle : "Erreur dans le serveur :",
-                  nzContent : "Erreur lors de l'enregistrement du processus",
-                  nzFooter : null,
-                  nzOnCancel : ()=>{
-                    return false;
-                  }
+                },
+                error => {
+                  this.modalService.error({
+                    nzTitle : "Erreur dans le serveur !",
+                    nzContent : "Erreur lors de l'enregistrement du processus",
+                    nzFooter : null,
+                    nzOnCancel : ()=>{
+                      return false;
+                    }
+                  })
+                  this.loading.emit(false);
+                  console.error("Error at updating Etapes : "+error);
+                },()=>{
+
                 })
-                this.loading.emit(false);
-                console.error("Error at retrieving Etapes IDS :  "+error);
-              })
-          },
+        },
           error => {
-            this.modalService.error({
-              nzTitle : "Erreur dans le serveur !",
-              nzContent : "Erreur lors de l'enregistrement du processus",
-              nzFooter : null,
-              nzOnCancel : ()=>{
-                return false;
-              }
-            })
-            this.loading.emit(false);
-            console.error("Error at updating Etapes : "+error);
-          },()=>{
+          console.error("Error at updating processus properties : "+error);
           })
     }else{
       this.modalService.error({
@@ -367,81 +355,6 @@ export class GridComponent implements OnInit,AfterViewInit{
       })
       this.loading.emit(false);
       console.error("Error at retrieving Etapes IDS: Processus Id is undefined");
-    }
-  }
-
- /* dotLeftClicked(indexRow:number,indexCol:number){
-    if(this.indexRowDotCurr !=-1
-      && this.indexColDotCurr!=-1
-    ){
-      this.indexRowDotNext = indexRow;
-      this.indexColDotNext = indexCol;
-
-      let rowCurr = this.indexRowDotCurr;
-      let colCurr =this.indexColDotCurr;
-      let rowNext = this.indexRowDotNext;
-      let colNext = this.indexColDotNext;
-      let idFrom:string = 'cell-'+rowCurr+'-'+colCurr;
-      let idTo:string = 'cell-'+rowNext+'-'+colNext;
-
-      console.log("ROWCURR = "+this.indexRowDotCurr +"/ COLCURR = "+ this.indexColDotCurr + "///// ROWNEXT ="+ this.indexRowDotNext +" / COLNEXT ="+ this.indexColDotNext)
-      this.indexRowDotCurr = this.indexRowDotNext = this.indexRowDotCurr= this.indexColDotNext = -1;
-
-      console.log('cell-'+rowNext+'-'+colNext);
-      const el1 = document.getElementById(idFrom);
-      const el2 = document.getElementById(idTo);
-      const grid = this.grid.nativeElement;
-      if (el1 && el2 && this.processItems[rowCurr][colCurr]) {
-        const conn :Connection = new Connection(
-          idFrom,
-          idTo,
-          this.processItems[rowCurr][colCurr],
-          this.processItems[rowNext][colNext],
-          new LinkerLine<any, any>(
-            {
-              parent: grid,
-              start: el1,
-              end: el2,
-              color: '#000000',
-              outline: true,
-              outlineColor : '#000000',
-              endPlugOutline: true,
-              endPlugSize: 1.1,
-              startPlug : "disc",
-              endPlug : "arrow2",
-              startSocket : "right",
-              endSocket : "left",
-              path : "straight"
-            })
-          );
-        this.connetions.push(conn);
-        this.printConnexions();
-        /!*conn.getLineConnection().element.addEventListener('click', (event) => {
-          console.log('Line clicked!', event);
-        });*!/
-        this.printProcessItems();
-      } else {
-        console.error('One or both elements not found OR There is no processItem at ['+rowCurr+']['+colCurr+']');
-      }
-    }
-  }*/
-
-  dotLeftClicked(indexRow:number,indexCol:number){
-    if(this.indexRowDotCurr !=-1
-      && this.indexColDotCurr!=-1
-    ){
-      this.indexRowDotNext = indexRow;
-      this.indexColDotNext = indexCol;
-
-      let rowCurr = this.indexRowDotCurr;
-      let colCurr =this.indexColDotCurr;
-      let rowNext = this.indexRowDotNext;
-      let colNext = this.indexColDotNext;
-
-      this.createConnexion(rowCurr,colCurr,rowNext,colNext);
-      this.indexRowDotCurr = this.indexRowDotNext = this.indexRowDotCurr= this.indexColDotNext = -1;
-      this.connexions.print();
-
     }
   }
 
@@ -461,18 +374,6 @@ export class GridComponent implements OnInit,AfterViewInit{
         order++;
     }
     return order;
-  }
-
-  dotRightHovered(indexRow:number,indexCol:number){
-    if(this.processItems[indexRow][indexCol] != null){
-      this.indexRowDotCurr=indexRow;
-      this.indexColDotCurr=indexCol;
-    }
-  }
-
-  dotNotHovered(){
-    this.indexRowDotCurr=-1;
-    this.indexColDotCurr=-1;
   }
 
   /**
@@ -528,69 +429,10 @@ export class GridComponent implements OnInit,AfterViewInit{
     return this.indexRowDotCurr == indexRow && this.indexColDotCurr == indexCol;
   }
 
-
-  isDotLeftVisible(indexRow:number,indexCol:number){
-    if(this.indexRowDotCurr !=-1 && this.indexColDotCurr !=-1 && this.processItems[indexRow][indexCol]){
-      if(indexCol == this.indexColDotCurr+1)
-        return true;
-    }
-    return false;
-  }
-
-  isDotRightVisible(indexRow:number,indexCol:number){
-    if(this.indexRowDotCurr !=-1 && this.indexColDotCurr !=-1 && this.processItems[indexRow][indexCol]){
-      if(indexRow == this.indexRowDotCurr && indexCol == this.indexColDotCurr)
-        return true;
-    }
-    return false;
-  }
-
   printConnexions():void {
     console.log("****************************** CONNEXIONS :")
-    this.connexions.print();
   }
-
-  /*updateConnections(){
-    this.connetions.forEach(connection=>{
-      const elemFrom = document.getElementById(connection.getIdFrom());
-      const elemTo = document.getElementById(connection.getIdTo());
-      let fromRect;
-      let toRect;
-      let rectGrid;
-
-      if(elemFrom!= null && elemTo !=null && this.grid.nativeElement != null){
-        fromRect = elemFrom.getBoundingClientRect();
-        toRect = elemTo.getBoundingClientRect();
-        rectGrid = this.grid.nativeElement.getBoundingClientRect();
-        //check the "From" cell is inside the Grid
-        if(
-          (toRect.top>= rectGrid.top
-          && toRect.left >= rectGrid.left
-          && toRect.right <= rectGrid.right
-          && toRect.bottom <= rectGrid.bottom)
-          ||
-          (fromRect.top>= rectGrid.top
-            && fromRect.left >= rectGrid.left
-            && fromRect.right <= rectGrid.right
-            && fromRect.bottom <= rectGrid.bottom
-          )
-        )
-        {
-          //check the "To" cell is inside the Grid
-          connection.getLineConnection().show('draw',{
-            duration : 1000,
-            timing : "ease-out"
-          });
-          connection.getLineConnection().position();
-         /!* else
-            connection.getLineConnection().hide('none');*!/
-        }
-        else
-          connection.getLineConnection().hide('none',);
-      }
-
-    });
-  }*/
+  
   createConnexion(indexRowFrom:number,
                   indexColFrom:number,
                   indexRowTo:number,
@@ -605,7 +447,7 @@ export class GridComponent implements OnInit,AfterViewInit{
     if (el1 && el2
       && this.processItems[indexRowFrom][indexColFrom]
       && this.processItems[indexRowTo][indexColTo]) {
-      let found = this.connexions.foundConnection(idFrom,idTo);
+      let found = this.connexionService.getConnectionSet().foundConnection(idFrom,idTo);
       if(found == undefined){
         const conn :Connection = new Connection(
           idFrom,
@@ -631,7 +473,7 @@ export class GridComponent implements OnInit,AfterViewInit{
               size : 3
             })
         );
-        this.connexions.add(conn);
+        this.connexionService.getConnectionSet().add(conn);
         this.printConnexions();
         /*conn.getLineConnection().element.addEventListener('click', (event) => {
           console.log('Line clicked!', event);

@@ -1,8 +1,5 @@
 import {BaseEtape} from "../items/Etape.class";
-import {Connectable} from "rxjs";
-import LeaderLine from "leader-line-new";
 import LinkerLine from "linkerline";
-import {isFromDtsFile} from "@angular/compiler-cli/src/ngtsc/util/src/typescript";
 
 export abstract class AbstractConnection{
   protected constructor(
@@ -68,34 +65,34 @@ export class Connection extends AbstractConnection {
 }
 
 export class ConnectionSet{
-  private connections : Connection[] = [];
+  private _connections : Connection[] = [];
 
   constructor() {
   }
 
   add(con : Connection):void{
-    let found = this.connections.find(connection=> connection.getIdFrom()===con.getIdFrom()
+    let found = this._connections.find(connection=> connection.getIdFrom()===con.getIdFrom()
       && connection.getIdTo()===con.getIdTo())
     if(found == undefined)
-      this.connections.push(con);
+      this._connections.push(con);
   }
 
   foundConnection(idFrom:string,idTo:string){
-    return this.connections.find(connection=> connection.getIdFrom()===idFrom
+    return this._connections.find(connection=> connection.getIdFrom()===idFrom
       && connection.getIdTo()===idTo)
   }
 
   remove(con:Connection):void{
-    let index = this.connections.findIndex((connection,index)=> connection.getIdFrom()===con.getIdFrom()
+    let index = this._connections.findIndex((connection, index)=> connection.getIdFrom()===con.getIdFrom()
       && connection.getIdTo()===con.getIdTo())
 
       if(index != -1)
-        this.connections.splice(index,1);
+        this._connections.splice(index,1);
   }
 
   getConnectionByIndexAtGrid(rowIndex:number,colIndex:number): Connection|undefined{
 
-  let connection = this.connections.find(con=>
+  let connection = this._connections.find(con=>
     (con.getFrom()?.indexLigne === rowIndex && con.getFrom()?.indexColonne === colIndex) ||
     (con.getTo()?.indexLigne === rowIndex && con.getTo()?.indexColonne === colIndex)
   );
@@ -103,13 +100,22 @@ export class ConnectionSet{
   }
 
   print():void{
-    this.connections.forEach(con=>{
+    this._connections.forEach(con=>{
       console.log("HTML IDs :",con.getIdFrom(),"->",con.getIdTo());
       console.log("Etapes IDs :",con.getFrom()?.idEtape,"->",con.getTo()?.idEtape);
     })
   }
 
-  getConnexionsList():Connection[]{
-    return this.connections;
+
+  get connections(): Connection[] {
+    return this._connections;
+  }
+
+  set connections(value: Connection[]) {
+    this._connections = value;
+  }
+
+  clear(){
+    this._connections=[];
   }
 }
