@@ -49,22 +49,6 @@ export function getStatutLabel(staut:EStatut) {
       return "Terminée";
   }
 }
-/*
-export interface Etapee{
-  get description():string;
-  get ordre():number;
-  get pourcentage():number;
-  get duréeEstimée():number;
-  get isFirst():boolean;
-  get isEnd():boolean;
-  get isValidate():boolean;
-  get isPaid():boolean;
-  get statutEtape() : StatutEtape;
-  get type():string;
-  get showButtons() : boolean;
-  get enableShowButtons() : boolean;
-  displayInfo():void;
-}*/
 
 export class BaseEtape implements Etape{
   private _idEtape: number;
@@ -86,6 +70,7 @@ export class BaseEtape implements Etape{
   private _enableShowButtons:boolean;
   private _componentName : string;
   private _processus? : Processus | undefined;
+  private _editModalIsVisibe:boolean;
   _displayInfo:boolean;
   public _cellRef: CellComponent | null;
 
@@ -110,6 +95,7 @@ export class BaseEtape implements Etape{
     this._enableShowButtons=false;
     this._displayInfo=false;
     this._cellRef=null;
+    this._editModalIsVisibe=false;
   }
 
 
@@ -252,26 +238,6 @@ export class BaseEtape implements Etape{
     }
   }
 
-  onClickDelete(){
-    this._cellRef?.deleteItemProcess();
-  }
-
-  onClickDisplayEditModal(){
-    this._cellRef?.displayEditItemProcess();
-  }
-
-  onClickHideModal(){
-    this._cellRef?.hideItemProcess();
-  }
-
-  displayInfo() {
-    this._displayInfo = true;
-  }
-
-  hideInfo(){
-    this._displayInfo = false;
-  }
-
   get type(): Type | undefined {
     if(this._type)
       return this._type;
@@ -301,6 +267,16 @@ export class BaseEtape implements Etape{
     this._componentName = value;
   }
 
+  get editModalIsVisibe(): boolean {
+    return this._editModalIsVisibe;
+  }
 
+  set editModalIsVisibe(value: boolean) {
+    this._editModalIsVisibe = value;
+  }
+
+  onClickHideModal(){
+    this._editModalIsVisibe=false;
+  }
 }
 

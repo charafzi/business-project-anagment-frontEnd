@@ -60,7 +60,6 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
   @Input('onDotClicked') onDotClicked:boolean = false;
   @ViewChild('container',{read : ViewContainerRef})
   container! : ViewContainerRef;
-  displayInfoModal:boolean =false;
   constructor(private CFR: ComponentFactoryResolver,
               private modalService: NzModalService,
               private typeService : TypeService,
@@ -110,7 +109,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
 
   /**Create an item on drop on a cell
    scenarios : Cell is empty
-                Cell already contains a proessItem (Etape)
+              Cell already contains a processItem (Etape)
    **/
   drop(event :CdkDragDrop<BaseItem>) {
     this.processItemDropped.emit({});
@@ -177,6 +176,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
                   break;
               }
               this.createItemProcess(0);
+
               //send this emitter to grid to create connexions after the creation of this process
               this.connectProcessItems.emit({
                 indexRow : this.rowIndex,
@@ -342,15 +342,5 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
       return Promise.resolve();
     }
   }
-
-  displayEditItemProcess(){
-    this.displayInfoModal = true;
-  }
-
-  hideItemProcess(){
-    this.displayInfoModal = false;
-  }
-
-
 
 }

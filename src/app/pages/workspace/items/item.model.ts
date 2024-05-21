@@ -48,14 +48,10 @@ export abstract class BaseItem{
     this._etape?._cellRef?.deleteItemProcess()
   }
 
+  //change the boolean in etape to make it visible
   onClickDisplayEditModal(){
-    this._etape?._cellRef?.displayEditItemProcess();
+    if (this._etape){
+      this._etape.editModalIsVisibe=true;
+    }
   }
-
-  onClickHideModal(){
-    this._etape?._cellRef?.hideItemProcess();
-  }
-
-
-
 }

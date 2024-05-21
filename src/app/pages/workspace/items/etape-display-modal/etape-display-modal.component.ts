@@ -201,6 +201,8 @@ export class EtapeDisplayModalComponent implements OnInit{
     }
   }
 
-
+  onClickHideModal(){
+    this.etape.editModalIsVisibe=false;
+  }
 
 }

@@ -13,7 +13,7 @@
   <ng-container *ngIf="processItem">
     <app-etape-display-modal
       [etape]="processItem"
-      [isVisible]="displayInfoModal"
+      [isVisible]="processItem.editModalIsVisibe"
     >
     </app-etape-display-modal>
   </ng-container>

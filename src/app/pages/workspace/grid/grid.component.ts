@@ -654,6 +654,7 @@ export class GridComponent implements OnInit,AfterViewInit{
     this.connexionService.processItems=this.processItems;
   }
 
+  //Create connections from based on lists from modal creation
   connectProcessItems(eventData:{indexRow:number,indexCol:number,stepsBefore : string[],stepsAfter : string[]}){
     if(eventData.stepsBefore.length != 1){
       for(let i=1; i<eventData.stepsBefore.length;i++){
