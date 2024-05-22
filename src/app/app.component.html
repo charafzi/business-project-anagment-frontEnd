@@ -6,7 +6,8 @@
     [(nzCollapsed)]="isCollapsed"
     [nzTrigger]="null">
     <div class="sidebar-logo">
-      <a href="https://ng.ant.design/" target="_blank">
+      <a *ngIf="!isCollapsed"
+        href="https://ng.ant.design/" target="_blank">
         <img src="assets/logoSiteExplorer.png"
              alt="logo">
       </a>

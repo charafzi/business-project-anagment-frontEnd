@@ -135,9 +135,6 @@ export class EtapeDisplayModalComponent implements OnInit{
       this.percent = 0;
     }
   }
-  onClickChangeModifiable(){
-    this.isModifiable = !this.isModifiable;
-  }
 
   validateForm(){
     if(this.etapeForm.valid){
@@ -194,7 +191,7 @@ export class EtapeDisplayModalComponent implements OnInit{
       }
       this.etape.dureeEstimee = dureeEstime;
       this.etape.delaiAttente = delaiAttente;
-      this.etape.onClickHideModal();
+      this.onClickHideModal();
       this.modalService.success({
         nzTitle : "Step modified successfully !"
       })

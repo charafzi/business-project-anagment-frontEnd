@@ -2,13 +2,31 @@
   [(nzVisible)]="isVisible"
   [nzTitle]="modalTitle"
   [nzContent]="modalContent"
-  [nzFooter]="modalFooter"
   (nzOnCancel)="onClickHideModal()"
+  (nzOnOk)="validateForm()"
 >
   <ng-template #modalTitle>Informations about the step :</ng-template>
 
   <ng-template #modalContent>
     <form nz-form [formGroup]="etapeForm" >
+      <div class="row"
+           nz-row
+      >
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label>Categorie &nbsp;</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="16">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Please select the category"
+              >
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
       <div nz-row [nzGutter]="24"
            class="row"
       >
@@ -113,17 +131,17 @@
       <div nz-row class="row"
            [nzJustify]="'space-evenly'"
       >
-        <div nz-col [nzSpan]="4" [nzOffset]="8">
+        <div nz-col [nzSpan]="8" [nzOffset]="8">
           <nz-form-item>
             <nz-form-control>
-              <label nz-checkbox formControlName="isPaid">Paid</label>
+              <label nz-checkbox formControlName="isPaid">To be paid</label>
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="4" [nzOffset]="5">
+        <div nz-col [nzSpan]="8" [nzOffset]="0">
           <nz-form-item>
             <nz-form-control>
-              <label nz-checkbox formControlName="isValidate">Validated</label>
+              <label nz-checkbox formControlName="isValidate">To be validated</label>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -149,9 +167,5 @@
         </div>
       </div>
     </form>
-  </ng-template>
-
-  <ng-template #modalFooter>
-    <button nz-button nzType="primary" (click)="validateForm()">Confirm</button>
   </ng-template>
 </nz-modal>

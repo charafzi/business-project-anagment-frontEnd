@@ -26,8 +26,6 @@ export class SquareComponent extends BaseItem {
     this._componentName='square';
   }
 
-
-
   onClick()
   {
     alert(this.message);

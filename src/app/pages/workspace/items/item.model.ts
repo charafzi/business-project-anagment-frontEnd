@@ -54,4 +54,10 @@ export abstract class BaseItem{
       this._etape.editModalIsVisibe=true;
     }
   }
+
+  onClickDisplayConnectionModal(){
+    if (this._etape){
+      this._etape.connectionsModalIsVisibe=true;
+    }
+  }
 }

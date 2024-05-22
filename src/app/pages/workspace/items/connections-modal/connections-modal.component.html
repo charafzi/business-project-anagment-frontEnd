@@ -1,0 +1,55 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  (nzOnCancel)="onClickHideModal()"
+  (nzOnOk)="validateForm()"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+>
+  <ng-template #modalTitle>Manage the connections related to this step :</ng-template>
+  <ng-template #modalContent>
+    <form nz-form [formGroup]="connectionsForm">
+      <div class="row"
+           nz-row
+      >
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label>Steps before &nbsp;</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="16">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-select formControlName="stepsBefore"
+                         nzMode="multiple"
+                         nzPlaceHolder="Please select the steps before this step"
+              >
+                <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div class="row"
+           nz-row
+      >
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-label>Steps after &nbsp;</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="16">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-select formControlName="stepsAfter"
+                         nzMode="multiple"
+                         nzPlaceHolder="Please select the steps after this step"
+              >
+                <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+    </form>
+  </ng-template>
+</nz-modal>

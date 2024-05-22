@@ -108,12 +108,7 @@ export class EtapeModalComponent implements OnInit{
 
   ngOnInit(): void {
     this.etapes = this.connexionService.getEtapesFromGrid();
-
   }
-
-  /*formIsValid():boolean{
-    return this.etapeForm.valid;
-}*/
 
   formIsValid(): boolean {
     if (this.etapeForm.valid) {

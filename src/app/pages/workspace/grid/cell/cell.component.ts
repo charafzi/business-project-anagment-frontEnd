@@ -26,6 +26,7 @@ import {TypeService} from "../../../../services/type.service";
 import {BaseItem} from "../../items/item.model";
 import {verifyHostBindings} from "@angular/compiler";
 import {ProcessusService} from "../../../../services/processus.service";
+import {ConnectionsModalComponent} from "../../items/connections-modal/connections-modal.component";
 
 
 @Component({
@@ -42,7 +43,8 @@ import {ProcessusService} from "../../../../services/processus.service";
     RhombusComponent,
     CircleComponent,
     EtapeDisplayModalComponent,
-    NzBadgeComponent
+    NzBadgeComponent,
+    ConnectionsModalComponent
   ],
   styleUrl: './cell.component.css'
 })
@@ -65,7 +67,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               private typeService : TypeService,
               private processusService : ProcessusService
   ) {
-    setTimeout(() => {
+    /*setTimeout(() => {
       if(this.processItem != null)
       {
         console.log("CELL at ["+this.rowIndex+"]["+this.colIndex+"] is type === "+this.processItem.type);
@@ -76,7 +78,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
         console.log("CELL at ["+this.rowIndex+"]["+this.colIndex+"] is null");
       }
 
-    }, 8000);
+    }, 8000);*/
   }
 
   ngAfterViewInit(): void {
