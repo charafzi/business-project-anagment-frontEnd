@@ -27,6 +27,8 @@ import {BaseItem} from "../../items/item.model";
 import {verifyHostBindings} from "@angular/compiler";
 import {ProcessusService} from "../../../../services/processus.service";
 import {ConnectionsModalComponent} from "../../items/connections-modal/connections-modal.component";
+import {Categorie} from "../../../../models/categorie.model";
+import {CategorieService} from "../../../../services/categorie.service";
 
 
 @Component({
@@ -65,7 +67,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
   constructor(private CFR: ComponentFactoryResolver,
               private modalService: NzModalService,
               private typeService : TypeService,
-              private processusService : ProcessusService
+              private processusService : ProcessusService,
+              private categorieService : CategorieService
   ) {
     /*setTimeout(() => {
       if(this.processItem != null)
@@ -143,6 +146,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               this.processItem.description = <string>modalComponentInst.etapeForm.value.description;
               this.processItem.validate = <boolean>modalComponentInst.etapeForm.value.isValidate;
               this.processItem.paid = <boolean>modalComponentInst.etapeForm.value.isPaid;
+              this.processItem.categorie = this.categorieService.getCategorieById(<number>modalComponentInst.etapeForm.value.categorie);
+
               switch (periodDureeEstime){
                 case 'H':
                   break;
@@ -266,14 +271,16 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
           newProcessItem._cellRef=this;
         }
       }
+
       newProcessItem.enableShowButtons=true;
       newProcessItem.showButtons = true;
 
       //newProcessItem.showButtons=true;
       let T = this.typeService.getTypeByName(typeName)
-      if(T == undefined)
-        throw Error('Error when creating itemProcess at Cell : Cannot assign a type.');
+      if(T == null)
+        throw Error('Error when creating itemProcess at Cell : Type is null.');
       newProcessItem.type = T;
+      newProcessItem.categorie = this.processItem.categorie;
 
       //assign Etape to component
       (childComponentRef.instance as BaseItem)._etape = newProcessItem;

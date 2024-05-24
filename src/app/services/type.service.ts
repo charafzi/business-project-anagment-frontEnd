@@ -19,7 +19,7 @@ export class TypeService{
         this.types=types;
       },
         error => {
-        console.log("Error at fetching types from Database :" + error);
+        console.log("Error at fetching types from back-end :" + error);
         }
       )
   }
@@ -28,8 +28,8 @@ export class TypeService{
     return this.http.get<Type[]>(this.url+"/alltypes");
   }
 
-  getTypeByName(nom: string): Type | undefined {
-    return this.types.find((type: Type) => type.nom === nom);
+  getTypeByName(nom: string): Type | null{
+    return this.types.find((type: Type) => type.nom === nom) || null;
   }
 
   getTypeByComponentname(compName: string): string {

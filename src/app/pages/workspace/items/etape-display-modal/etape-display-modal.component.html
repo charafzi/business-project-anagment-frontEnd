@@ -19,9 +19,11 @@
         </div>
         <div nz-col [nzSpan]="16">
           <nz-form-item>
-            <nz-form-control>
-              <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Please select the category"
+            <nz-form-control nzErrorTip="This field is required !">
+              <nz-select formControlName="categorie" nzShowSearch nzAllowClear nzPlaceHolder="Please select the category"
+                         [nzLoading]="categories.length==0"
               >
+                <nz-option *ngFor="let cat of categories" [nzValue]="cat.idCategorie" [nzLabel]="cat.nom"></nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>

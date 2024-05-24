@@ -23,7 +23,16 @@
                          nzMode="multiple"
                          nzPlaceHolder="Please select the steps before this step"
               >
-                <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
+                <nz-option *ngFor="let item of etapes"
+                           nzCustomContent
+                           [nzLabel]="item.categorie?.nom ?? ''"
+                           [nzValue]="item.indexLigne+'-'+item.indexColonne"
+                >
+              <span nz-tooltip
+                    nzTooltipTitle="{{item.description}}">
+                 {{item.categorie?.nom ?? ''}}
+              </span>
+                </nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>
@@ -43,8 +52,19 @@
               <nz-select formControlName="stepsAfter"
                          nzMode="multiple"
                          nzPlaceHolder="Please select the steps after this step"
+
               >
-                <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
+                <nz-option *ngFor="let item of etapes"
+                           nzCustomContent
+                           [nzValue]="item.indexLigne+'-'+item.indexColonne"
+                           [nzLabel]="item.categorie?.nom ?? ''"
+
+                >
+              <span nz-tooltip
+                    nzTooltipTitle="{{item.description}}">
+                {{item.categorie?.nom ?? ''}}
+              </span>
+                </nz-option>
               </nz-select>
             </nz-form-control>
           </nz-form-item>

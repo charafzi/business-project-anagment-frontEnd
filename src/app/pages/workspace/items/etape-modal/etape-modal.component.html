@@ -9,9 +9,11 @@
     </div>
     <div nz-col [nzSpan]="16">
       <nz-form-item>
-        <nz-form-control>
-          <nz-select nzShowSearch nzAllowClear nzPlaceHolder="Please select the category"
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-select formControlName="categorie" nzShowSearch nzAllowClear nzPlaceHolder="Please select the category"
+                     [nzLoading]="categories.length==0"
           >
+            <nz-option *ngFor="let cat of categories" [nzValue]="cat.idCategorie" [nzLabel]="cat.nom"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -132,7 +134,16 @@
                      nzMode="multiple"
                      nzPlaceHolder="Please select the steps before this step"
           >
-            <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
+            <nz-option *ngFor="let item of etapes"
+                       nzCustomContent
+                       [nzLabel]="item.categorie?.nom ?? ''"
+                       [nzValue]="item.indexLigne+'-'+item.indexColonne"
+            >
+              <span nz-tooltip
+                    nzTooltipTitle="{{item.description}}">
+                 {{item.categorie?.nom ?? ''}}
+              </span>
+            </nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -152,8 +163,19 @@
           <nz-select formControlName="stepsAfter"
                      nzMode="multiple"
                      nzPlaceHolder="Please select the steps after this step"
+
           >
-            <nz-option *ngFor="let item of etapes" [nzLabel]="item.description" [nzValue]="item.indexLigne+'-'+item.indexColonne"></nz-option>
+            <nz-option *ngFor="let item of etapes"
+                       nzCustomContent
+                       [nzValue]="item.indexLigne+'-'+item.indexColonne"
+                       [nzLabel]="item.categorie?.nom ?? ''"
+
+            >
+              <span nz-tooltip
+                    nzTooltipTitle="{{item.description}}">
+                {{item.categorie?.nom ?? ''}}
+              </span>
+            </nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>

@@ -15,6 +15,7 @@ import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
 import {ConnexionService} from "../../../../services/connexion.service";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import {B} from "@angular/cdk/keycodes";
+import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 
 @Component({
   selector: 'app-connections-modal',
@@ -32,7 +33,8 @@ import {B} from "@angular/cdk/keycodes";
     NzSelectComponent,
     ReactiveFormsModule,
     NzFormDirective,
-    NzButtonComponent
+    NzButtonComponent,
+    NzTooltipDirective
   ],
   styleUrl: './connections-modal.component.css'
 })

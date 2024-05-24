@@ -2,6 +2,7 @@ import {CellComponent} from "../grid/cell/cell.component";
 import {Etape} from "../../../models/etape.model";
 import {Type} from "../../../models/type.model";
 import {Processus} from "../../../models/processus.model";
+import {Categorie} from "../../../models/categorie.model";
 
 export enum EStatut{
   EN_COURS=0,
@@ -65,7 +66,8 @@ export class BaseEtape implements Etape{
   private _validate: boolean;
   private _paid: boolean;
   private _statutEtape : StatutEtape;
-  private _type?: Type;
+  private _type : Type |null;
+  private _categorie: Categorie | null;
   private _showButtons:boolean;
   private _enableShowButtons:boolean;
   private _componentName : string;
@@ -98,6 +100,8 @@ export class BaseEtape implements Etape{
     this._cellRef=null;
     this._editModalIsVisibe=false;
     this._connectionsModalIsVisibe=false;
+    this._type = null;
+    this._categorie = null;
   }
 
 
@@ -240,16 +244,22 @@ export class BaseEtape implements Etape{
     }
   }
 
-  get type(): Type | undefined {
-    if(this._type)
-      return this._type;
-    return undefined;
+
+  get type(): Type | null {
+    return this._type;
   }
 
-  set type(value: Type) {
+  set type(value: Type | null) {
     this._type = value;
   }
 
+  get categorie(): Categorie | null {
+    return this._categorie;
+  }
+
+  set categorie(value: Categorie | null) {
+    this._categorie = value;
+  }
 
   get processus(): Processus | undefined{
     if(this._processus)

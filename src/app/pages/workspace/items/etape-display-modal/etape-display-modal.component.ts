@@ -12,114 +12,64 @@ import {NzProgressComponent} from "ng-zorro-antd/progress";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
 import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
+import {CategorieService} from "../../../../services/categorie.service";
+import {Categorie} from "../../../../models/categorie.model";
+import {NgForOf} from "@angular/common";
 
 @Component({
   selector: 'app-etape-display-modal',
   templateUrl: './etape-display-modal.component.html',
   standalone: true,
-    imports: [
-        NzModalContentDirective,
-        NzModalComponent,
-        NzModalFooterDirective,
-        NzButtonComponent,
-        NzCheckboxComponent,
-        NzColDirective,
-        NzFormControlComponent,
-        NzFormDirective,
-        NzFormLabelComponent,
-        NzInputDirective,
-        NzInputNumberComponent,
-        NzRowDirective,
-        NzTextareaCountComponent,
-        ReactiveFormsModule,
-        NzProgressComponent,
-        NzButtonGroupComponent,
-        NzIconDirective,
-        NzSelectComponent,
-        NzOptionComponent,
-        NzRadioComponent,
-        NzRadioGroupComponent
-    ],
+  imports: [
+    NzModalContentDirective,
+    NzModalComponent,
+    NzModalFooterDirective,
+    NzButtonComponent,
+    NzCheckboxComponent,
+    NzColDirective,
+    NzFormControlComponent,
+    NzFormDirective,
+    NzFormLabelComponent,
+    NzInputDirective,
+    NzInputNumberComponent,
+    NzRowDirective,
+    NzTextareaCountComponent,
+    ReactiveFormsModule,
+    NzProgressComponent,
+    NzButtonGroupComponent,
+    NzIconDirective,
+    NzSelectComponent,
+    NzOptionComponent,
+    NzRadioComponent,
+    NzRadioGroupComponent,
+    NgForOf
+  ],
   styleUrl: './etape-display-modal.component.css'
 })
 export class EtapeDisplayModalComponent implements OnInit{
   @Input('etape') etape! : BaseEtape;
   @Input('isVisible') isVisible!:boolean;
-  isModifiable:boolean = false;
+  categories : Categorie [] = [];
   percent = 0;
   etapeForm!: FormGroup;
-
+  categoriesIsLoading:boolean = true;
   constructor(private fb: FormBuilder,
-              private modalService : NzModalService) {}
+              private modalService : NzModalService,
+              private categorieService : CategorieService) {}
 
   ngOnInit(): void {
-    etapeForm: FormGroup<{
-      description:FormControl<string>;
-      ordre: FormControl<number>;
-      statutEtape : FormControl<string>;
-      dureeEstimee: FormControl<number>;
-      delaiAttente: FormControl<number>;
-      isFirst:FormControl<boolean>;
-      isEnd:FormControl<boolean>;
-      isValidate:FormControl<boolean>;
-      isPaid:FormControl<boolean>;
-      radioDureeEstimee:FormControl<string>
-      radioDelaiAttente:FormControl<string>;
-      radioFIE:FormControl<string>;
-    }>
-    let perdiodDureeEstime = '';
-    let perdiodDelaiAttente ='';
-    let selectedFIE=';'
-    //744 == 31 * 24 (Months to hours)
+    this.categorieService.getAllCategories()
+      .subscribe(categories => {
+          this.categories = categories;
+        },
+        error => {
+          console.error("Error ate retrieving Categories from back-end : " + error)
 
-    if(this.etape.dureeEstimee%744 == 0)
-    {
-      this.etape.dureeEstimee/=744;
-      perdiodDureeEstime = 'M';
-    }
-    else if(this.etape.dureeEstimee%24 ==0)
-    {
-      this.etape.dureeEstimee/=24;
-      perdiodDureeEstime = 'D';
-    }
-    else
-      perdiodDureeEstime = 'H'
+        }
+      )
 
-    if(this.etape.delaiAttente%744 == 0)
-    {
-      this.etape.delaiAttente/=744;
-      perdiodDelaiAttente = 'M';
-    }
-    else if(this.etape.delaiAttente%24 ==0)
-    {
-      this.etape.delaiAttente/=24;
-      perdiodDelaiAttente = 'D';
-    }
-    else
-      perdiodDelaiAttente = 'H'
+    this.initializeForm();
 
-    if(this.etape.first)
-      selectedFIE = 'F';
-    else if(this.etape.end)
-      selectedFIE = 'E';
-    else
-      selectedFIE = 'I';
-
-    this.etapeForm = this.fb.group({
-      description : [this.etape.description,[Validators.required,Validators.maxLength(255)]],
-      delaiAttente : [this.etape.delaiAttente,[Validators.min(0)]],
-      dureeEstimee : [this.etape.dureeEstimee,[Validators.required,Validators.min(0)]],
-      ordre : [this.etape.ordre,Validators.required],
-      statutEtape : [statutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
-      isFirst : [this.etape.first],
-      isEnd : [this.etape.end],
-      isValidate : [this.etape.validate],
-      isPaid : [this.etape.paid],
-      radioDureeEstimee : [perdiodDureeEstime,[Validators.required]],
-      radioDelaiAttente : [perdiodDelaiAttente,[Validators.required]],
-      radioFIE : [selectedFIE,[Validators.required]]
-    })
-    this.percent=this.etape.pourcentage;
   }
 
   increase(): void {
@@ -191,6 +141,7 @@ export class EtapeDisplayModalComponent implements OnInit{
       }
       this.etape.dureeEstimee = dureeEstime;
       this.etape.delaiAttente = delaiAttente;
+      this.etape.categorie = this.categorieService.getCategorieById(this.etapeForm.value.categorie);
       this.onClickHideModal();
       this.modalService.success({
         nzTitle : "Step modified successfully !"
@@ -198,7 +149,81 @@ export class EtapeDisplayModalComponent implements OnInit{
     }
   }
 
+  initializeForm(){
+    etapeForm: FormGroup<{
+      description:FormControl<string>;
+      ordre: FormControl<number>;
+      statutEtape : FormControl<string>;
+      dureeEstimee: FormControl<number>;
+      delaiAttente: FormControl<number>;
+      isFirst:FormControl<boolean>;
+      isEnd:FormControl<boolean>;
+      isValidate:FormControl<boolean>;
+      isPaid:FormControl<boolean>;
+      radioDureeEstimee:FormControl<string>
+      radioDelaiAttente:FormControl<string>;
+      radioFIE:FormControl<string>;
+      categorie:FormControl<number>;
+    }>
+    let perdiodDureeEstime = '';
+    let perdiodDelaiAttente ='';
+    let selectedFIE=';'
+    //744 == 31 * 24 (Months to hours)
+
+    if(this.etape.dureeEstimee%744 == 0)
+    {
+      this.etape.dureeEstimee/=744;
+      perdiodDureeEstime = 'M';
+    }
+    else if(this.etape.dureeEstimee%24 ==0)
+    {
+      this.etape.dureeEstimee/=24;
+      perdiodDureeEstime = 'D';
+    }
+    else
+      perdiodDureeEstime = 'H'
+
+    if(this.etape.delaiAttente%744 == 0)
+    {
+      this.etape.delaiAttente/=744;
+      perdiodDelaiAttente = 'M';
+    }
+    else if(this.etape.delaiAttente%24 ==0)
+    {
+      this.etape.delaiAttente/=24;
+      perdiodDelaiAttente = 'D';
+    }
+    else
+      perdiodDelaiAttente = 'H'
+
+    if(this.etape.first)
+      selectedFIE = 'F';
+    else if(this.etape.end)
+      selectedFIE = 'E';
+    else
+      selectedFIE = 'I';
+
+    this.etapeForm = this.fb.group({
+      description : [this.etape.description,[Validators.required,Validators.maxLength(255)]],
+      delaiAttente : [this.etape.delaiAttente,[Validators.min(0)]],
+      dureeEstimee : [this.etape.dureeEstimee,[Validators.required,Validators.min(0)]],
+      ordre : [this.etape.ordre,Validators.required],
+      statutEtape : [statutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
+      isFirst : [this.etape.first],
+      isEnd : [this.etape.end],
+      isValidate : [this.etape.validate],
+      isPaid : [this.etape.paid],
+      radioDureeEstimee : [perdiodDureeEstime,[Validators.required]],
+      radioDelaiAttente : [perdiodDelaiAttente,[Validators.required]],
+      radioFIE : [selectedFIE,[Validators.required]],
+      categorie : [this.etape.categorie?.idCategorie,[Validators.required]]
+    })
+    this.percent=this.etape.pourcentage;
+
+  }
+
   onClickHideModal(){
+    this.initializeForm();
     this.etape.editModalIsVisibe=false;
   }
 

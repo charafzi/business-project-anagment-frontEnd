@@ -26,6 +26,8 @@ import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
 import {ConnexionService} from "../../../../services/connexion.service";
 import {BaseEtape} from "../Etape.class";
 import {NgForOf} from "@angular/common";
+import {Categorie} from "../../../../models/categorie.model";
+import {CategorieService} from "../../../../services/categorie.service";
 
 @Component({
   selector: 'app-etape-modal',
@@ -61,6 +63,7 @@ import {NgForOf} from "@angular/common";
 export class EtapeModalComponent implements OnInit{
   @Output() formDataConfirmed: EventEmitter<any> = new EventEmitter<any>();
   etapes : BaseEtape [] = [];
+  categories : Categorie [] = [];
   etapeForm: FormGroup<{
     description:FormControl<string>;
    // ordre: FormControl<number>;
@@ -74,24 +77,14 @@ export class EtapeModalComponent implements OnInit{
     radioFIE:FormControl<string>;
     stepsBefore : FormControl<string[]>;
     stepsAfter : FormControl<string[]>;
+    categorie : FormControl<number>;
   }>
-  /*description: (string | null)=null;
-  ordre: number=0;
-  pourcentage: number=0;
-  duréeEstimée: number=0;
-  délaiAttente: number=0;
-  isFirst: boolean=false;
-  isEnd: boolean=false;
-  isValidate: boolean=false;
-  isPaid: boolean=false;*/
-
-  isVisible:boolean = false;
-
-
 
   constructor(private modalRef: NzModalRef,
               private fb: NonNullableFormBuilder,
-              private connexionService : ConnexionService) {
+              private connexionService : ConnexionService,
+              private categorieService : CategorieService
+  ) {
     this.etapeForm = this.fb.group({
       description : ['',[Validators.required,Validators.maxLength(255)]],
       dureeEstimee : [1,[Validators.required,Validators.min(0)]],
@@ -102,12 +95,22 @@ export class EtapeModalComponent implements OnInit{
       radioDelaiAttente : ['',[Validators.required]],
       radioFIE : ['',[Validators.required]],
       stepsAfter : [['']],
-      stepsBefore : [['']]
+      stepsBefore : [['']],
+      categorie : [1,[Validators.required]]
     })
   }
 
   ngOnInit(): void {
     this.etapes = this.connexionService.getEtapesFromGrid();
+    this.categorieService.getAllCategories()
+      .subscribe(categories=>{
+          this.categories = categories;
+        },
+        error => {
+          console.error("Error ate retrieving Categories from back-end : "+error)
+
+        }
+      )
   }
 
   formIsValid(): boolean {
@@ -124,6 +127,5 @@ export class EtapeModalComponent implements OnInit{
       return false;
     }
   }
-
 
 }

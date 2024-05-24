@@ -208,7 +208,8 @@ export class GridComponent implements OnInit,AfterViewInit{
               statutEtape : etape.statutEtape,
               pourcentage : etape.pourcentage,
               type : etape.type,
-              processus : etape.processus
+              processus : etape.processus,
+              categorie : etape.categorie
             });
             maxRow = Math.max(maxRow,etape.indexLigne);
             maxCol = Math.max(maxCol,etape.indexColonne);
@@ -266,7 +267,9 @@ export class GridComponent implements OnInit,AfterViewInit{
                               intermediate : false,
                               validate: false,
                               end: false,
-                              paid: false
+                              paid: false,
+                              categorie : null,
+                              type : null
                             },
                             to : {
                               idEtape: etapeTo.idEtape,
@@ -282,7 +285,9 @@ export class GridComponent implements OnInit,AfterViewInit{
                               intermediate : false,
                               validate: false,
                               end: false,
-                              paid: false
+                              paid: false,
+                              categorie : null,
+                              type : null
                             }
                           })
                         }
