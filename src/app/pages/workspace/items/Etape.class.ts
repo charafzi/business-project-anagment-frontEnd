@@ -32,6 +32,7 @@ export class BaseEtape implements Etape{
   private _intermediate:boolean;
   private _end: boolean;
   private _validate: boolean;
+  private _accepted : boolean;
   private _paid: boolean;
   private _statutEtape : StatutEtape;
   private _type : Type |null;
@@ -72,30 +73,9 @@ export class BaseEtape implements Etape{
     this._connectionsModalIsVisibe=false;
     this._type = null;
     this._categorie = null;
-  }
+    this._accepted = false;
+    }
 
-  //this function is used to assign values from Etape retrieved from DataBase
-  copyFromEtape(etape : Etape){
-      console.log(etape)
-    this._idEtape = etape.idEtape !== undefined ? etape.idEtape : -1;
-    this._description = etape.description !== undefined ? etape.description : '';
-    this._ordre = etape.ordre !== undefined ? etape.ordre : 0;
-    this._indexLigne = etape.indexLigne !== undefined ? etape.indexLigne : 0;
-    this._indexColonne = etape.indexColonne !== undefined ? etape.indexColonne : 0;
-    this._pourcentage = etape.pourcentage !== undefined ? etape.pourcentage : 0;
-    this._dureeEstimee = etape.dureeEstimee !== undefined ? etape.dureeEstimee : 0;
-    this._dureeEstimeeUnite = etape.dureeEstimeeUnite !== undefined ? getDurationUniteFromString(etape.dureeEstimeeUnite.toString()) : DurationUnite.HOUR;
-    this._delaiAttente = etape.delaiAttente !== undefined ? etape.delaiAttente : 0;
-    this._delaiAttenteUnite = etape.delaiAttenteUnite !== undefined ? getDurationUniteFromString(etape.delaiAttenteUnite.toString())  : DurationUnite.HOUR;
-    this._first = etape.first !== undefined ? etape.first : false;
-    this._intermediate = etape.intermediate !== undefined ? etape.intermediate : false;
-    this._end = etape.end !== undefined ? etape.end : false;
-    this._validate = etape.validate !== undefined ? etape.validate : false;
-    this._paid = etape.paid !== undefined ? etape.paid : false;
-    this._statutEtape = etape.statutEtape !== undefined ? getStatutEtapeFromString(etape.statutEtape.toString()) : StatutEtape.PAS_ENCORE_COMMENCEE;
-    this._type = etape.type !== undefined ? etape.type : null;
-    this._categorie = etape.categorie !== undefined ? etape.categorie : null;
-  }
 
 
 
@@ -307,10 +287,13 @@ export class BaseEtape implements Etape{
     this._delaiAttenteUnite = value;
   }
 
-  onClickHideModal(){
-    this._editModalIsVisibe=false;
+
+  get accepted(): boolean {
+    return this._accepted;
   }
 
-
+  set accepted(value: boolean) {
+    this._accepted = value;
+  }
 }
 

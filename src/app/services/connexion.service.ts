@@ -8,6 +8,7 @@ import LinkerLine from "linkerline";
 import {StatutTache} from "../models/StatutTache";
 import {getStatutTacheFromString} from "../models/tache.model";
 import {DurationUnite} from "../models/DurationUnite";
+import {GridComponent} from "../pages/workspace/grid/grid.component";
 
 @Injectable({
   providedIn : 'root'
@@ -16,6 +17,8 @@ export class ConnexionService{
   grid!: ElementRef; //this to refere the parent component that hold cells to create connections with LeaderLine
   document!:Document;
   private connectionSet : ConnectionSet = new ConnectionSet();
+  firstExists : boolean = false;
+  endExists : boolean = false;
   url:string = 'http://localhost:8100/connexions';
   /**
    it's used to hold temporarily the matrix of "Etape" to help to transfer it from the grid component
@@ -223,6 +226,20 @@ export class ConnexionService{
       connexion.delaiAttenteUnite = delaiAttenteUnite;
     }else
       throw new Error("Error at updating connection attributes : From or To is not found !")
+  }
+
+  checkFirstExists():boolean{
+    let connection = this.connectionSet.connections.find(conn=>{
+      conn.getFrom()?.first==true || conn.getTo()?.first==true
+    })
+    return connection != undefined;
+  }
+
+  checkEndExists():boolean{
+    let connection = this.connectionSet.connections.find(conn=>{
+      conn.getFrom()?.end==true || conn.getTo()?.end==true
+    })
+    return connection != undefined;
   }
 
   generateRandomColor(): string {

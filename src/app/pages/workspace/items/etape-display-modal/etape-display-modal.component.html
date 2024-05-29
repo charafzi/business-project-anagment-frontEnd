@@ -63,7 +63,7 @@
         <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label>Status</nz-form-label>
-            <nz-form-control>
+            <nz-form-control nzErrorTip="This field is required !">
               <nz-select formControlName="statutEtape">
                 <nz-option nzValue="Commencée" nzLabel="Started"></nz-option>
                 <nz-option nzValue="Pas encore commencée" nzLabel="Not started yet"></nz-option>
@@ -84,8 +84,8 @@
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="13" [nzOffset]="1">
-          <nz-form-control>
-            <nz-radio-group formControlName="radioDureeEstimee">
+          <nz-form-control nzErrorTip="This field is required !">
+            <nz-radio-group formControlName="radioDureeEstimee" >
               <label nz-radio nzValue="H">Hour<span>(s)</span></label>
               <label nz-radio nzValue="D">Day<span>(s)</span></label>
               <label nz-radio nzValue="M">Month<span>(s)</span></label>
@@ -105,7 +105,7 @@
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="13" [nzOffset]="1">
-          <nz-form-control>
+          <nz-form-control nzErrorTip="This field is required !">
             <nz-radio-group formControlName="radioDelaiAttente">
               <label nz-radio nzValue="H">Hour<span>(s)</span></label>
               <label nz-radio nzValue="D">Day<span>(s)</span></label>
@@ -121,7 +121,7 @@
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="16">
-          <nz-form-control>
+          <nz-form-control nzErrorTip="This field is required !">
             <nz-radio-group formControlName="radioFIE">
               <label nz-radio nzValue="F">First</label>
               <label nz-radio nzValue="I">Intermediate</label>
@@ -131,21 +131,55 @@
         </div>
       </div>
       <div nz-row class="row"
-           [nzJustify]="'space-evenly'"
       >
-        <div nz-col [nzSpan]="8" [nzOffset]="8">
+        <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-control>
-              <label nz-checkbox formControlName="isPaid">To be paid</label>
+            <nz-form-label>To be paid </nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col>
+          <nz-form-control nzErrorTip="This field is required !">
+            <nz-radio-group formControlName="radioPaid">
+              <label nz-radio nzValue="Y">Yes</label>
+              <label nz-radio nzValue="N">No</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </div>
+      </div>
+      <div nz-row class="row"
+      >
+        <div nz-col [nzSpan]="8">
+          <nz-form-item>
+            <nz-form-control nzErrorTip="This field is required !">
+              <nz-form-label>To be validated </nz-form-label>
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="8" [nzOffset]="0">
+        <div nz-col>
+          <nz-form-control>
+            <nz-radio-group formControlName="radioValidated">
+              <label nz-radio nzValue="Y">Yes</label>
+              <label nz-radio nzValue="N">No</label>
+            </nz-radio-group>
+          </nz-form-control>
+        </div>
+      </div>
+      <div nz-row class="row"
+      >
+        <div nz-col [nzSpan]="8">
           <nz-form-item>
             <nz-form-control>
-              <label nz-checkbox formControlName="isValidate">To be validated</label>
+              <nz-form-label>To be accepted</nz-form-label>
             </nz-form-control>
           </nz-form-item>
+        </div>
+        <div nz-col>
+          <nz-form-control nzErrorTip="This field is required !">
+            <nz-radio-group formControlName="radioAccepted">
+              <label nz-radio nzValue="Y">Yes</label>
+              <label nz-radio nzValue="N">No</label>
+            </nz-radio-group>
+          </nz-form-control>
         </div>
       </div>
       <div nz-row>

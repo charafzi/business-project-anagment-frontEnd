@@ -16,6 +16,7 @@ import {Router} from "@angular/router";
 import {StatutEtape, getStatutEtapeFromString} from "../../../models/StatutEtape";
 import {statutTacheFromDB} from "../../../models/tache.model";
 import {DurationUnite, getDurationUniteFromInt, getDurationUniteFromString} from "../../../models/DurationUnite";
+import {EtapeService} from "../../../services/etape.service";
 
 @Component({
   selector: 'app-grid',
@@ -54,6 +55,7 @@ export class GridComponent implements OnInit,AfterViewInit{
               private modalService: NzModalService,
               private processusService : ProcessusService,
               private connexionService : ConnexionService,
+              private etapeService : EtapeService,
               private router : Router) {
     this.isLoading = true;
 
@@ -69,6 +71,7 @@ export class GridComponent implements OnInit,AfterViewInit{
         new Array(this.nbRows)
           .fill(null)
           .map(()=> new Array(this.nbCols).fill(null));
+      this.etapeService.processItems = this.processItems;
     }
   }
 
@@ -76,7 +79,7 @@ export class GridComponent implements OnInit,AfterViewInit{
     //if the processus exist
     console.log(this.processusService.processus)
     if(this.processusService.processus && this.processusService.processus.idProcessus){
-      this.processusService.retrieveProcessById(this.processusService.processus.idProcessus);
+      this.processusService.retrieveProcessById(this.processusService.processus.idProcessus)
       /**
        * get "Etapes" from database and initialize grid matrix for processItems
        to initilize the view
@@ -85,6 +88,7 @@ export class GridComponent implements OnInit,AfterViewInit{
         .subscribe(processItems=>{
             processItems.forEach((etape:Etape)=>{
               this.processItems[etape.indexLigne][etape.indexColonne]= (etape as BaseEtape);
+
             });
           },
           error => {
@@ -207,6 +211,7 @@ export class GridComponent implements OnInit,AfterViewInit{
               end : etape.end,
               paid : etape.paid,
               validate : etape.validate,
+              accepted : etape.accepted,
               statutEtape : etape.statutEtape,
               pourcentage : etape.pourcentage,
               type : etape.type,
@@ -271,6 +276,7 @@ export class GridComponent implements OnInit,AfterViewInit{
                               validate: false,
                               end: false,
                               paid: false,
+                              accepted : false,
                               categorie : null,
                               type : null
                             },
@@ -291,6 +297,7 @@ export class GridComponent implements OnInit,AfterViewInit{
                               validate: false,
                               end: false,
                               paid: false,
+                              accepted : false,
                               categorie : null,
                               type : null
                             },

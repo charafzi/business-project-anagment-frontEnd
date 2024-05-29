@@ -15,5 +15,17 @@
   padding: 1px;
 }
 
+.cell-first{
+  border: 2px dashed #001529;
+  padding: 1px;
+}
+
+.cell-end{
+  border: 5px double #001529;
+  padding: 1px;
+}
+
+
+
 
 

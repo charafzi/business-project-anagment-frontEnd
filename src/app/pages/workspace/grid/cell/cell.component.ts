@@ -27,6 +27,10 @@ import {ConnectionsModalComponent} from "../../items/connections-modal/connectio
 import {CategorieService} from "../../../../services/categorie.service";
 import {StatutEtape} from "../../../../models/StatutEtape";
 import {DurationUnite} from "../../../../models/DurationUnite";
+import {ConnexionService} from "../../../../services/connexion.service";
+import {FirstExistException} from "../../../../exceptions/firstExist.exception";
+import {EndExistException} from "../../../../exceptions/endExist.exception";
+import {EtapeService} from "../../../../services/etape.service";
 
 
 @Component({
@@ -66,7 +70,9 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               private modalService: NzModalService,
               private typeService : TypeService,
               private processusService : ProcessusService,
-              private categorieService : CategorieService
+              private categorieService : CategorieService,
+              private connexionService : ConnexionService,
+              private etapeService : EtapeService
   ) {
     /*setTimeout(() => {
       if(this.processItem != null)
@@ -139,14 +145,43 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               let selectedFIE = <string>modalComponentInst.etapeForm.value.radioFIE;
               let dureeEstime = <number>modalComponentInst.etapeForm.value.dureeEstimee;
               let delaiAttente = <number>modalComponentInst.etapeForm.value.delaiAttente;
+              let isFirst : boolean = false;
+              let isInterm : boolean = false;
+              let isEnd : boolean = false;
+
+              switch (selectedFIE){
+                case 'F':
+                  isFirst = true;
+                  break;
+                case 'I':
+                  isInterm = true;
+                  break;
+                case 'E':
+                  isEnd = true;
+                  break;
+              }
+
+              if(this.etapeService.checkFirstExists(this.rowIndex,this.colIndex) && isFirst){
+                throw new FirstExistException("First already exists !");
+              }
+
+              if(this.etapeService.checkEndExists(this.rowIndex,this.colIndex) && isEnd){
+                throw new EndExistException("End already exists !");
+              }
+
+              //creation of etape
               this.processItem = new BaseEtape();
               this.processItem.dureeEstimee = dureeEstime;
               this.processItem.delaiAttente = delaiAttente;
               this.processItem.componentName = event.item.dropContainer.data[event.previousIndex]._componentName;
               this.processItem.description = <string>modalComponentInst.etapeForm.value.description;
-              this.processItem.validate = <boolean>modalComponentInst.etapeForm.value.isValidate;
-              this.processItem.paid = <boolean>modalComponentInst.etapeForm.value.isPaid;
+              this.processItem.validate = <string>modalComponentInst.etapeForm.value.radioValidated === 'Y';
+              this.processItem.paid = <string>modalComponentInst.etapeForm.value.radioPaid=== 'Y';
+              this.processItem.accepted = <string>modalComponentInst.etapeForm.value.radioAccepted=== 'Y';
               this.processItem.categorie = this.categorieService.getCategorieById(<number>modalComponentInst.etapeForm.value.categorie);
+              this.processItem.first = isFirst;
+              this.processItem.intermediate = isInterm;
+              this.processItem.end = isEnd;
 
               switch (periodDureeEstime){
                 case 'H':
@@ -170,17 +205,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
                   this.processItem.delaiAttenteUnite = DurationUnite.MONTH;
                   break;
               }
-              switch (selectedFIE){
-                case 'F':
-                  this.processItem.first = true;
-                  break;
-                case 'I':
-                  this.processItem.intermediate = true;
-                  break;
-                case 'E':
-                  this.processItem.end = true;
-                  break;
-              }
+
               this.createItemProcess(0);
 
               //send this emitter to grid to create connexions after the creation of this process
@@ -191,6 +216,17 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
                 stepsAfter : <string[]>modalComponentInst.etapeForm.value.stepsAfter,
               })
             } catch (error) {
+              if (error instanceof FirstExistException) {
+                this.modalService.error({
+                  nzTitle : "Unable to create this step, the first step already exists !"
+                })
+                console.error(error.message);
+              } else if (error instanceof EndExistException) {
+                this.modalService.error({
+                  nzTitle : "Unable to create this step, the end step already exists !"
+                })
+                console.error(error.message);
+              }
               console.error(error);
             }
           }
@@ -261,6 +297,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
       newProcessItem.end=this.processItem.end;
       newProcessItem.validate=this.processItem.validate;
       newProcessItem.paid=this.processItem.paid;
+      newProcessItem.accepted = this.processItem.accepted;
       newProcessItem.dureeEstimeeUnite = this.processItem.dureeEstimeeUnite;
       newProcessItem.delaiAttenteUnite = this.processItem.delaiAttenteUnite;
 

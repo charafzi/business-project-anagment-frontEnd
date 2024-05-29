@@ -70,10 +70,11 @@ export class EtapeModalComponent implements OnInit{
     //pourcentage: FormControl<string>;
     dureeEstimee: FormControl<number>;
     delaiAttente: FormControl<number>;
-    isValidate:FormControl<boolean>;
-    isPaid:FormControl<boolean>;
-    radioDureeEstimee:FormControl<string>
+    radioDureeEstimee:FormControl<string>;
     radioDelaiAttente:FormControl<string>;
+    radioValidated:FormControl<string>;
+    radioPaid:FormControl<string>;
+    radioAccepted:FormControl<string>
     radioFIE:FormControl<string>;
     stepsBefore : FormControl<string[]>;
     stepsAfter : FormControl<string[]>;
@@ -89,14 +90,15 @@ export class EtapeModalComponent implements OnInit{
       description : ['',[Validators.required,Validators.maxLength(255)]],
       dureeEstimee : [1,[Validators.required,Validators.min(0)]],
       delaiAttente : [0,[Validators.min(0)]],
-      isValidate : [false],
-      isPaid : [false],
       radioDureeEstimee : ['',[Validators.required]],
       radioDelaiAttente : ['',[Validators.required]],
       radioFIE : ['',[Validators.required]],
       stepsAfter : [['']],
       stepsBefore : [['']],
-      categorie : [1,[Validators.required]]
+      categorie : [1,[Validators.required]],
+      radioValidated : ['',[Validators.required]],
+      radioAccepted :['',[Validators.required]],
+      radioPaid : ['',[Validators.required]]
     })
   }
 

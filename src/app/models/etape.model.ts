@@ -19,6 +19,7 @@ export interface Etape{
   type : Type | null,
   first: boolean,
   validate: boolean,
+  accepted : boolean,
   intermediate : boolean,
   end: boolean,
   paid: boolean,

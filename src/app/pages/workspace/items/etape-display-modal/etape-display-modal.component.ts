@@ -17,6 +17,10 @@ import {Categorie} from "../../../../models/categorie.model";
 import {NgForOf} from "@angular/common";
 import {getstatutEtapeToString, StatutEtape} from "../../../../models/StatutEtape";
 import {DurationUnite, getDurationUniteFromString} from "../../../../models/DurationUnite";
+import {ConnexionService} from "../../../../services/connexion.service";
+import {FirstExistException} from "../../../../exceptions/firstExist.exception";
+import {EndExistException} from "../../../../exceptions/endExist.exception";
+import {EtapeService} from "../../../../services/etape.service";
 
 @Component({
   selector: 'app-etape-display-modal',
@@ -57,7 +61,9 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
   categoriesIsLoading:boolean = true;
   constructor(private fb: FormBuilder,
               private modalService : NzModalService,
-              private categorieService : CategorieService) {}
+              private categorieService : CategorieService,
+              private connexionSerivce : ConnexionService,
+              private etapeService : EtapeService) {}
 
   ngOnInit(): void {
     this.categorieService.getAllCategories()
@@ -87,64 +93,103 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
 
   validateForm(){
     if(this.etapeForm.valid){
-      let periodDureeEstime = this.etapeForm.value.radioDureeEstimee;
-      let periodDelaiAttente = this.etapeForm.value.radioDelaiAttente;
-      let selectedFIE = this.etapeForm.value.radioFIE;
-      this.etape.description = this.etapeForm.value.description;
-      this.etape.ordre=this.etapeForm.value.ordre;
-      this.etape.pourcentage=this.percent;
-      this.etape.first=this.etapeForm.value.isFirst;
-      this.etape.end=this.etapeForm.value.isEnd;
-      this.etape.paid=this.etapeForm.value.isPaid;
-      this.etape.validate=this.etapeForm.value.isValidate;
-      this.etape.dureeEstimee = this.etapeForm.value.dureeEstimee;
-      this.etape.delaiAttente = this.etapeForm.value.delaiAttente;
-      this.etape.statutEtape = this.etapeForm.value.statutEtape == 'Commencée' ? StatutEtape.COMMENCEE: StatutEtape.PAS_ENCORE_COMMENCEE;
+       try{
+         this.etapeService.printProcessItems();
+         let isFirst : boolean = false;
+         let isInterm : boolean = false;
+         let isEnd : boolean = false;
+         let periodDureeEstime = this.etapeForm.value.radioDureeEstimee;
+         let periodDelaiAttente = this.etapeForm.value.radioDelaiAttente;
+         let selectedFIE = this.etapeForm.value.radioFIE;
+         this.etape.description = this.etapeForm.value.description;
+         this.etape.ordre=this.etapeForm.value.ordre;
+         this.etape.pourcentage=this.percent;
+         this.etape.first=this.etapeForm.value.isFirst;
+         this.etape.end=this.etapeForm.value.isEnd;
+         this.etape.accepted = this.etapeForm.value.radioAccepted === 'Y';
+         this.etape.validate = this.etapeForm.value.radioValidated === 'Y';
+         this.etape.paid = this.etapeForm.value.radioPaid=== 'Y';
+         this.etape.dureeEstimee = this.etapeForm.value.dureeEstimee;
+         this.etape.delaiAttente = this.etapeForm.value.delaiAttente;
+         this.etape.statutEtape = this.etapeForm.value.statutEtape == 'Commencée' ? StatutEtape.COMMENCEE: StatutEtape.PAS_ENCORE_COMMENCEE;
 
-      switch (periodDureeEstime){
-        case 'H':
-          this.etape.dureeEstimeeUnite = DurationUnite.HOUR;
-          break;
-        case 'D':
-          this.etape.dureeEstimeeUnite = DurationUnite.DAY;
-          break;
-        case 'M':
-          this.etape.dureeEstimeeUnite = DurationUnite.MONTH;
-          break;
-      }
+         switch (periodDureeEstime){
+           case 'H':
+             this.etape.dureeEstimeeUnite = DurationUnite.HOUR;
+             break;
+           case 'D':
+             this.etape.dureeEstimeeUnite = DurationUnite.DAY;
+             break;
+           case 'M':
+             this.etape.dureeEstimeeUnite = DurationUnite.MONTH;
+             break;
+         }
 
 
-      switch (periodDelaiAttente){
-        case 'H':
-          this.etape.delaiAttenteUnite = DurationUnite.HOUR;
-          break;
-        case 'D':
-          this.etape.delaiAttenteUnite = DurationUnite.DAY;
-          break;
-        case 'M':
-          this.etape.delaiAttenteUnite = DurationUnite.MONTH;
-          break;
-      }
+         switch (periodDelaiAttente){
+           case 'H':
+             this.etape.delaiAttenteUnite = DurationUnite.HOUR;
+             break;
+           case 'D':
+             this.etape.delaiAttenteUnite = DurationUnite.DAY;
+             break;
+           case 'M':
+             this.etape.delaiAttenteUnite = DurationUnite.MONTH;
+             break;
+         }
 
-      this.etape.first = this.etape.intermediate = this.etape.end = false;
-      switch (selectedFIE){
-        case 'F':
-          this.etape.first = true;
-          break;
-        case 'I':
-          this.etape.intermediate = true;
-          break;
-        case 'E':
-          this.etape.end = true;
-          break;
-      }
+         this.etape.first = this.etape.intermediate = this.etape.end = false;
+         switch (selectedFIE){
+           case 'F':
+             isFirst= true;
+             break;
+           case 'I':
+             isInterm= true;
+             break;
+           case 'E':
+             isEnd= true;
+             break;
+         }
 
-      this.etape.categorie = this.categorieService.getCategorieById(this.etapeForm.value.categorie);
+         if(isFirst){
+           if(this.etapeService.checkFirstExists(this.etape.indexLigne,this.etape.indexColonne)){
+             throw new FirstExistException("First already exists !");
+           }
+           else{
+             this.etape.first=isFirst;
+           }
+         }
 
-      this.onClickHideModal();
-      this.modalService.success({
-        nzTitle : "Step modified successfully !"
-      })
+         if(isEnd){
+           if(this.etapeService.checkEndExists(this.etape.indexLigne,this.etape.indexColonne)){
+             throw new EndExistException("First already exists !");
+           }
+           else{
+             this.etape.end=isEnd;
+           }
+         }
+
+         this.etape.categorie = this.categorieService.getCategorieById(this.etapeForm.value.categorie);
+
+         this.onClickHideModal();
+         this.modalService.success({
+           nzTitle : "Step modified successfully !"
+         })
+       }
+       catch (error) {
+         if (error instanceof FirstExistException) {
+           this.modalService.error({
+             nzTitle : "Unable to create this step, the first step already exists !"
+           })
+           console.error(error.message);
+         } else if (error instanceof EndExistException) {
+           this.modalService.error({
+             nzTitle : "Unable to create this step, the end step already exists !"
+           })
+           console.error(error.message);
+         }
+         console.error(error);
+       }
     }
   }
 
@@ -157,8 +202,9 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
       delaiAttente: FormControl<number>;
       isFirst:FormControl<boolean>;
       isEnd:FormControl<boolean>;
-      isValidate:FormControl<boolean>;
-      isPaid:FormControl<boolean>;
+      radioValidated:FormControl<string>;
+      radioPaid:FormControl<string>;
+      radioAccepted:FormControl<string>;
       radioDureeEstimee:FormControl<string>
       radioDelaiAttente:FormControl<string>;
       radioFIE:FormControl<string>;
@@ -209,8 +255,9 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
       statutEtape : [getstatutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
       isFirst : [this.etape.first],
       isEnd : [this.etape.end],
-      isValidate : [this.etape.validate],
-      isPaid : [this.etape.paid],
+      radioValidated: [this.etape.validate ? 'Y' : 'N',[Validators.required]],
+      radioPaid:[this.etape.paid ? 'Y' : 'N',[Validators.required]],
+      radioAccepted:[this.etape.accepted ? 'Y' : 'N',[Validators.required]],
       radioDureeEstimee : [perdiodDureeEstime,[Validators.required]],
       radioDelaiAttente : [perdiodDelaiAttente,[Validators.required]],
       radioFIE : [selectedFIE,[Validators.required]],
