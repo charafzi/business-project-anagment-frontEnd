@@ -1,7 +1,8 @@
-import {StatutEtape} from "../pages/workspace/items/Etape.class";
 import {Type} from "./type.model"
 import {Processus} from "./processus.model";
 import {Categorie} from "./categorie.model";
+import {StatutEtape} from "./StatutEtape";
+import {DurationUnite} from "./DurationUnite";
 
 export interface Etape{
   idEtape:number;
@@ -11,7 +12,9 @@ export interface Etape{
   ordre: number,
   pourcentage: number,
   dureeEstimee: number,
+  dureeEstimeeUnite:DurationUnite,
   delaiAttente: number,
+  delaiAttenteUnite: DurationUnite,
   statutEtape: StatutEtape,
   type : Type | null,
   first: boolean,
@@ -22,3 +25,4 @@ export interface Etape{
   processus?:Processus;
   categorie : Categorie | null;
 }
+

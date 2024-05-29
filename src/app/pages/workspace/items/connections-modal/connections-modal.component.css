@@ -1,3 +1,18 @@
 .row{
   margin-bottom: 20px;
 }
+
+label span{
+  padding-top: 4px;
+  font-size: 11px;
+}
+
+nz-radio-group{
+  display: flex;
+  justify-content: space-between;
+}
+
+
+nz-form-label span{
+  font-weight: bold;
+}

@@ -35,6 +35,7 @@ import {ProcessusModule} from "./pages/processus/processus.module";
 import {PlusComponent} from "./pages/workspace/items/plus/plus.component";
 import {ItemListComponent} from "./pages/workspace/item-list/item-list.component";
 import {HexagonComponent} from "./pages/workspace/items/hexagon/hexagon.component";
+import {StatutTache} from "./models/StatutTache";
 
 registerLocaleData(fr);
 
@@ -75,7 +76,7 @@ const appRoutes : Routes =[
     ProcessusModalComponent,
     ProcessusModule,
     PlusComponent,
-    HexagonComponent
+    HexagonComponent,
   ],
   providers: [
     { provide: NZ_I18N, useValue: fr_FR },

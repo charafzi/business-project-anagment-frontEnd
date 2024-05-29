@@ -5,15 +5,13 @@ import {
   ComponentFactoryResolver,
   EventEmitter,
   Input,
-  OnChanges,
   OnInit,
   Output,
-  SimpleChanges,
   ViewChild,
   ViewContainerRef
 } from '@angular/core';
 import {CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList} from "@angular/cdk/drag-drop";
-import {BaseEtape, StatutEtape, statutEtapeToString} from "../../items/Etape.class";
+import {BaseEtape} from "../../items/Etape.class";
 import {NgClass, NgIf} from "@angular/common";
 import {SquareComponent} from "../../items/square/square.component";
 import {RhombusComponent} from "../../items/rhombus/rhombus.component";
@@ -24,11 +22,11 @@ import {EtapeDisplayModalComponent} from "../../items/etape-display-modal/etape-
 import {NzBadgeComponent} from "ng-zorro-antd/badge";
 import {TypeService} from "../../../../services/type.service";
 import {BaseItem} from "../../items/item.model";
-import {verifyHostBindings} from "@angular/compiler";
 import {ProcessusService} from "../../../../services/processus.service";
 import {ConnectionsModalComponent} from "../../items/connections-modal/connections-modal.component";
-import {Categorie} from "../../../../models/categorie.model";
 import {CategorieService} from "../../../../services/categorie.service";
+import {StatutEtape} from "../../../../models/StatutEtape";
+import {DurationUnite} from "../../../../models/DurationUnite";
 
 
 @Component({
@@ -142,6 +140,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               let dureeEstime = <number>modalComponentInst.etapeForm.value.dureeEstimee;
               let delaiAttente = <number>modalComponentInst.etapeForm.value.delaiAttente;
               this.processItem = new BaseEtape();
+              this.processItem.dureeEstimee = dureeEstime;
+              this.processItem.delaiAttente = delaiAttente;
               this.processItem.componentName = event.item.dropContainer.data[event.previousIndex]._componentName;
               this.processItem.description = <string>modalComponentInst.etapeForm.value.description;
               this.processItem.validate = <boolean>modalComponentInst.etapeForm.value.isValidate;
@@ -150,27 +150,26 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
 
               switch (periodDureeEstime){
                 case 'H':
+                  this.processItem.dureeEstimeeUnite = DurationUnite.HOUR;
                   break;
                 case 'D':
-                  dureeEstime = dureeEstime * 24;
+                  this.processItem.dureeEstimeeUnite = DurationUnite.DAY;
                   break;
                 case 'M':
-                  dureeEstime = dureeEstime * 24 * 31;
+                  this.processItem.dureeEstimeeUnite = DurationUnite.MONTH;
                   break;
               }
-
-              this.processItem.dureeEstimee = dureeEstime;
               switch (periodDelaiAttente){
                 case 'H':
+                  this.processItem.delaiAttenteUnite = DurationUnite.HOUR;
                   break;
                 case 'D':
-                  delaiAttente = delaiAttente * 24;
+                  this.processItem.delaiAttenteUnite = DurationUnite.DAY;
                   break;
                 case 'M':
-                  delaiAttente = delaiAttente * 24 * 31;
+                  this.processItem.delaiAttenteUnite = DurationUnite.MONTH;
                   break;
               }
-              this.processItem.delaiAttente = delaiAttente;
               switch (selectedFIE){
                 case 'F':
                   this.processItem.first = true;
@@ -217,7 +216,6 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
     if (!this.container)
       throw new Error('ViewContainerRef is not defined at CellComponent.');
     if(this.processItem){
-      console.log("I WILL CREATE : "+this.processItem.idEtape,"desc = ",this.processItem.description);
       //create new processItem based on his type
       let typeName : string = this.typeService.getTypeByComponentname(this.processItem.componentName);
       if(source==1 && this.processItem.type)
@@ -234,18 +232,9 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
         if(this.processItem == null)
           this.processItem = new BaseEtape();
         newProcessItem.idEtape=-1;
-        newProcessItem.description=this.processItem.description;
-        newProcessItem.dureeEstimee=this.processItem.dureeEstimee;
-        newProcessItem.delaiAttente=this.processItem.delaiAttente;
         newProcessItem.ordre=this.order;
-        newProcessItem.first=this.processItem.first
-        newProcessItem.intermediate = this.processItem.intermediate;
-        newProcessItem.end=this.processItem.end
-        newProcessItem.validate=this.processItem.validate;
-        newProcessItem.paid=this.processItem.paid;
         newProcessItem.indexLigne=this.rowIndex;
         newProcessItem.indexColonne=this.colIndex;
-        newProcessItem.componentName=this.typeService.getComponentNameByType(typeName);
         newProcessItem.pourcentage=0;
         newProcessItem.statutEtape = StatutEtape.PAS_ENCORE_COMMENCEE;
         newProcessItem.processus = this.processusService.processus;
@@ -253,24 +242,27 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
       }else{
         if(this.processItem != null){
           newProcessItem.idEtape=this.processItem.idEtape;
-          newProcessItem.description=this.processItem.description;
           newProcessItem.ordre=this.processItem.ordre;
-          newProcessItem.dureeEstimee=this.processItem.dureeEstimee;
-          newProcessItem.delaiAttente=this.processItem.delaiAttente;
-          newProcessItem.first = this.processItem.first;
-          newProcessItem.intermediate = this.processItem.intermediate;
-          newProcessItem.end=this.processItem.end;
-          newProcessItem.validate=this.processItem.validate;
-          newProcessItem.paid=this.processItem.paid;
           newProcessItem.indexLigne=this.processItem.indexLigne;
           newProcessItem.indexColonne=this.processItem.indexColonne;
           newProcessItem.pourcentage=this.processItem.pourcentage;
           newProcessItem.statutEtape = this.processItem.statutEtape;
-          newProcessItem.componentName=this.typeService.getComponentNameByType(typeName)
           newProcessItem.processus = this.processItem.processus;
           newProcessItem._cellRef=this;
         }
       }
+
+      newProcessItem.componentName=this.typeService.getComponentNameByType(typeName)
+      newProcessItem.description=this.processItem.description;
+      newProcessItem.dureeEstimee=this.processItem.dureeEstimee;
+      newProcessItem.delaiAttente=this.processItem.delaiAttente;
+      newProcessItem.first=this.processItem.first
+      newProcessItem.intermediate = this.processItem.intermediate;
+      newProcessItem.end=this.processItem.end;
+      newProcessItem.validate=this.processItem.validate;
+      newProcessItem.paid=this.processItem.paid;
+      newProcessItem.dureeEstimeeUnite = this.processItem.dureeEstimeeUnite;
+      newProcessItem.delaiAttenteUnite = this.processItem.delaiAttenteUnite;
 
       newProcessItem.enableShowButtons=true;
       newProcessItem.showButtons = true;

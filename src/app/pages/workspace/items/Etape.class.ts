@@ -3,18 +3,8 @@ import {Etape} from "../../../models/etape.model";
 import {Type} from "../../../models/type.model";
 import {Processus} from "../../../models/processus.model";
 import {Categorie} from "../../../models/categorie.model";
-
-export enum EStatut{
-  EN_COURS=0,
-  EN_ATTENTE_DE_VALIDATION=1,
-  EN_ATTENTE_DU_DELAI=2,
-  TERMINE=3
-}
-
-export enum StatutEtape{
-  COMMENCEE=0,
-  PAS_ENCORE_COMMENCEE=1
-}
+import {StatutEtape, getStatutEtapeFromString} from "../../../models/StatutEtape";
+import {DurationUnite, getDurationUniteFromString} from "../../../models/DurationUnite";
 
 /*export function statutEtapeToString(statut:StatutEtape) {
   switch (statut){
@@ -25,31 +15,7 @@ export enum StatutEtape{
   }
 }*/
 
-export function statutEtapeToString(statut:string) {
-  switch (statut){
-    case "COMMENCEE":
-      return "Commencée";
-    case "PAS_ENCORE_COMMENCEE":
-      return "Pas encore commencée";
-    case "0":
-      return "Commencée";
-    case "1":
-      return "Pas encore commencée";
-  }
-  return "UNKNOWN";
-}
-export function getStatutLabel(staut:EStatut) {
-  switch (staut){
-    case EStatut.EN_COURS:
-      return "En cours";
-    case EStatut.EN_ATTENTE_DU_DELAI:
-      return "En attente du délai";
-    case EStatut.EN_ATTENTE_DE_VALIDATION:
-      return "En attente du validation";
-    case EStatut.TERMINE:
-      return "Terminée";
-  }
-}
+
 
 export class BaseEtape implements Etape{
   private _idEtape: number;
@@ -59,7 +25,9 @@ export class BaseEtape implements Etape{
   private _ordre: number;
   private _pourcentage: number;
   private _dureeEstimee: number;
+  private _dureeEstimeeUnite:DurationUnite;
   private _delaiAttente: number;
+  private _delaiAttenteUnite:DurationUnite;
   private _first: boolean;
   private _intermediate:boolean;
   private _end: boolean;
@@ -77,7 +45,7 @@ export class BaseEtape implements Etape{
   _displayInfo:boolean;
   public _cellRef: CellComponent | null;
 
-  constructor() {
+    constructor() {
     this._idEtape=-1;
     this._description='';
     this._ordre=0;
@@ -85,7 +53,9 @@ export class BaseEtape implements Etape{
     this._indexColonne=0;
     this._pourcentage=0;
     this._dureeEstimee=0;
+    this._dureeEstimeeUnite = DurationUnite.HOUR,
     this._delaiAttente=0;
+    this._delaiAttenteUnite = DurationUnite.HOUR,
     this._first = false;
     this._intermediate = false;
     this._end=false;
@@ -103,6 +73,30 @@ export class BaseEtape implements Etape{
     this._type = null;
     this._categorie = null;
   }
+
+  //this function is used to assign values from Etape retrieved from DataBase
+  copyFromEtape(etape : Etape){
+      console.log(etape)
+    this._idEtape = etape.idEtape !== undefined ? etape.idEtape : -1;
+    this._description = etape.description !== undefined ? etape.description : '';
+    this._ordre = etape.ordre !== undefined ? etape.ordre : 0;
+    this._indexLigne = etape.indexLigne !== undefined ? etape.indexLigne : 0;
+    this._indexColonne = etape.indexColonne !== undefined ? etape.indexColonne : 0;
+    this._pourcentage = etape.pourcentage !== undefined ? etape.pourcentage : 0;
+    this._dureeEstimee = etape.dureeEstimee !== undefined ? etape.dureeEstimee : 0;
+    this._dureeEstimeeUnite = etape.dureeEstimeeUnite !== undefined ? getDurationUniteFromString(etape.dureeEstimeeUnite.toString()) : DurationUnite.HOUR;
+    this._delaiAttente = etape.delaiAttente !== undefined ? etape.delaiAttente : 0;
+    this._delaiAttenteUnite = etape.delaiAttenteUnite !== undefined ? getDurationUniteFromString(etape.delaiAttenteUnite.toString())  : DurationUnite.HOUR;
+    this._first = etape.first !== undefined ? etape.first : false;
+    this._intermediate = etape.intermediate !== undefined ? etape.intermediate : false;
+    this._end = etape.end !== undefined ? etape.end : false;
+    this._validate = etape.validate !== undefined ? etape.validate : false;
+    this._paid = etape.paid !== undefined ? etape.paid : false;
+    this._statutEtape = etape.statutEtape !== undefined ? getStatutEtapeFromString(etape.statutEtape.toString()) : StatutEtape.PAS_ENCORE_COMMENCEE;
+    this._type = etape.type !== undefined ? etape.type : null;
+    this._categorie = etape.categorie !== undefined ? etape.categorie : null;
+  }
+
 
 
   get idEtape(): number {
@@ -296,8 +290,27 @@ export class BaseEtape implements Etape{
     this._connectionsModalIsVisibe = value;
   }
 
+
+  get dureeEstimeeUnite(): DurationUnite {
+    return this._dureeEstimeeUnite;
+  }
+
+  set dureeEstimeeUnite(value: DurationUnite) {
+    this._dureeEstimeeUnite = value;
+  }
+
+  get delaiAttenteUnite(): DurationUnite {
+    return this._delaiAttenteUnite;
+  }
+
+  set delaiAttenteUnite(value: DurationUnite) {
+    this._delaiAttenteUnite = value;
+  }
+
   onClickHideModal(){
     this._editModalIsVisibe=false;
   }
+
+
 }
 

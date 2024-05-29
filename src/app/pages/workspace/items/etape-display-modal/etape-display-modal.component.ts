@@ -1,5 +1,5 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {BaseEtape, StatutEtape, statutEtapeToString} from "../Etape.class";
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {BaseEtape} from "../Etape.class";
 import {NzModalComponent, NzModalContentDirective, NzModalFooterDirective, NzModalService} from "ng-zorro-antd/modal";
 import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
 import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
@@ -15,6 +15,8 @@ import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
 import {CategorieService} from "../../../../services/categorie.service";
 import {Categorie} from "../../../../models/categorie.model";
 import {NgForOf} from "@angular/common";
+import {getstatutEtapeToString, StatutEtape} from "../../../../models/StatutEtape";
+import {DurationUnite, getDurationUniteFromString} from "../../../../models/DurationUnite";
 
 @Component({
   selector: 'app-etape-display-modal',
@@ -46,7 +48,7 @@ import {NgForOf} from "@angular/common";
   ],
   styleUrl: './etape-display-modal.component.css'
 })
-export class EtapeDisplayModalComponent implements OnInit{
+export class EtapeDisplayModalComponent implements OnInit,OnChanges{
   @Input('etape') etape! : BaseEtape;
   @Input('isVisible') isVisible!:boolean;
   categories : Categorie [] = [];
@@ -67,9 +69,6 @@ export class EtapeDisplayModalComponent implements OnInit{
 
         }
       )
-
-    this.initializeForm();
-
   }
 
   increase(): void {
@@ -91,39 +90,39 @@ export class EtapeDisplayModalComponent implements OnInit{
       let periodDureeEstime = this.etapeForm.value.radioDureeEstimee;
       let periodDelaiAttente = this.etapeForm.value.radioDelaiAttente;
       let selectedFIE = this.etapeForm.value.radioFIE;
-      let dureeEstime = 0;
-      let delaiAttente = 0;
       this.etape.description = this.etapeForm.value.description;
       this.etape.ordre=this.etapeForm.value.ordre;
       this.etape.pourcentage=this.percent;
-      this.etape.dureeEstimee=this.etapeForm.value.dureeEstimee;
-      this.etape.delaiAttente=this.etapeForm.value.delaiAttente;
       this.etape.first=this.etapeForm.value.isFirst;
       this.etape.end=this.etapeForm.value.isEnd;
       this.etape.paid=this.etapeForm.value.isPaid;
       this.etape.validate=this.etapeForm.value.isValidate;
+      this.etape.dureeEstimee = this.etapeForm.value.dureeEstimee;
+      this.etape.delaiAttente = this.etapeForm.value.delaiAttente;
       this.etape.statutEtape = this.etapeForm.value.statutEtape == 'Commencée' ? StatutEtape.COMMENCEE: StatutEtape.PAS_ENCORE_COMMENCEE;
+
       switch (periodDureeEstime){
         case 'H':
-          dureeEstime = this.etapeForm.value.dureeEstimee;
+          this.etape.dureeEstimeeUnite = DurationUnite.HOUR;
           break;
         case 'D':
-          dureeEstime = this.etapeForm.value.dureeEstimee * 24;
+          this.etape.dureeEstimeeUnite = DurationUnite.DAY;
           break;
         case 'M':
-          dureeEstime = this.etapeForm.value.dureeEstimee * 24 * 31;
+          this.etape.dureeEstimeeUnite = DurationUnite.MONTH;
           break;
       }
 
+
       switch (periodDelaiAttente){
         case 'H':
-          delaiAttente = this.etapeForm.value.delaiAttente;
+          this.etape.delaiAttenteUnite = DurationUnite.HOUR;
           break;
         case 'D':
-          delaiAttente = this.etapeForm.value.delaiAttente * 24;
+          this.etape.delaiAttenteUnite = DurationUnite.DAY;
           break;
         case 'M':
-          delaiAttente = this.etapeForm.value.delaiAttente * 24 * 31;
+          this.etape.delaiAttenteUnite = DurationUnite.MONTH;
           break;
       }
 
@@ -139,9 +138,9 @@ export class EtapeDisplayModalComponent implements OnInit{
           this.etape.end = true;
           break;
       }
-      this.etape.dureeEstimee = dureeEstime;
-      this.etape.delaiAttente = delaiAttente;
+
       this.etape.categorie = this.categorieService.getCategorieById(this.etapeForm.value.categorie);
+
       this.onClickHideModal();
       this.modalService.success({
         nzTitle : "Step modified successfully !"
@@ -170,31 +169,30 @@ export class EtapeDisplayModalComponent implements OnInit{
     let selectedFIE=';'
     //744 == 31 * 24 (Months to hours)
 
-    if(this.etape.dureeEstimee%744 == 0)
-    {
-      this.etape.dureeEstimee/=744;
-      perdiodDureeEstime = 'M';
+    //Used this function to not have problems because DurationUnite retrived ans assigned as string from database
+    switch (getDurationUniteFromString(this.etape.dureeEstimeeUnite.toString())){
+      case DurationUnite.HOUR:
+        perdiodDureeEstime = 'H';
+        break;
+      case DurationUnite.MONTH:
+        perdiodDureeEstime = 'M';
+        break;
+      case DurationUnite.DAY:
+        perdiodDureeEstime = 'D';
+        break;
     }
-    else if(this.etape.dureeEstimee%24 ==0)
-    {
-      this.etape.dureeEstimee/=24;
-      perdiodDureeEstime = 'D';
-    }
-    else
-      perdiodDureeEstime = 'H'
 
-    if(this.etape.delaiAttente%744 == 0)
-    {
-      this.etape.delaiAttente/=744;
-      perdiodDelaiAttente = 'M';
+    switch (getDurationUniteFromString(this.etape.delaiAttenteUnite.toString())){
+      case DurationUnite.HOUR:
+        perdiodDelaiAttente = 'H';
+        break;
+      case DurationUnite.MONTH:
+        perdiodDelaiAttente = 'M';
+        break;
+      case DurationUnite.DAY:
+        perdiodDelaiAttente = 'D';
+        break;
     }
-    else if(this.etape.delaiAttente%24 ==0)
-    {
-      this.etape.delaiAttente/=24;
-      perdiodDelaiAttente = 'D';
-    }
-    else
-      perdiodDelaiAttente = 'H'
 
     if(this.etape.first)
       selectedFIE = 'F';
@@ -208,7 +206,7 @@ export class EtapeDisplayModalComponent implements OnInit{
       delaiAttente : [this.etape.delaiAttente,[Validators.min(0)]],
       dureeEstimee : [this.etape.dureeEstimee,[Validators.required,Validators.min(0)]],
       ordre : [this.etape.ordre,Validators.required],
-      statutEtape : [statutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
+      statutEtape : [getstatutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
       isFirst : [this.etape.first],
       isEnd : [this.etape.end],
       isValidate : [this.etape.validate],
@@ -222,8 +220,13 @@ export class EtapeDisplayModalComponent implements OnInit{
 
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isVisible'] && this.isVisible) {
+      this.initializeForm();
+    }
+  }
+
   onClickHideModal(){
-    this.initializeForm();
     this.etape.editModalIsVisibe=false;
   }
 

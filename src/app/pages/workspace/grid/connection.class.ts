@@ -1,5 +1,8 @@
 import {BaseEtape} from "../items/Etape.class";
 import LinkerLine from "linkerline";
+import {StatutTache} from "../../../models/StatutTache";
+import {StatutEtape} from "../../../models/StatutEtape";
+import {DurationUnite} from "../../../models/DurationUnite";
 
 export abstract class AbstractConnection{
   protected constructor(
@@ -7,7 +10,10 @@ export abstract class AbstractConnection{
     private _idTo:string,
     private _baseProcessItemfrom:(BaseEtape | null),
     private _baseProcessItemto:(BaseEtape | null),
-    private _connection:LinkerLine<any, any>) {
+    private _connection:LinkerLine<any, any>,
+    private _delaiAttente : number,
+    private _delaiAttenteUnite: DurationUnite,
+    private _statut: StatutTache){
   }
 
   getIdFrom(){
@@ -30,6 +36,31 @@ export abstract class AbstractConnection{
     return this._connection;
   }
 
+
+  get delaiAttente(): number {
+    return this._delaiAttente;
+  }
+
+  set delaiAttente(value: number) {
+    this._delaiAttente = value;
+  }
+
+  get statut(): StatutTache {
+    return this._statut;
+  }
+
+  set statut(value: StatutTache) {
+    this._statut = value;
+  }
+
+
+  get delaiAttenteUnite(): DurationUnite {
+    return this._delaiAttenteUnite;
+  }
+
+  set delaiAttenteUnite(value: DurationUnite) {
+    this._delaiAttenteUnite = value;
+  }
 
   setIdFrom(value: string) {
     this._idFrom = value;
@@ -58,8 +89,11 @@ export class Connection extends AbstractConnection {
     idTo:string,
     baseProcessItemfrom:(BaseEtape | null),
     baseProcessItemto:(BaseEtape | null),
-    connection:LinkerLine<any, any>) {
-    super(idFrom, idTo, baseProcessItemfrom, baseProcessItemto,connection);
+    connection:LinkerLine<any, any>,
+    delaiAttente: number,
+    delaiAttenteUnite:DurationUnite,
+    statut : StatutTache) {
+    super(idFrom, idTo, baseProcessItemfrom, baseProcessItemto,connection,delaiAttente,delaiAttenteUnite,statut);
   }
 
 }
@@ -114,6 +148,7 @@ export class ConnectionSet{
   set connections(value: Connection[]) {
     this._connections = value;
   }
+
 
   clear(){
     this._connections=[];

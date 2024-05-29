@@ -2,7 +2,7 @@ import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, Outp
 import {CellComponent} from "./cell/cell.component";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {CdkDropList} from "@angular/cdk/drag-drop";
-import {BaseEtape, StatutEtape, statutEtapeToString} from "../items/Etape.class";
+import {BaseEtape} from "../items/Etape.class";
 import {NzFlexDirective} from "ng-zorro-antd/flex";
 import {DOCUMENT, NgClass, NgIf} from "@angular/common";
 import {ProcessusService} from "../../../services/processus.service";
@@ -13,6 +13,9 @@ import {Connexion} from "../../../models/connexion.model";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Processus} from "../../../models/processus.model";
 import {Router} from "@angular/router";
+import {StatutEtape, getStatutEtapeFromString} from "../../../models/StatutEtape";
+import {statutTacheFromDB} from "../../../models/tache.model";
+import {DurationUnite, getDurationUniteFromInt, getDurationUniteFromString} from "../../../models/DurationUnite";
 
 @Component({
   selector: 'app-grid',
@@ -53,11 +56,6 @@ export class GridComponent implements OnInit,AfterViewInit{
               private connexionService : ConnexionService,
               private router : Router) {
     this.isLoading = true;
-    /*setTimeout(() => {
-      console.log("PRINT ATFER 5s")
-      this.printProcessItems()
-      this.printConnexions();
-    }, 5000);*/
 
     //this page is accessed directly
     if(this.processusService.processus.idProcessus === -1)
@@ -123,7 +121,10 @@ export class GridComponent implements OnInit,AfterViewInit{
                   cnx.from.indexLigne,
                   cnx.from.indexColonne,
                   cnx.to.indexLigne,
-                  cnx.to.indexColonne
+                  cnx.to.indexColonne,
+                  cnx.delaiAttente,
+                  cnx.delaiAttenteUnite,
+                  statutTacheFromDB(cnx.statut ? cnx.statut.toString() : '')
                 );
               })
             },
@@ -156,7 +157,6 @@ export class GridComponent implements OnInit,AfterViewInit{
   updateRefProcessItems(eventData:{processItem:BaseEtape ,rowIndex:number,colIndex:number})
   {
     this.processItems[eventData.rowIndex][eventData.colIndex] = eventData.processItem;
-    this.printProcessItems();
   }
 
   deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
@@ -199,7 +199,9 @@ export class GridComponent implements OnInit,AfterViewInit{
               indexColonne: etape.indexColonne,
               ordre : etape.ordre,
               delaiAttente : etape.delaiAttente,
+              delaiAttenteUnite : etape.delaiAttenteUnite,
               dureeEstimee : etape.dureeEstimee,
+              dureeEstimeeUnite : etape.dureeEstimeeUnite,
               first : etape.first,
               intermediate : etape.intermediate,
               end : etape.end,
@@ -251,7 +253,6 @@ export class GridComponent implements OnInit,AfterViewInit{
                         let etapeTo = (cnx.getTo() as Etape);
                         // here only the id is assigned
                         if(etapeFrom && etapeTo){
-                          // @ts-ignore
                           connexionsModel.push({
                             from : {
                               idEtape: etapeFrom.idEtape,
@@ -261,7 +262,9 @@ export class GridComponent implements OnInit,AfterViewInit{
                               ordre: 0,
                               pourcentage: 0,
                               dureeEstimee: 0,
+                              dureeEstimeeUnite : DurationUnite.HOUR,
                               delaiAttente: 0,
+                              delaiAttenteUnite : DurationUnite.HOUR,
                               statutEtape: StatutEtape.COMMENCEE,
                               first: false,
                               intermediate : false,
@@ -279,6 +282,8 @@ export class GridComponent implements OnInit,AfterViewInit{
                               ordre: 0,
                               pourcentage: 0,
                               dureeEstimee: 0,
+                              dureeEstimeeUnite : DurationUnite.HOUR,
+                              delaiAttenteUnite : DurationUnite.HOUR,
                               delaiAttente: 0,
                               statutEtape: StatutEtape.COMMENCEE,
                               first: false,
@@ -288,7 +293,10 @@ export class GridComponent implements OnInit,AfterViewInit{
                               paid: false,
                               categorie : null,
                               type : null
-                            }
+                            },
+                            statut : cnx.statut,
+                            delaiAttente : cnx.delaiAttente,
+                            delaiAttenteUnite : cnx.delaiAttenteUnite
                           })
                         }
                       })

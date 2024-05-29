@@ -5,6 +5,9 @@ import {Connexion} from "../models/connexion.model";
 import {BaseEtape} from "../pages/workspace/items/Etape.class";
 import {Connection, ConnectionSet} from "../pages/workspace/grid/connection.class";
 import LinkerLine from "linkerline";
+import {StatutTache} from "../models/StatutTache";
+import {getStatutTacheFromString} from "../models/tache.model";
+import {DurationUnite} from "../models/DurationUnite";
 
 @Injectable({
   providedIn : 'root'
@@ -59,6 +62,9 @@ export class ConnexionService{
                   indexColFrom:number,
                   indexRowTo:number,
                   indexColTo:number,
+                  delaiAttente?: number,
+                  delaiAttenteUnite?: DurationUnite,
+                  statut? : StatutTache
   ):number{
     try {
       console.log("i will create :::"+this.grid)
@@ -85,7 +91,7 @@ export class ConnexionService{
                 parent: grid,
                 start: el1,
                 end: el2,
-                color: this.generateRandomColor(),
+                color: '#000000',
                 outline: true,
                 outlineColor : '#000000',
                 endPlugOutline: true,
@@ -97,7 +103,10 @@ export class ConnexionService{
                 endSocket : "auto",
                 path : "straight",
                 size : 3
-              })
+              }),
+            delaiAttente?? 0,
+            delaiAttenteUnite?? DurationUnite.DAY,
+            statut?? StatutTache.TERMINE
           );
           this.connectionSet.add(conn);
           this.connectionSet.print();
@@ -142,6 +151,30 @@ export class ConnexionService{
     return etapes;
   }
 
+  getConnexion(indexRowFrom:number,
+               indexColFrom:number,
+               indexRowTo:number,
+               indexColTo:number)
+  :Connection |undefined{
+    let connetion = this.connectionSet.connections.find(conn =>
+    conn.getTo()?.indexLigne==indexRowTo && conn.getTo()?.indexColonne==indexColTo
+    && conn.getFrom()?.indexLigne==indexRowFrom && conn.getFrom()?.indexColonne==indexColFrom)
+    return connetion;
+  }
+
+  getEtape(indexRow:number,
+           indexCol:number,){
+    let connetion = this.connectionSet.connections.find(conn =>
+      conn.getTo()?.indexLigne==indexRow&& conn.getTo()?.indexColonne==indexCol)
+
+    if(connetion == undefined){
+      connetion = this.connectionSet.connections.find(conn =>
+        conn.getFrom()?.indexLigne==indexRow && conn.getFrom()?.indexColonne==indexCol)
+      return connetion?.getFrom();
+    }
+    return connetion?.getTo();
+  }
+
   deleteConnection(rowFromIndex:number,colFromIndex:number,rowToIndex:number,colToIndex:number):number{
    try {
      let connection = this.connectionSet.connections.find(cnx=>
@@ -162,6 +195,34 @@ export class ConnexionService{
      console.error(error);
      return 0;
    }
+  }
+
+  getSubConnectionSet(indexRow:number,indexCol:number) : ConnectionSet{
+    let subConnectionSet = new ConnectionSet();
+    this.connectionSet.connections.forEach(conn=>{
+      if((conn.getFrom()?.indexLigne==indexRow && conn.getFrom()?.indexColonne==indexCol)
+        || (conn.getTo()?.indexLigne==indexRow && conn.getTo()?.indexColonne==indexCol))
+        subConnectionSet.connections.push(conn);
+    })
+    return subConnectionSet;
+  }
+
+  updateConnexionValues(indexRowFrom:number,
+                        indexColFrom:number,
+                        indexRowTo:number,
+                        indexColTo:number,
+                        delaiAttente : number,
+                        delaiAttenteUnite : DurationUnite,
+                        statut : string){
+    let connexion = this.connectionSet.connections.find(conn=>
+    conn.getFrom()?.indexLigne==indexRowFrom && conn.getFrom()?.indexColonne==indexColFrom
+    && conn.getTo()?.indexLigne==indexRowTo && conn.getTo()?.indexColonne==indexColTo)
+    if(connexion!=undefined){
+      connexion.statut = getStatutTacheFromString(statut);
+      connexion.delaiAttente = delaiAttente;
+      connexion.delaiAttenteUnite = delaiAttenteUnite;
+    }else
+      throw new Error("Error at updating connection attributes : From or To is not found !")
   }
 
   generateRandomColor(): string {
