@@ -69,9 +69,7 @@ export class EtapeModalComponent implements OnInit{
    // ordre: FormControl<number>;
     //pourcentage: FormControl<string>;
     dureeEstimee: FormControl<number>;
-    delaiAttente: FormControl<number>;
     radioDureeEstimee:FormControl<string>;
-    radioDelaiAttente:FormControl<string>;
     radioValidated:FormControl<string>;
     radioPaid:FormControl<string>;
     radioAccepted:FormControl<string>
@@ -89,9 +87,7 @@ export class EtapeModalComponent implements OnInit{
     this.etapeForm = this.fb.group({
       description : ['',[Validators.required,Validators.maxLength(255)]],
       dureeEstimee : [1,[Validators.required,Validators.min(0)]],
-      delaiAttente : [0,[Validators.min(0)]],
       radioDureeEstimee : ['',[Validators.required]],
-      radioDelaiAttente : ['',[Validators.required]],
       radioFIE : ['',[Validators.required]],
       stepsAfter : [['']],
       stepsBefore : [['']],

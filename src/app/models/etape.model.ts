@@ -13,8 +13,6 @@ export interface Etape{
   pourcentage: number,
   dureeEstimee: number,
   dureeEstimeeUnite:DurationUnite,
-  delaiAttente: number,
-  delaiAttenteUnite: DurationUnite,
   statutEtape: StatutEtape,
   type : Type | null,
   first: boolean,

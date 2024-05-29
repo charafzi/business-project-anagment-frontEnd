@@ -141,10 +141,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
             try
             {
               let periodDureeEstime = <string>modalComponentInst.etapeForm.value.radioDureeEstimee;
-              let periodDelaiAttente = <string>modalComponentInst.etapeForm.value.radioDelaiAttente;
               let selectedFIE = <string>modalComponentInst.etapeForm.value.radioFIE;
               let dureeEstime = <number>modalComponentInst.etapeForm.value.dureeEstimee;
-              let delaiAttente = <number>modalComponentInst.etapeForm.value.delaiAttente;
               let isFirst : boolean = false;
               let isInterm : boolean = false;
               let isEnd : boolean = false;
@@ -172,7 +170,6 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               //creation of etape
               this.processItem = new BaseEtape();
               this.processItem.dureeEstimee = dureeEstime;
-              this.processItem.delaiAttente = delaiAttente;
               this.processItem.componentName = event.item.dropContainer.data[event.previousIndex]._componentName;
               this.processItem.description = <string>modalComponentInst.etapeForm.value.description;
               this.processItem.validate = <string>modalComponentInst.etapeForm.value.radioValidated === 'Y';
@@ -192,17 +189,6 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
                   break;
                 case 'M':
                   this.processItem.dureeEstimeeUnite = DurationUnite.MONTH;
-                  break;
-              }
-              switch (periodDelaiAttente){
-                case 'H':
-                  this.processItem.delaiAttenteUnite = DurationUnite.HOUR;
-                  break;
-                case 'D':
-                  this.processItem.delaiAttenteUnite = DurationUnite.DAY;
-                  break;
-                case 'M':
-                  this.processItem.delaiAttenteUnite = DurationUnite.MONTH;
                   break;
               }
 
@@ -291,7 +277,6 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
       newProcessItem.componentName=this.typeService.getComponentNameByType(typeName)
       newProcessItem.description=this.processItem.description;
       newProcessItem.dureeEstimee=this.processItem.dureeEstimee;
-      newProcessItem.delaiAttente=this.processItem.delaiAttente;
       newProcessItem.first=this.processItem.first
       newProcessItem.intermediate = this.processItem.intermediate;
       newProcessItem.end=this.processItem.end;
@@ -299,7 +284,6 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
       newProcessItem.paid=this.processItem.paid;
       newProcessItem.accepted = this.processItem.accepted;
       newProcessItem.dureeEstimeeUnite = this.processItem.dureeEstimeeUnite;
-      newProcessItem.delaiAttenteUnite = this.processItem.delaiAttenteUnite;
 
       newProcessItem.enableShowButtons=true;
       newProcessItem.showButtons = true;

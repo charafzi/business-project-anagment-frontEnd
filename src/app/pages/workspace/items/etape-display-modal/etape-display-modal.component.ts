@@ -110,7 +110,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
          this.etape.validate = this.etapeForm.value.radioValidated === 'Y';
          this.etape.paid = this.etapeForm.value.radioPaid=== 'Y';
          this.etape.dureeEstimee = this.etapeForm.value.dureeEstimee;
-         this.etape.delaiAttente = this.etapeForm.value.delaiAttente;
          this.etape.statutEtape = this.etapeForm.value.statutEtape == 'Commencée' ? StatutEtape.COMMENCEE: StatutEtape.PAS_ENCORE_COMMENCEE;
 
          switch (periodDureeEstime){
@@ -122,19 +121,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
              break;
            case 'M':
              this.etape.dureeEstimeeUnite = DurationUnite.MONTH;
-             break;
-         }
-
-
-         switch (periodDelaiAttente){
-           case 'H':
-             this.etape.delaiAttenteUnite = DurationUnite.HOUR;
-             break;
-           case 'D':
-             this.etape.delaiAttenteUnite = DurationUnite.DAY;
-             break;
-           case 'M':
-             this.etape.delaiAttenteUnite = DurationUnite.MONTH;
              break;
          }
 
@@ -206,7 +192,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
       radioPaid:FormControl<string>;
       radioAccepted:FormControl<string>;
       radioDureeEstimee:FormControl<string>
-      radioDelaiAttente:FormControl<string>;
       radioFIE:FormControl<string>;
       categorie:FormControl<number>;
     }>
@@ -228,17 +213,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
         break;
     }
 
-    switch (getDurationUniteFromString(this.etape.delaiAttenteUnite.toString())){
-      case DurationUnite.HOUR:
-        perdiodDelaiAttente = 'H';
-        break;
-      case DurationUnite.MONTH:
-        perdiodDelaiAttente = 'M';
-        break;
-      case DurationUnite.DAY:
-        perdiodDelaiAttente = 'D';
-        break;
-    }
 
     if(this.etape.first)
       selectedFIE = 'F';
@@ -249,7 +223,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
 
     this.etapeForm = this.fb.group({
       description : [this.etape.description,[Validators.required,Validators.maxLength(255)]],
-      delaiAttente : [this.etape.delaiAttente,[Validators.min(0)]],
       dureeEstimee : [this.etape.dureeEstimee,[Validators.required,Validators.min(0)]],
       ordre : [this.etape.ordre,Validators.required],
       statutEtape : [getstatutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
@@ -259,7 +232,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
       radioPaid:[this.etape.paid ? 'Y' : 'N',[Validators.required]],
       radioAccepted:[this.etape.accepted ? 'Y' : 'N',[Validators.required]],
       radioDureeEstimee : [perdiodDureeEstime,[Validators.required]],
-      radioDelaiAttente : [perdiodDelaiAttente,[Validators.required]],
       radioFIE : [selectedFIE,[Validators.required]],
       categorie : [this.etape.categorie?.idCategorie,[Validators.required]]
     })

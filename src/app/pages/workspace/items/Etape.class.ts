@@ -26,8 +26,6 @@ export class BaseEtape implements Etape{
   private _pourcentage: number;
   private _dureeEstimee: number;
   private _dureeEstimeeUnite:DurationUnite;
-  private _delaiAttente: number;
-  private _delaiAttenteUnite:DurationUnite;
   private _first: boolean;
   private _intermediate:boolean;
   private _end: boolean;
@@ -55,8 +53,6 @@ export class BaseEtape implements Etape{
     this._pourcentage=0;
     this._dureeEstimee=0;
     this._dureeEstimeeUnite = DurationUnite.HOUR,
-    this._delaiAttente=0;
-    this._delaiAttenteUnite = DurationUnite.HOUR,
     this._first = false;
     this._intermediate = false;
     this._end=false;
@@ -135,14 +131,6 @@ export class BaseEtape implements Etape{
 
   set dureeEstimee(value: number) {
     this._dureeEstimee = value;
-  }
-
-  get delaiAttente(): number {
-    return this._delaiAttente;
-  }
-
-  set delaiAttente(value: number) {
-    this._delaiAttente = value;
   }
 
   get first(): boolean {
@@ -279,13 +267,6 @@ export class BaseEtape implements Etape{
     this._dureeEstimeeUnite = value;
   }
 
-  get delaiAttenteUnite(): DurationUnite {
-    return this._delaiAttenteUnite;
-  }
-
-  set delaiAttenteUnite(value: DurationUnite) {
-    this._delaiAttenteUnite = value;
-  }
 
 
   get accepted(): boolean {

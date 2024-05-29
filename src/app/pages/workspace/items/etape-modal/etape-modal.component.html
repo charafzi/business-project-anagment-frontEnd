@@ -63,29 +63,6 @@
     </div>
   </div>
   <div nz-row class="row">
-      <div nz-col [nzSpan]="7">
-        <nz-form-item>
-          <nz-form-label>Waiting period&nbsp;</nz-form-label>
-        </nz-form-item>
-      </div>
-      <div nz-col [nzSpan]="4">
-        <nz-form-item>
-        <nz-form-control>
-            <nz-input-number formControlName="delaiAttente" [nzMin]="0" [nzStep]="1"></nz-input-number>
-        </nz-form-control>
-        </nz-form-item>
-      </div>
-      <div nz-col [nzSpan]="12" [nzOffset]="1">
-        <nz-form-control nzErrorTip="This field is required !">
-          <nz-radio-group formControlName="radioDelaiAttente">
-            <label nz-radio nzValue="H">Hour<span>(s)</span></label>
-            <label nz-radio nzValue="D">Day<span>(s)</span></label>
-            <label nz-radio nzValue="M">Month<span>(s)</span></label>
-          </nz-radio-group>
-        </nz-form-control>
-      </div>
-  </div>
-  <div nz-row class="row">
     <div nz-col [nzSpan]="8">
       <nz-form-item>
         <nz-form-label nzRequired>Is this a &nbsp;</nz-form-label>
