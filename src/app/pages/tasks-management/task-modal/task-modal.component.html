@@ -1,0 +1,106 @@
+<form nz-form [formGroup]="taskForm">
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Processus &nbsp;</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="18">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-select formControlName="processus"
+                     nzShowSearch
+                     nzAllowClear
+                     nzPlaceHolder="Please select the processus"
+                     [nzLoading]="processus.length==0"
+          >
+            <nz-option *ngFor="let p of processus" [nzLabel]="p.nom" [nzValue]="p.idProcessus" ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="24">
+      <nz-form-item>
+        <div nz-col [nzSpan]="6">
+          <nz-form-label nzRequired>Object of task</nz-form-label>
+        </div>
+        <div nz-col [nzSpan]="18">
+          <nz-form-control nzHasFeedback [nzErrorTip]="nomErrorTpl">
+            <input formControlName="nom" nz-input placeholder="Object of task..." type="text" />
+            <ng-template #nomErrorTpl let-control>
+              @if (control.errors?.['required']) {
+                Please fill in the object of task field
+              }
+              @if (control.errors?.['maxlength']) {
+                Please do not exceed 255 characters
+              }
+            </ng-template>
+          </nz-form-control>
+        </div>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row>
+    <div nz-col [nzSpan]="10">
+      <nz-form-item>
+        <nz-form-label nzRequired>Target starting date</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="10" [nzOffset]="4">
+      <nz-form-item>
+        <nz-form-label nzRequired>Expiration date</nz-form-label>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="10">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-date-picker formControlName="targetStartingDate"></nz-date-picker>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="10" [nzOffset]="4">
+      <nz-form-control nzErrorTip="This field is required !">
+        <nz-date-picker formControlName="expirationDate"></nz-date-picker>
+      </nz-form-control>
+    </div>
+  </div>
+  <div nz-row>
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Task assignment&nbsp;</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12" [nzOffset]="4">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-radio-group formControlName="radioChoice">
+            <label nz-radio nzValue="agent">Agent</label>
+            <label nz-radio nzValue="subContractor">Subcontractor</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="10">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-select formControlName="agent"  nzMode="multiple" nzShowSearch nzAllowClear nzPlaceHolder="Please select at least one agent">
+            <nz-option ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="10" [nzOffset]="4">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-select formControlName="subContractor" nzShowSearch nzAllowClear nzPlaceHolder="Please select a subcontractor">
+            <nz-option ></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>
