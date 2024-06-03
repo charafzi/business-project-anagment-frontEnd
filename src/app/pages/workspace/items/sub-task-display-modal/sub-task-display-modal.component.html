@@ -1,0 +1,159 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  (nzOnCancel)="onClickHideModal()"
+  (nzOnOk)="validateForm()"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+>
+  <ng-template #modalTitle>Informations about the task :</ng-template>
+
+  <ng-template #modalContent>
+    <form nz-form [formGroup]="taskForm">
+      <div class="row"
+           nz-row
+      >
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label>Categorie &nbsp;</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="18">
+          <nz-form-item>
+            <nz-form-control>
+              <input nz-input formControlName="categorie" [readOnly]="true">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row
+      >
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-label >Description</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="18">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-textarea-count class="text-area">
+                <textarea formControlName="description"
+                          [value]="subTask.etape?.description"
+                          nz-input rows="2"
+                          placeholder="Description..."
+                          [readOnly]="true"
+                ></textarea>
+              </nz-textarea-count>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row>
+        <div nz-col [nzSpan]="10">
+          <nz-form-item>
+            <nz-form-label>Target starting date</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="10" [nzOffset]="4">
+          <nz-form-item>
+            <nz-form-label>Expiration date</nz-form-label>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row class="row">
+        <div nz-col [nzSpan]="10">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-date-picker nzShowTime formControlName="dateDebutPrevue"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="10" [nzOffset]="4">
+          <nz-form-control>
+            <nz-date-picker nzShowTime formControlName="dateExpiration" ></nz-date-picker>
+          </nz-form-control>
+        </div>
+      </div>
+      <div nz-row>
+        <div nz-col [nzSpan]="10">
+          <nz-form-item>
+            <nz-form-label>Effective start date</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="10" [nzOffset]="4">
+          <nz-form-item>
+            <nz-form-label>Effective end date</nz-form-label>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row class="row">
+        <div nz-col [nzSpan]="10">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-date-picker nzShowTime formControlName="dateDebutEffective"></nz-date-picker>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="10" [nzOffset]="4">
+          <nz-form-control>
+            <nz-date-picker nzShowTime formControlName="dateFinEffective" ></nz-date-picker>
+          </nz-form-control>
+        </div>
+      </div>
+      <div nz-row class="row">
+        <div nz-col [nzSpan]="4">
+          <nz-form-item>
+            <nz-form-label>Status</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-select formControlName="statutTache">
+                <nz-option nzValue="EN_COURS" nzLabel="Current"></nz-option>
+                <nz-option nzValue="EN_ATTENTE_DE_VALIDATION" nzLabel="Waiting for validation"></nz-option>
+                <nz-option nzValue="EN_ATTENTE_DU_DELAI" nzLabel="Waiting for period"></nz-option>
+                <nz-option nzValue="TERMINE" nzLabel="Done"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="4" [nzOffset]="4">
+          <nz-form-item>
+            <nz-form-label>Priority</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-select formControlName="priorite">
+                <nz-option nzValue="HAUTE " nzLabel="High"></nz-option>
+                <nz-option nzValue="MOYENNE" nzLabel="Medium"></nz-option>
+                <nz-option nzValue="BASSE" nzLabel="Low"></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+      </div>
+      <div nz-row>
+         <div nz-col [nzSpan]="6" [nzOffset]="6">
+           <nz-form-item>
+             <nz-form-label >Progress</nz-form-label>
+           </nz-form-item>
+           <nz-form-item>
+             <nz-button-group>
+               <button nz-button (click)="decline()"><span nz-icon nzType="minus"></span></button>
+               <button nz-button (click)="increase()"><span nz-icon nzType="plus"></span></button>
+             </nz-button-group>
+           </nz-form-item>
+         </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-progress [nzPercent]="percent" nzType="circle" [nzWidth]="80"></nz-progress>
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+       </div>
+    </form>
+  </ng-template>
+</nz-modal>

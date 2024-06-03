@@ -1,3 +1,10 @@
+nz-breadcrumb{
+  margin: 10px;
+}
+
+nz-layout{
+  max-height: 95%;
+}
 nz-header{
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
@@ -22,3 +29,5 @@ nz-header h1{
 .icons-container a span{
   color: lightslategray;
 }
+
+

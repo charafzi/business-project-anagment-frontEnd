@@ -12,33 +12,32 @@ import {Processus} from "../../models/processus.model";
 import {ProcessusService} from "../../services/processus.service";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NzMenuDirective} from "ng-zorro-antd/menu";
+import {NzBreadCrumbComponent, NzBreadCrumbItemComponent} from "ng-zorro-antd/breadcrumb";
+import {NzTransitionPatchDirective} from "ng-zorro-antd/core/transition-patch/transition-patch.directive";
+import {RouterLink} from "@angular/router";
+import {DemoNgZorroAntdModule} from "../../ng-zorro-antd.module";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-workspace',
   templateUrl: './workspace.component.html',
   standalone: true,
   imports: [
-    NzCardComponent,
+    DemoNgZorroAntdModule,
     RhombusComponent,
-    NzLayoutComponent,
-    NzContentComponent,
-    NzSiderComponent,
     GridComponent,
     ItemListComponent,
     CdkDropList,
     CdkDropListGroup,
-    NzHeaderComponent,
-    NzButtonComponent,
-    NzRowDirective,
-    NzColDirective,
-    NzIconDirective,
-    NzMenuDirective
+    RouterLink,
+    NgIf
   ],
   styleUrl: './workspace.component.css'
 })
 export class WorkspaceComponent implements OnInit{
   @ViewChild('grid') appGrid!: GridComponent;
   isLoading:boolean = false;
+  mode:number = 1;
   processName:string = '';
   processDesc:string = '';
   isCollapsed = false;
@@ -47,6 +46,7 @@ export class WorkspaceComponent implements OnInit{
   constructor(private processusService:ProcessusService) {
     this.processName = this.processusService.processus.nom;
     this.processDesc = this.processusService.processus.description;
+    this.mode = this.processusService.mode;
   }
 
   toggleCollapsed(): void {

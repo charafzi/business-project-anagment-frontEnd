@@ -1,5 +1,6 @@
 import {CellComponent} from "../grid/cell/cell.component";
 import {BaseEtape} from "./Etape.class";
+import {Tache} from "../../../models/tache.model";
 
 
 export abstract class BaseItem{
@@ -9,6 +10,8 @@ export abstract class BaseItem{
   public _cellRef: CellComponent | null;
   public _componentName: string;
   public _displayInfo: boolean;
+  public _mode : number;
+  private _tache : Tache | null;
 
   protected constructor() {
     this._etape=null;
@@ -17,6 +20,8 @@ export abstract class BaseItem{
     this._showButtons = false;
     this._componentName='';
     this._displayInfo=false;
+    this._tache = null;
+    this._mode=-1;
   }
   get showButtons(): boolean {
     return this._showButtons;
@@ -32,6 +37,15 @@ export abstract class BaseItem{
 
   set enableShowButtons(value: boolean) {
     this._enableShowButtons = value;
+  }
+
+
+  get tache(): Tache | null {
+    return this._tache;
+  }
+
+  set tache(value: Tache | null) {
+    this._tache = value;
   }
 
   displayButtons()
@@ -58,6 +72,12 @@ export abstract class BaseItem{
   onClickDisplayConnectionModal(){
     if (this._etape){
       this._etape.connectionsModalIsVisibe=true;
+    }
+  }
+
+  onClickDisplaySubTaskModal(){
+    if (this._etape){
+      this._etape.subTaskModalIsVisibe=true;
     }
   }
 }

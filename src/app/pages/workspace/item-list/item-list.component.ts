@@ -4,10 +4,8 @@ import {SquareComponent} from "../items/square/square.component";
 import {RhombusComponent} from "../items/rhombus/rhombus.component";
 import {CircleComponent} from "../items/circle/circle.component";
 import {NzMenuDirective, NzSubMenuComponent} from "ng-zorro-antd/menu";
-import {BaseEtape} from "../items/Etape.class";
 import {TypeService} from "../../../services/type.service";
 import {Type} from "../../../models/type.model"
-import {ItemComponentService} from "../../../services/itemComponent.service";
 import {NgForOf, NgIf} from "@angular/common";
 import {NzSpinComponent} from "ng-zorro-antd/spin";
 import {BaseItem} from "../items/item.model";
@@ -42,8 +40,7 @@ export class ItemListComponent implements OnInit{
   items:BaseItem[] = [];
   @Input('isCollapsed') isCollapsed:boolean = false;
   isLoading:boolean=false;
-  constructor(protected typeService:TypeService,
-              protected itemComponentService: ItemComponentService) {
+  constructor(protected typeService:TypeService) {
 
   }
 

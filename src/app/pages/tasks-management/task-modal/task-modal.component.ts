@@ -14,6 +14,8 @@ import {Processus} from "../../../models/processus.model";
 import {ProcessusService} from "../../../services/processus.service";
 import {TravailleurService} from "../../../services/travailleur.service";
 import {Travailleur} from "../../../models/travailleur.model";
+import {SousTraitant} from "../../../models/sousTraitant.model";
+import {SousTraitantService} from "../../../services/sousTraitant.service";
 
 @Component({
   selector: 'app-task-modal',
@@ -28,38 +30,36 @@ import {Travailleur} from "../../../models/travailleur.model";
 })
 export class TaskModalComponent {
   processus : Processus[] = [];
-  travailleurs: Travailleur[] = [];
-  taskForm: FormGroup<{
-    processus : FormControl<string[]>;
-    objectOfTask:FormControl<string>;
-    targetStartingDate : FormControl<Date | null>;
-    expirationDate : FormControl<Date | null>;
-    agent : FormControl<string[]>;
-    subContractor : FormControl<number>;
-    radioChoice : FormControl<string>;
-  }> = this.fb.group({
-    processus : this.fb.control<string[]>([],Validators.required),
-    objectOfTask: this.fb.control<string>('', [Validators.required, Validators.maxLength(255)]),
-    targetStartingDate: this.fb.control<Date | null>(null, [Validators.required]),
-    expirationDate: this.fb.control<Date | null>(null, [Validators.required]),
-    agent: this.fb.control<string[]>([], Validators.required),
-    subContractor: this.fb.control<number | null>(null, Validators.required),
-    radioChoice: this.fb.control<string>('agent')
-  }) as FormGroup<{
-    processus : FormControl<string[]>
-    objectOfTask: FormControl<string>;
-    targetStartingDate: FormControl<Date | null>;
-    expirationDate: FormControl<Date | null>;
-    agent: FormControl<string[]>;
-    subContractor: FormControl<number>;
-    radioChoice: FormControl<string>;
-  }>;
+  agents : Travailleur[] = [];
+  subContractors : SousTraitant[] = [];
+
+  taskForm!: FormGroup;
 
 
   constructor(private modalRef: NzModalRef,
               private processusService : ProcessusService,
               private travailleurService : TravailleurService,
+              private sousTraitantService : SousTraitantService,
               private fb: FormBuilder) {
+    this.taskForm = new FormGroup({
+      processus: new FormControl(null, Validators.required),
+      objectOfTask: new FormControl('', [Validators.required, Validators.maxLength(255)]),
+      targetStartingDate: new FormControl(null, [Validators.required]),
+      expirationDate: new FormControl(null, [Validators.required]),
+      agent: new FormControl([], Validators.required),
+      subContractor: new FormControl (null, Validators.required),
+      radioChoice: new FormControl('agent', Validators.required)
+    });
+    /*this.taskForm = this.fb.group({
+      processus: [],
+      objectOfTask: ['', [Validators.required, Validators.maxLength(255)]],
+      targetStartingDate: [null, [Validators.required]],
+      expirationDate: [null, [Validators.required]],
+      agent: [[], Validators.required],
+      subContractor: [null, Validators.required],
+      radioChoice: ['agent', Validators.required]
+    });*/
+
     this.processusService.retrieveAllProcessus()
       .subscribe(processus=>{
         this.processus = processus;
@@ -70,12 +70,19 @@ export class TaskModalComponent {
 
     this.travailleurService.retrieveAllTravailleurs()
       .subscribe(travailleurs=>{
-        this.travailleurs = travailleurs
+        this.agents = travailleurs
       },
         error => {
           console.error('Error at retrieving Travailleurs from back-end : '+error)
         })
 
+    this.sousTraitantService.retrieveAllSousTraitants()
+      .subscribe(sousTraitants=>{
+        this.subContractors = sousTraitants;
+      },
+        error => {
+          console.error('Error at retrieving sousTraitants from back-end : '+error)
+        })
 
     this.taskForm.get('radioChoice')!.valueChanges.subscribe((choice) => {
       if (choice === 'agent') {

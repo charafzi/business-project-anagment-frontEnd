@@ -31,6 +31,7 @@ import {ConnexionService} from "../../../../services/connexion.service";
 import {FirstExistException} from "../../../../exceptions/firstExist.exception";
 import {EndExistException} from "../../../../exceptions/endExist.exception";
 import {EtapeService} from "../../../../services/etape.service";
+import {SubTaskDisplayModalComponent} from "../../items/sub-task-display-modal/sub-task-display-modal.component";
 
 
 @Component({
@@ -48,13 +49,15 @@ import {EtapeService} from "../../../../services/etape.service";
     CircleComponent,
     EtapeDisplayModalComponent,
     NzBadgeComponent,
-    ConnectionsModalComponent
+    ConnectionsModalComponent,
+    SubTaskDisplayModalComponent
   ],
   styleUrl: './cell.component.css'
 })
 export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
 
   @Input('processItem') processItem: BaseEtape | null = null;
+  @Input('mode') mode : number = 1;
   @Output('processItemCreated') processItemCreated = new EventEmitter<{processItem:BaseEtape ,rowIndex:number,colIndex:number}>();
   @Output('processItemShowButtons') processItemShowButtons = new EventEmitter<{show:boolean ,rowIndex:number,colIndex:number}>();
   @Output('processItemDeleted') processItemDeleted = new EventEmitter<{rowIndex:number,colIndex:number}>();
@@ -180,6 +183,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               this.processItem.intermediate = isInterm;
               this.processItem.end = isEnd;
 
+
               switch (periodDureeEstime){
                 case 'H':
                   this.processItem.dureeEstimeeUnite = DurationUnite.HOUR;
@@ -257,8 +261,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
         newProcessItem.ordre=this.order;
         newProcessItem.indexLigne=this.rowIndex;
         newProcessItem.indexColonne=this.colIndex;
-        newProcessItem.pourcentage=0;
-        newProcessItem.statutEtape = StatutEtape.PAS_ENCORE_COMMENCEE;
+       // newProcessItem.pourcentage=0;
+        //newProcessItem.statutEtape = StatutEtape.PAS_ENCORE_COMMENCEE;
         newProcessItem.processus = this.processusService.processus;
         newProcessItem._cellRef=this;
       }else{
@@ -267,8 +271,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
           newProcessItem.ordre=this.processItem.ordre;
           newProcessItem.indexLigne=this.processItem.indexLigne;
           newProcessItem.indexColonne=this.processItem.indexColonne;
-          newProcessItem.pourcentage=this.processItem.pourcentage;
-          newProcessItem.statutEtape = this.processItem.statutEtape;
+         // newProcessItem.pourcentage=this.processItem.pourcentage;
+          //newProcessItem.statutEtape = this.processItem.statutEtape;
           newProcessItem.processus = this.processItem.processus;
           newProcessItem._cellRef=this;
         }
@@ -284,6 +288,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
       newProcessItem.paid=this.processItem.paid;
       newProcessItem.accepted = this.processItem.accepted;
       newProcessItem.dureeEstimeeUnite = this.processItem.dureeEstimeeUnite;
+      newProcessItem.tache = this.processItem.tache;
 
       newProcessItem.enableShowButtons=true;
       newProcessItem.showButtons = true;
@@ -297,6 +302,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
 
       //assign Etape to component
       (childComponentRef.instance as BaseItem)._etape = newProcessItem;
+      (childComponentRef.instance as BaseItem)._mode=this.mode;
+
       //assing Etape to this Cell
       //this.processItem = newProcessItem;
       this.processItem.enableShowButtons = true;

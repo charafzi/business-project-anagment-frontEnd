@@ -5,6 +5,7 @@ import {Processus} from "../../../models/processus.model";
 import {Categorie} from "../../../models/categorie.model";
 import {StatutEtape, getStatutEtapeFromString} from "../../../models/StatutEtape";
 import {DurationUnite, getDurationUniteFromString} from "../../../models/DurationUnite";
+import {Tache} from "../../../models/tache.model";
 
 /*export function statutEtapeToString(statut:StatutEtape) {
   switch (statut){
@@ -23,7 +24,7 @@ export class BaseEtape implements Etape{
   private _indexLigne: number;
   private _description: string;
   private _ordre: number;
-  private _pourcentage: number;
+  //private _pourcentage: number;
   private _dureeEstimee: number;
   private _dureeEstimeeUnite:DurationUnite;
   private _first: boolean;
@@ -32,7 +33,7 @@ export class BaseEtape implements Etape{
   private _validate: boolean;
   private _accepted : boolean;
   private _paid: boolean;
-  private _statutEtape : StatutEtape;
+  //private _statutEtape : StatutEtape;
   private _type : Type |null;
   private _categorie: Categorie | null;
   private _showButtons:boolean;
@@ -41,8 +42,11 @@ export class BaseEtape implements Etape{
   private _processus? : Processus | undefined;
   private _editModalIsVisibe:boolean;
   private _connectionsModalIsVisibe:boolean;
+  private _subTaskModalIsVisibe:boolean;
   _displayInfo:boolean;
   public _cellRef: CellComponent | null;
+  //used to assign tasks when selecting view in tasks-management
+  private _tache : Tache | null;
 
     constructor() {
     this._idEtape=-1;
@@ -50,7 +54,7 @@ export class BaseEtape implements Etape{
     this._ordre=0;
     this._indexLigne=0;
     this._indexColonne=0;
-    this._pourcentage=0;
+   // this._pourcentage=0;
     this._dureeEstimee=0;
     this._dureeEstimeeUnite = DurationUnite.HOUR,
     this._first = false;
@@ -58,7 +62,7 @@ export class BaseEtape implements Etape{
     this._end=false;
     this._validate=false;
     this._paid =false;
-    this._statutEtape = StatutEtape.PAS_ENCORE_COMMENCEE;
+    //this._statutEtape = StatutEtape.PAS_ENCORE_COMMENCEE;
     //this._type = 'default';
     this._componentName='';
     this._showButtons = false;
@@ -67,12 +71,12 @@ export class BaseEtape implements Etape{
     this._cellRef=null;
     this._editModalIsVisibe=false;
     this._connectionsModalIsVisibe=false;
+    this._subTaskModalIsVisibe=false;
     this._type = null;
     this._categorie = null;
     this._accepted = false;
+    this._tache = null;
     }
-
-
 
 
   get idEtape(): number {
@@ -115,14 +119,6 @@ export class BaseEtape implements Etape{
 
   set ordre(value: number) {
     this._ordre = value;
-  }
-
-  get pourcentage(): number {
-    return this._pourcentage;
-  }
-
-  set pourcentage(value: number) {
-    this._pourcentage = value;
   }
 
   get dureeEstimee(): number {
@@ -172,14 +168,6 @@ export class BaseEtape implements Etape{
 
   set paid(value: boolean) {
     this._paid = value;
-  }
-
-  get statutEtape(): StatutEtape {
-    return this._statutEtape;
-  }
-
-  set statutEtape(value: StatutEtape) {
-    this._statutEtape = value;
   }
 
   get showButtons(): boolean {
@@ -275,6 +263,24 @@ export class BaseEtape implements Etape{
 
   set accepted(value: boolean) {
     this._accepted = value;
+  }
+
+
+  get tache(): Tache | null {
+    return this._tache;
+  }
+
+  set tache(value: Tache | null) {
+    this._tache = value;
+  }
+
+
+  get subTaskModalIsVisibe(): boolean {
+    return this._subTaskModalIsVisibe;
+  }
+
+  set subTaskModalIsVisibe(value: boolean) {
+    this._subTaskModalIsVisibe = value;
   }
 }
 

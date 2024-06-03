@@ -1,6 +1,27 @@
 import {StatutTache} from "./StatutTache";
+import {Priorite} from "./Priorite";
+import {Etape} from "./etape.model";
+import {Travailleur} from "./travailleur.model";
+import {SousTraitant} from "./sousTraitant.model";
+import {StatutEtape} from "./StatutEtape";
 
-export class Tache{}
+export interface Tache{
+  idTache?:number;
+  objetTache?:string;
+  priorite?:Priorite;
+  pourcentage?: number;
+  statutTache? : StatutTache;
+  statutEtape?: StatutEtape;
+  dateDebutPrevue? : Date;
+  dateDebutEffective? : Date | null;
+  dateFinEffective? : Date | null;
+  dateExpiration? : Date;
+  travailleurs? : Travailleur[];
+  sousTraitant? : (SousTraitant | null);
+  etape? : Etape | null;
+  tache_mere? : (Tache | null);
+  sous_taches?: Tache[];
+}
 
 export function getStatutTacheFromString(statut:string){
   switch (statut){

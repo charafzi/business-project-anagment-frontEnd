@@ -1,7 +1,7 @@
 <nz-card id="card"
          [nzBorderless]="false"
          [nzHoverable]="true"
-         (click)="displayButtons()"
+         (click)="onClickDisplaySubTaskModal()"
 >
   <div class="card-container">
     <svg
@@ -11,7 +11,7 @@
 </nz-card>
 
 <div class="actions-container" *ngIf="showButtons">
-  <ul class="actions">
+  <ul class="actions" *ngIf="_mode===1">
     <!--<li><span nz-icon nzType="setting"></span></li>-->
     <li><span nz-icon nzType="node-index"
               (click)="onClickDisplayConnectionModal()"
@@ -28,5 +28,51 @@
               nz-tooltip
               nzTooltipTitle="Delete"
     ></span></li>
+  </ul>
+  <ul class="status" *ngIf="_mode===2">
+    @if (tache && tache.statutTache){
+      @switch (getstatutTacheToString(tache.statutTache.toString())){
+        @case ("EN_COURS"){
+          <nz-badge [nzCount]="iconCurrent">
+          </nz-badge>
+          <ng-template #iconCurrent>
+            <span
+              nz-tooltip
+              nzTooltipTitle="Current"
+              nz-icon nzType="play-circle" nzTheme="fill" style="color: #1890ff"></span>
+          </ng-template>
+        }
+        @case ("EN_ATTENTE_DE_VALIDATION"){
+          <nz-badge [nzCount]="iconWaitingValidation">
+          </nz-badge>
+          <ng-template #iconWaitingValidation>
+            <span
+              nz-tooltip
+              nzTooltipTitle="Waiting for validation"
+              nz-icon  nzType="exclamation-circle" nzTheme="fill" style="color: yellow"></span>
+          </ng-template>
+        }
+        @case ("EN_ATTENTE_DU_DELAI"){
+          <nz-badge [nzCount]="iconWaitingDelay">
+          </nz-badge>
+          <ng-template #iconWaitingDelay>
+            <span
+              nz-tooltip
+              nzTooltipTitle="Waiting for delay"
+              nz-icon  nzType="clock-circle" nzTheme="fill" style="color: gray"></span>
+          </ng-template>
+        }
+        @case ("TERMINE"){
+          <nz-badge [nzCount]="iconValid">
+          </nz-badge>
+          <ng-template #iconValid>
+            <span
+              nz-tooltip
+              nzTooltipTitle="Done"
+              nz-icon  nzType="check-circle" nzTheme="fill" style="color: #52c41a"></span>
+          </ng-template>
+        }
+      }
+    }
   </ul>
 </div>

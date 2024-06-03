@@ -6,9 +6,8 @@ import {BaseEtape} from "../pages/workspace/items/Etape.class";
 import {Connection, ConnectionSet} from "../pages/workspace/grid/connection.class";
 import LinkerLine from "linkerline";
 import {StatutTache} from "../models/StatutTache";
-import {getStatutTacheFromString} from "../models/tache.model";
 import {DurationUnite} from "../models/DurationUnite";
-import {GridComponent} from "../pages/workspace/grid/grid.component";
+import {getStatutEtapeFromString, StatutEtape} from "../models/StatutEtape";
 
 @Injectable({
   providedIn : 'root'
@@ -67,7 +66,7 @@ export class ConnexionService{
                   indexColTo:number,
                   delaiAttente?: number,
                   delaiAttenteUnite?: DurationUnite,
-                  statut? : StatutTache
+                  statut? : StatutEtape
   ):number{
     try {
       console.log("i will create :::"+this.grid)
@@ -109,7 +108,7 @@ export class ConnexionService{
               }),
             delaiAttente?? 0,
             delaiAttenteUnite?? DurationUnite.DAY,
-            statut?? StatutTache.TERMINE
+            statut?? StatutEtape.PAS_ENCORE_COMMENCEE
           );
           this.connectionSet.add(conn);
           this.connectionSet.print();
@@ -221,7 +220,8 @@ export class ConnexionService{
     conn.getFrom()?.indexLigne==indexRowFrom && conn.getFrom()?.indexColonne==indexColFrom
     && conn.getTo()?.indexLigne==indexRowTo && conn.getTo()?.indexColonne==indexColTo)
     if(connexion!=undefined){
-      connexion.statut = getStatutTacheFromString(statut);
+      console.log("THIS CONN BRO :"+statut,",",getStatutEtapeFromString(statut))
+      connexion.statut = getStatutEtapeFromString(statut);
       connexion.delaiAttente = delaiAttente;
       connexion.delaiAttenteUnite = delaiAttenteUnite;
     }else

@@ -58,11 +58,9 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
   categories : Categorie [] = [];
   percent = 0;
   etapeForm!: FormGroup;
-  categoriesIsLoading:boolean = true;
   constructor(private fb: FormBuilder,
               private modalService : NzModalService,
               private categorieService : CategorieService,
-              private connexionSerivce : ConnexionService,
               private etapeService : EtapeService) {}
 
   ngOnInit(): void {
@@ -103,14 +101,14 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
          let selectedFIE = this.etapeForm.value.radioFIE;
          this.etape.description = this.etapeForm.value.description;
          this.etape.ordre=this.etapeForm.value.ordre;
-         this.etape.pourcentage=this.percent;
+         //this.etape.pourcentage=this.percent;
          this.etape.first=this.etapeForm.value.isFirst;
          this.etape.end=this.etapeForm.value.isEnd;
          this.etape.accepted = this.etapeForm.value.radioAccepted === 'Y';
          this.etape.validate = this.etapeForm.value.radioValidated === 'Y';
          this.etape.paid = this.etapeForm.value.radioPaid=== 'Y';
          this.etape.dureeEstimee = this.etapeForm.value.dureeEstimee;
-         this.etape.statutEtape = this.etapeForm.value.statutEtape == 'Commencée' ? StatutEtape.COMMENCEE: StatutEtape.PAS_ENCORE_COMMENCEE;
+         //this.etape.statutEtape = this.etapeForm.value.statutEtape == 'Commencée' ? StatutEtape.COMMENCEE: StatutEtape.PAS_ENCORE_COMMENCEE;
 
          switch (periodDureeEstime){
            case 'H':
@@ -124,6 +122,7 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
              break;
          }
 
+         console.log("CHOSES : "+this.etape.dureeEstimeeUnite)
          this.etape.first = this.etape.intermediate = this.etape.end = false;
          switch (selectedFIE){
            case 'F':
@@ -196,7 +195,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
       categorie:FormControl<number>;
     }>
     let perdiodDureeEstime = '';
-    let perdiodDelaiAttente ='';
     let selectedFIE=';'
     //744 == 31 * 24 (Months to hours)
 
@@ -225,7 +223,7 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
       description : [this.etape.description,[Validators.required,Validators.maxLength(255)]],
       dureeEstimee : [this.etape.dureeEstimee,[Validators.required,Validators.min(0)]],
       ordre : [this.etape.ordre,Validators.required],
-      statutEtape : [getstatutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
+     // statutEtape : [getstatutEtapeToString(this.etape.statutEtape.toString()),Validators.required],
       isFirst : [this.etape.first],
       isEnd : [this.etape.end],
       radioValidated: [this.etape.validate ? 'Y' : 'N',[Validators.required]],
@@ -235,7 +233,7 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
       radioFIE : [selectedFIE,[Validators.required]],
       categorie : [this.etape.categorie?.idCategorie,[Validators.required]]
     })
-    this.percent=this.etape.pourcentage;
+   // this.percent=this.etape.pourcentage;
 
   }
 

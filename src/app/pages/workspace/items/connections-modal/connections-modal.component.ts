@@ -24,12 +24,8 @@ import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
 import {statutTacheToString} from "../../../../models/tache.model";
 import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
 import {DurationUnite, getDurationUniteFromString} from "../../../../models/DurationUnite";
+import {getStatutEtapeFromString, getstatutEtapeToString, StatutEtape} from "../../../../models/StatutEtape";
 
-interface stepBeforeDetails{
-  step : BaseEtape,
-  delaiAttente : number,
-  statut : StatutTache
-}
 
 @Component({
   selector: 'app-connections-modal',
@@ -62,7 +58,6 @@ export class ConnectionsModalComponent implements OnInit, OnChanges{
   @Input('etape') etape! : BaseEtape;
   @Input('isVisible') isVisible!:boolean;
   etapes : BaseEtape [] = [];
-  subConnectionSet : ConnectionSet = new ConnectionSet();
 
 
   connectionsForm: FormGroup<{
@@ -78,7 +73,6 @@ export class ConnectionsModalComponent implements OnInit, OnChanges{
       stepsAfter: [['']],
       stepsBefore : [['']],
       stepsBeforeDetails: this.fb.array<FormGroup<{ step: FormControl<string>; delaiAttente: FormControl<number>; statut: FormControl<string>; radioDelaiAttente:FormControl<string>; }>>([])
-
     })
 
   }
@@ -101,7 +95,7 @@ export class ConnectionsModalComponent implements OnInit, OnChanges{
       let connetion = this.connexionService.getConnexion(parseInt(indexes[0]),parseInt(indexes[1]),this.etape.indexLigne,this.etape.indexColonne);
       if(connetion != undefined){
         delaiAttente = connetion.delaiAttente;
-        statut = statutTacheToString(connetion.statut);
+        statut = getstatutEtapeToString(connetion.statut.toString());
         switch (getDurationUniteFromString(connetion.delaiAttenteUnite.toString())){
           case DurationUnite.HOUR:
             radioUnite = 'H';
@@ -112,6 +106,7 @@ export class ConnectionsModalComponent implements OnInit, OnChanges{
           case DurationUnite.DAY:
             radioUnite = 'D';
         }
+        statut = getstatutEtapeToString(connetion.statut.toString());
       }
       this.stepsBeforeDetails.push(this.fb.group({
         step: this.fb.control(step),

@@ -2,12 +2,12 @@
   <div class="row"
        nz-row
   >
-    <div nz-col [nzSpan]="8">
+    <div nz-col [nzSpan]="6">
       <nz-form-item>
         <nz-form-label>Categorie &nbsp;</nz-form-label>
       </nz-form-item>
     </div>
-    <div nz-col [nzSpan]="16">
+    <div nz-col [nzSpan]="18">
       <nz-form-item>
         <nz-form-control nzErrorTip="This field is required !">
           <nz-select formControlName="categorie" nzShowSearch nzAllowClear nzPlaceHolder="Please select the category"
@@ -20,9 +20,13 @@
     </div>
   </div>
   <div nz-row class="row">
-    <div nz-col [nzSpan]="24">
+    <div nz-col [nzSpan]="6">
       <nz-form-item>
         <nz-form-label nzRequired>Description</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="18">
+      <nz-form-item>
         <nz-form-control nzHasFeedback [nzErrorTip]="descriptionErrorTpl">
           <nz-textarea-count class="text-area">
             <textarea formControlName="description" nz-input rows="2" placeholder="Description..."></textarea>
@@ -45,14 +49,12 @@
         <nz-form-label nzRequired>Estimated duration&nbsp;</nz-form-label>
       </nz-form-item>
     </div>
-    <div nz-col [nzSpan]="4">
-      <nz-form-item>
+    <div nz-col [nzSpan]="3">
         <nz-form-control nzErrorTip="This field is required !">
           <nz-input-number formControlName="dureeEstimee" [nzMin]="0" [nzStep]="1"></nz-input-number>
         </nz-form-control>
-      </nz-form-item>
     </div>
-    <div nz-col [nzSpan]="12" [nzOffset]="1">
+    <div nz-col [nzSpan]="12" [nzOffset]="2">
       <nz-form-control nzErrorTip="This field is required !">
         <nz-radio-group formControlName="radioDureeEstimee">
           <label nz-radio nzValue="H">Hour<span>(s)</span></label>

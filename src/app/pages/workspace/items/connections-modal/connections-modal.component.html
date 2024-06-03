@@ -76,7 +76,7 @@
       >
         <div nz-col [nzSpan]="12">
           <nz-form-item>
-            <nz-form-label>The waiting period for steps before &nbsp;</nz-form-label>
+            <nz-form-label>The waiting period depending on status for steps before &nbsp;</nz-form-label>
           </nz-form-item>
         </div>
       </div>
@@ -118,11 +118,9 @@
                <div nz-col [nzSpan]="7" >
                  <nz-form-item>
                    <nz-form-control>
-                     <nz-select formControlName="statut">
-                       <nz-option nzValue="En cours" nzLabel="Current"></nz-option>
-                       <nz-option nzValue="En attente de validation" nzLabel="Pending for validation"></nz-option>
-                       <nz-option nzValue="En attente du delai" nzLabel="Waiting for delay"></nz-option>
-                       <nz-option nzValue="Terminée" nzLabel="Done"></nz-option>
+                     <nz-select formControlName="statut" nzErrorTip="This field is required !">
+                       <nz-option nzValue="COMMENCEE" nzLabel="Started"></nz-option>
+                       <nz-option nzValue="TERMINE" nzLabel="Done"></nz-option>
                      </nz-select>
                    </nz-form-control>
                  </nz-form-item>

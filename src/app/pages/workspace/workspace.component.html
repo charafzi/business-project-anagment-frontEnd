@@ -1,3 +1,26 @@
+<nz-breadcrumb *ngIf="mode==1">
+  <nz-breadcrumb-item>
+    <a>
+      <span nz-icon nzType="dashboard"></span>
+      <span>Workflows</span>
+    </a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>
+    <a>
+      <span><a routerLink="/processus">Workflow Management</a></span>
+    </a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>Workspace</nz-breadcrumb-item>
+</nz-breadcrumb>
+<nz-breadcrumb *ngIf="mode==2">
+  <nz-breadcrumb-item>
+    <a>
+      <span nz-icon nzType="unordered-list"></span>
+      <span><a routerLink="/tasks-management">Tasks Management</a></span>
+    </a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>Workspace</nz-breadcrumb-item>
+</nz-breadcrumb>
 <nz-layout>
   <nz-header>
     <div nz-row
@@ -12,14 +35,15 @@
       <div nz-col class="label" [nzSpan]="6">Description&nbsp;:</div>
       <div nz-col class="value" [nzSpan]="18">{{processDesc}}</div>
     </div>
-    <div class="container">
+    <div class="container" *ngIf="mode==1">
       <button nz-button nzType="primary" [nzShape]="'round'" (click)="addRow()"><span nz-icon nzType="insert-row-below" nzTheme="outline"></span>Add new row</button>
       <button nz-button nzType="primary" [nzShape]="'round'" (click)="addCol()"><span nz-icon nzType="insert-row-right" nzTheme="outline"></span>Add new column</button>
       <button nz-button nzType="primary" [nzShape]="'round'" (click)="sauvegarder()" [nzLoading]="isLoading"><span nz-icon nzType="save" nzTheme="outline"></span>Save</button>
     </div>
   </nz-header>
   <nz-layout cdkDropListGroup>
-    <nz-sider class="side-menu"
+    <nz-sider *ngIf="mode == 1"
+              class="side-menu"
               nzCollapsible
               nzWidth="158px"
               nzBreakpoint="sm"

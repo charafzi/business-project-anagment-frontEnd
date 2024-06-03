@@ -13,7 +13,7 @@ export abstract class AbstractConnection{
     private _connection:LinkerLine<any, any>,
     private _delaiAttente : number,
     private _delaiAttenteUnite: DurationUnite,
-    private _statut: StatutTache){
+    private _statut: StatutEtape){
   }
 
   getIdFrom(){
@@ -45,14 +45,14 @@ export abstract class AbstractConnection{
     this._delaiAttente = value;
   }
 
-  get statut(): StatutTache {
+
+  get statut(): StatutEtape {
     return this._statut;
   }
 
-  set statut(value: StatutTache) {
+  set statut(value: StatutEtape) {
     this._statut = value;
   }
-
 
   get delaiAttenteUnite(): DurationUnite {
     return this._delaiAttenteUnite;
@@ -92,7 +92,7 @@ export class Connection extends AbstractConnection {
     connection:LinkerLine<any, any>,
     delaiAttente: number,
     delaiAttenteUnite:DurationUnite,
-    statut : StatutTache) {
+    statut : StatutEtape) {
     super(idFrom, idTo, baseProcessItemfrom, baseProcessItemto,connection,delaiAttente,delaiAttenteUnite,statut);
   }
 

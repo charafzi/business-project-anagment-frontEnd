@@ -1,3 +1,12 @@
+<nz-breadcrumb>
+  <nz-breadcrumb-item>
+    <a>
+      <span nz-icon nzType="dashboard"></span>
+      <span>Workflows</span>
+    </a>
+  </nz-breadcrumb-item>
+  <nz-breadcrumb-item>Workflow Management</nz-breadcrumb-item>
+</nz-breadcrumb>
 <nz-layout>
   <nz-header>
     <div nz-row>
@@ -18,18 +27,19 @@
   <nz-layout>
     <nz-content>
       <nz-table #basicTable [nzData]="ProcessList"
+                [nzScroll]="{ y: 'calc(100vh - 50vh)' }"
                 [nzShowPagination]="true"
                 [nzFrontPagination]="true"
                 [nzLoading]="isLoading"
                 nzTableLayout="fixed"
                 [nzPaginationType]="'small'"
                 [nzPaginationPosition]="'bottom'"
-                [nzPageSize]="8"
-
+                [nzSize]="'small'"
       >
         <thead>
-        <tr>
-          <th>Name</th>
+        <tr
+        >
+          <th >Name</th>
           <th>Description</th>
           <th [nzAlign]="'right'">Actions</th>
         </tr>

@@ -5,6 +5,9 @@ import {BaseEtape} from "../Etape.class";
 import {NgIf} from "@angular/common";
 import {BaseItem} from "../item.model";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {getstatutTacheToString} from "../../../../models/StatutTache";
+import {NzBadgeComponent, NzRibbonComponent} from "ng-zorro-antd/badge";
+import {NzTypographyComponent} from "ng-zorro-antd/typography";
 
 @Component({
   selector: 'app-square',
@@ -14,7 +17,10 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
     NzCardComponent,
     NzIconDirective,
     NgIf,
-    NzTooltipDirective
+    NzTooltipDirective,
+    NzBadgeComponent,
+    NzRibbonComponent,
+    NzTypographyComponent
   ],
   styleUrl: './square.component.css'
 })
@@ -32,4 +38,5 @@ export class SquareComponent extends BaseItem {
   }
 
 
+  protected readonly getstatutTacheToString = getstatutTacheToString;
 }

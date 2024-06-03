@@ -1,1 +1,141 @@
-<p>tasks-management works!</p>
+<nz-breadcrumb>
+  <nz-breadcrumb-item>
+    <a>
+      <span nz-icon nzType="unordered-list"></span>
+      <span>Tasks Management</span>
+    </a>
+  </nz-breadcrumb-item>
+</nz-breadcrumb>
+<nz-layout>
+  <nz-header>
+    <div nz-row>
+      <div nz-col [nzSpan]="6">
+        <h1>List of tasks</h1>
+      </div>
+    </div>
+
+    <div nz-row>
+      <div nz-col [nzSpan]="6">
+        <button nz-button nzType="primary" [nzShape]="'round'" (click)="onAddTask()">
+          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+          Add new task
+        </button>
+      </div>
+    </div>
+  </nz-header>
+  <nz-layout>
+    <nz-content>
+      <nz-table #nestedTable
+                [nzScroll]="{ y: 'calc(100vh - 50vh)' }"
+                [nzLoading]="isLoading"
+                [nzData]="listOfMainTasks"
+                [nzShowPagination]="true"
+                [nzFrontPagination]="true"
+                nzTableLayout="fixed"
+                [nzPaginationType]="'small'"
+                [nzPaginationPosition]="'bottom'"
+                [nzSize]="'small'"
+      >
+        <thead>
+        <tr>
+          <th></th>
+          <th>Object of task</th>
+          <th>Target starting date</th>
+          <th>Expiration date</th>
+          <th [nzWidth]="'20%'">Agents</th>
+          <th>Subcontractor</th>
+          <th [nzAlign]="'right'">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <ng-template ngFor let-data [ngForOf]="nestedTable.data">
+          <tr>
+            <td [(nzExpand)]="data.expand"></td>
+            <td>{{ data.tache.objetTache}}</td>
+            <td>{{ data.tache.dateDebutPrevue ? data.tache.dateDebutPrevue.toLocaleDateString() +' '+data.tache.dateDebutPrevue.toLocaleTimeString() : '' }}</td>
+            <td>{{ data.tache.dateExpiration ? data.tache.dateExpiration.toLocaleDateString()+ ' '+data.tache.dateExpiration.toLocaleTimeString() : ''}}</td>
+            <td>
+              <nz-list [nzSize]="'small'">
+                @for (travailleur of data.tache.travailleurs; track travailleur) {
+                  <nz-list-item>{{ travailleur.nom+' '+travailleur.prenom }}</nz-list-item>
+                }
+
+              </nz-list>
+            </td>
+            <td>{{ data.tache.sousTraitant?.nom }}</td>
+            <td>
+              <div class="icons-container">
+                <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'" (click)="viewSchema(data.tache.idTache ?? -1)" ></span></a>
+                <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'" (click)="delete(data.tache.idTache ?? -1)"></span></a>
+              </div>
+            </td>
+          </tr>
+          <tr [nzExpand]="data.expand">
+            <nz-table #innerTable [nzData]="data.tache.sous_taches ?? []" nzSize="middle" [nzShowPagination]="false">
+              <thead>
+              <tr>
+                <th>Step description</th>
+                <th>Priority</th>
+                <th>Percentage</th>
+                <th>Status Task</th>
+                <th>Target starting date</th>
+                <th>Expiration date</th>
+                <th>Effective start date</th>
+                <th>Effective end date</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr *ngFor="let data of innerTable.data">
+                <td>{{ data.etape?.description }}</td>
+                <td>
+                  @if (data.priorite){
+                    @switch (getPrioriteToString(data.priorite.toString())){
+                      @case ("HAUTE"){
+                        <nz-badge nzSize="small" [nzText]="'High'" [nzColor]="'red'"></nz-badge>
+                      }
+                      @case ("MOYENNE"){
+                        <nz-badge nzSize="small" [nzText]="'Medium'" [nzColor]="'yellow'"></nz-badge>
+                      }
+                      @case ("BASSE"){
+                        <nz-badge nzSize="small" [nzText]="'Low'" [nzColor]="'green'"></nz-badge>
+                      }
+                    }
+                  }
+                </td>
+                <td [align]="'center'">
+                  <nz-progress [nzPercent]="data.pourcentage" nzType="circle" [nzWidth]="40"></nz-progress>
+                </td>
+                <td>
+                  @if (data.statutTache){
+                    @switch (getstatutTacheToString(data.statutTache.toString())){
+                      @case ("EN_COURS"){
+                        <nz-badge nzSize="small" [nzText]="'Current'" nzStatus="processing"></nz-badge>
+                      }
+                      @case ("EN_ATTENTE_DE_VALIDATION"){
+                        <nz-badge nzSize="small" [nzText]="'Waiting for validation'" nzStatus="warning"></nz-badge>
+                      }
+                      @case ("EN_ATTENTE_DU_DELAI"){
+                        <nz-badge nzSize="small" [nzText]="'Waiting for delay'" nzStatus="default"></nz-badge>
+                      }
+                      @case ("TERMINE"){
+                        <nz-badge nzSize="small" [nzText]="'Done'" nzStatus="success"></nz-badge>
+                      }
+                    }
+                  }
+                </td>
+                <td>
+                  {{ data.dateDebutPrevue ? data.dateDebutPrevue.toLocaleDateString() +' '+data.dateDebutPrevue.toLocaleTimeString() : ''}}
+                </td>
+                <td>{{data.dateExpiration ? data.dateExpiration.toLocaleDateString() +' '+data.dateExpiration.toLocaleTimeString() :  ''}}</td>
+                <td>{{ data.dateDebutEffective ? data.dateDebutEffective.toLocaleDateString()+' '+data.dateDebutEffective.toLocaleTimeString() : ''}}</td>
+                <td>{{ data.dateFinEffective ? data.dateFinEffective.toLocaleDateString()+' '+data.dateFinEffective.toLocaleTimeString() : ''}}</td>
+              </tr>
+              </tbody>
+            </nz-table>
+          </tr>
+        </ng-template>
+        </tbody>
+      </nz-table>
+    </nz-content>
+  </nz-layout>
+</nz-layout>

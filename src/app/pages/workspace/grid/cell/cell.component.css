@@ -11,18 +11,17 @@
 }
 
 .cell-selected{
-  border: 2px dashed black;
   padding: 1px;
+  outline: 2px dashed #001529;
 }
 
 .cell-first{
-  border: 2px solid #001529;
   padding: 1px;
+  outline: 2px solid #001529;
 }
 
 .cell-end{
-  border: 5px double #001529;
-  padding: 1px;
+  outline: 4px double #001529;
 }
 
 

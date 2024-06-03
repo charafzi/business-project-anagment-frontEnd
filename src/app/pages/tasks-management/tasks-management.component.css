@@ -1,0 +1,36 @@
+nz-breadcrumb{
+  margin: 10px;
+}
+
+nz-layout{
+  max-height: 95%;
+}
+nz-header{
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  background-color: #001529;
+  height: max-content;
+}
+
+nz-header h1{
+  color: #fafafa;
+}
+
+.icons-container{
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: right;
+}
+
+.icons-container a{
+  margin-left: 20px;
+}
+
+.icons-container a span{
+  color: lightslategray;
+}
+
+
+td nz-select{
+  width: 100%;
+}

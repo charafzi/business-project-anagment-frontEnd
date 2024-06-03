@@ -1,4 +1,13 @@
-import {AfterViewInit, Component, ElementRef, EventEmitter, Inject, OnInit, Output, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Inject,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 import {CellComponent} from "./cell/cell.component";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {CdkDropList} from "@angular/cdk/drag-drop";
@@ -13,10 +22,11 @@ import {Connexion} from "../../../models/connexion.model";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Processus} from "../../../models/processus.model";
 import {Router} from "@angular/router";
-import {StatutEtape, getStatutEtapeFromString} from "../../../models/StatutEtape";
-import {statutTacheFromDB} from "../../../models/tache.model";
-import {DurationUnite, getDurationUniteFromInt, getDurationUniteFromString} from "../../../models/DurationUnite";
+import {getStatutEtapeFromString} from "../../../models/StatutEtape";
+import {Tache} from "../../../models/tache.model";
+import {DurationUnite} from "../../../models/DurationUnite";
 import {EtapeService} from "../../../services/etape.service";
+import {TacheService} from "../../../services/tache.service";
 
 @Component({
   selector: 'app-grid',
@@ -38,6 +48,11 @@ export class GridComponent implements OnInit,AfterViewInit{
   @ViewChild('grid', { read: ElementRef }) grid!: ElementRef;
   @Output('loading')  loading = new EventEmitter<boolean>;
   @Output('processValues') processValues = new EventEmitter<Processus>;
+  /**
+   * mode = 1 : Edit mode (for process management)
+   * mode = 2 : View mode (for tasks management)
+   **/
+  mode : number = 1;
   nbRows:number = 3;
   nbCols:number = 3;
   indexRowDotCurr:number =-1;
@@ -47,6 +62,7 @@ export class GridComponent implements OnInit,AfterViewInit{
   arrayRows = new Array(this.nbRows);
   arrayCols = new Array(this.nbCols);
   processItems:(BaseEtape | null)[][] = [];
+  tache! : Tache;
   isDotsVisible:boolean = false;
   etapesRetrived:boolean = false;
   isLoading:boolean =true;
@@ -56,13 +72,13 @@ export class GridComponent implements OnInit,AfterViewInit{
               private processusService : ProcessusService,
               private connexionService : ConnexionService,
               private etapeService : EtapeService,
+              private tacheService : TacheService,
               private router : Router) {
-    this.isLoading = true;
-
     //this page is accessed directly
     if(this.processusService.processus.idProcessus === -1)
       this.router.navigate(['/processus']);
     else{
+      this.mode = this.processusService.mode;
       this.nbRows = this.processusService.processus.nbLignes;
       this.nbCols = this.processusService.processus.nbColonnes;
       this.arrayRows = new Array(this.nbRows);
@@ -77,7 +93,6 @@ export class GridComponent implements OnInit,AfterViewInit{
 
   ngOnInit(): void {
     //if the processus exist
-    console.log(this.processusService.processus)
     if(this.processusService.processus && this.processusService.processus.idProcessus){
       this.processusService.retrieveProcessById(this.processusService.processus.idProcessus)
       /**
@@ -88,8 +103,54 @@ export class GridComponent implements OnInit,AfterViewInit{
         .subscribe(processItems=>{
             processItems.forEach((etape:Etape)=>{
               this.processItems[etape.indexLigne][etape.indexColonne]= (etape as BaseEtape);
-
+              //assing subTasks to each BaseEtape
             });
+            //assign subTasks if mode == 2
+            if(this.mode==2){
+              this.tacheService.getTacheMereById(this.processusService.idMainTask)
+                .subscribe(tache=>{
+                    this.tache = tache;
+                    this.tache.sous_taches?.forEach(tache=>{
+                      // @ts-ignore
+                      tache.dateDebutPrevue = new Date(tache.dateDebutPrevue);
+                      // @ts-ignore
+                      tache.dateExpiration = new Date(tache.dateExpiration);
+                      tache.sous_taches?.forEach(sous_tache=>{
+                        // @ts-ignore
+                        sous_tache.dateDebutPrevue = new Date(sous_tache.dateDebutPrevue);
+                        // @ts-ignore
+                        sous_tache.dateExpiration = new Date(sous_tache.dateExpiration);
+                        if(sous_tache.dateDebutEffective){
+                          // @ts-ignore
+                          sous_tache.dateDebutEffective = new Date(sous_tache.dateDebutPrevue);
+                        }
+                        if(sous_tache.dateFinEffective){
+                          // @ts-ignore
+                          sous_tache.dateFinEffective = new Date(sous_tache.dateFinEffective);
+                        }
+                      })
+                    })
+                    this.tache.sous_taches?.forEach(sousTache=>{
+                      const indexLigne = sousTache.etape?.indexLigne;
+                      const indexColonne = sousTache.etape ?.indexColonne;
+                      if (indexLigne !== undefined && indexColonne !== undefined) {
+                        const processItem = this.processItems[indexLigne][indexColonne];
+                        if (processItem) {
+                          processItem.tache = sousTache;
+                        }else{
+                          console.error("Error at assigning processItem : processItem is undefined.")
+                        }
+                      }else{
+                        console.error("Error at assigning processItem : ",indexLigne," & ",indexColonne," are undefined.")
+                      }
+                    })
+
+
+                  },
+                  error => {
+                    console.error("Error at getting mainTask from back-end on mode == 2 :"+error);
+                  })
+            }
           },
           error => {
             console.error("Error at fetching 'Etapes' at grid OnInit : "+error);
@@ -108,7 +169,6 @@ export class GridComponent implements OnInit,AfterViewInit{
       //assign the document and the grid
       this.connexionService.document = this.document;
       this.connexionService.grid=this.grid;
-      console.log('this is the grid '+this.grid)
       /**
        *  build connexions if exist on view initialization
        */
@@ -128,7 +188,7 @@ export class GridComponent implements OnInit,AfterViewInit{
                   cnx.to.indexColonne,
                   cnx.delaiAttente,
                   cnx.delaiAttenteUnite,
-                  statutTacheFromDB(cnx.statut ? cnx.statut.toString() : '')
+                  getStatutEtapeFromString(cnx.statut ? cnx.statut.toString() : '')
                 );
               })
             },
@@ -210,8 +270,8 @@ export class GridComponent implements OnInit,AfterViewInit{
               paid : etape.paid,
               validate : etape.validate,
               accepted : etape.accepted,
-              statutEtape : etape.statutEtape,
-              pourcentage : etape.pourcentage,
+              //statutEtape : etape.statutEtape,
+              //pourcentage : etape.pourcentage,
               type : etape.type,
               processus : etape.processus,
               categorie : etape.categorie
@@ -263,10 +323,10 @@ export class GridComponent implements OnInit,AfterViewInit{
                               indexLigne: 0,
                               indexColonne: 0,
                               ordre: 0,
-                              pourcentage: 0,
+                              //pourcentage: 0,
                               dureeEstimee: 0,
                               dureeEstimeeUnite : DurationUnite.HOUR,
-                              statutEtape: StatutEtape.COMMENCEE,
+                              //statutEtape: StatutEtape.COMMENCEE,
                               first: false,
                               intermediate : false,
                               validate: false,
@@ -282,10 +342,10 @@ export class GridComponent implements OnInit,AfterViewInit{
                               indexLigne: 0,
                               indexColonne: 0,
                               ordre: 0,
-                              pourcentage: 0,
+                              //pourcentage: 0,
                               dureeEstimee: 0,
                               dureeEstimeeUnite : DurationUnite.HOUR,
-                              statutEtape: StatutEtape.COMMENCEE,
+                              //statutEtape: StatutEtape.COMMENCEE,
                               first: false,
                               intermediate : false,
                               validate: false,
@@ -501,8 +561,20 @@ export class GridComponent implements OnInit,AfterViewInit{
     }
   }
 
-  onCellClicked(){
-    this.isDotsVisible = !this.isDotsVisible;
+  onCellClicked(rowIndex:number,colIndex:number){
+    switch (this.mode){
+      case 1:
+        this.isDotsVisible = !this.isDotsVisible;
+        break;
+      case 2:
+
+        if(this.processItems[rowIndex][colIndex])
+        {
+          if(this.processItems[rowIndex][colIndex]?.tache)
+            (this.processItems[rowIndex][colIndex] as BaseEtape).subTaskModalIsVisibe=true;
+        }
+        break;
+    }
   }
 
 }

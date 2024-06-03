@@ -9,7 +9,7 @@ import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { NzMenuModule } from 'ng-zorro-antd/menu';
 import { NZ_I18N } from 'ng-zorro-antd/i18n';
 import { fr_FR } from 'ng-zorro-antd/i18n';
-import { registerLocaleData } from '@angular/common';
+import {DatePipe, registerLocaleData} from '@angular/common';
 import fr from '@angular/common/locales/fr';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
@@ -36,6 +36,11 @@ import {PlusComponent} from "./pages/workspace/items/plus/plus.component";
 import {ItemListComponent} from "./pages/workspace/item-list/item-list.component";
 import {HexagonComponent} from "./pages/workspace/items/hexagon/hexagon.component";
 import {StatutTache} from "./models/StatutTache";
+import {TasksManagementModule} from "./pages/tasks-management/tasks-management.module";
+import {TasksManagementComponent} from "./pages/tasks-management/tasks-management.component";
+import {
+  SubTaskDisplayModalComponent
+} from "./pages/workspace/items/sub-task-display-modal/sub-task-display-modal.component";
 
 registerLocaleData(fr);
 
@@ -47,7 +52,8 @@ const icons: IconDefinition[] = Object.keys(antDesignIcons).map(key => antDesign
 const appRoutes : Routes =[
   {path : '', component : WelcomeComponent },
   {path : 'workspace', component : WorkspaceComponent},
-  {path : 'processus', component : ProcessusComponent}
+  {path : 'processus', component : ProcessusComponent},
+  {path : 'tasks-management', component : TasksManagementComponent}
 ]
 
 
@@ -77,10 +83,13 @@ const appRoutes : Routes =[
     ProcessusModule,
     PlusComponent,
     HexagonComponent,
+    TasksManagementModule,
+    SubTaskDisplayModalComponent
   ],
   providers: [
     { provide: NZ_I18N, useValue: fr_FR },
     { provide: NZ_ICONS, useValue: icons },
+    { provide: DatePipe, useClass: DatePipe, deps: [] },
     provideAnimationsAsync(),
     provideHttpClient()
   ],

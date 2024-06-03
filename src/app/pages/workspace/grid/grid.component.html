@@ -12,12 +12,13 @@
       {
         <div class="col"
         >
-          <div
+          <div *ngIf="mode==1"
             class="dot dot-left"
                [ngClass]="{'dot-hovered':isDotVisible(rowIndex,colIndex,3)  && isDotsVisible}"
                (click)="dotClicked(rowIndex,colIndex)"
           ></div>
           <app-cell
+            [mode]="mode"
             [rowIndex]="rowIndex"
             [colIndex]="colIndex"
             [order]="getOrderByCell(rowIndex,colIndex)"
@@ -27,18 +28,20 @@
             (processItemDropped)="updateProcessItems($event)"
             (connectProcessItems)="connectProcessItems($event)"
             [onDotClicked]="onDotClickedCSS(rowIndex,colIndex)"
-            (click)="onCellClicked()"
+            (click)="onCellClicked(rowIndex,colIndex)"
           ></app-cell>
-          <div class="dot dot-right"
+          <div *ngIf="mode==1"
+                class="dot dot-right"
                [ngClass]="{'dot-hovered':isDotVisible(rowIndex,colIndex,1)  && isDotsVisible}"
                (click)="dotClicked(rowIndex,colIndex)"
           ></div>
-          <div
+          <div *ngIf="mode==1"
             class="dot dot-top"
                [ngClass]="{'dot-hovered': isDotVisible(rowIndex,colIndex,0)  && isDotsVisible}"
                (click)="dotClicked(rowIndex,colIndex)"
           ></div>
-          <div class="dot dot-bottom"
+          <div *ngIf="mode==1"
+            class="dot dot-bottom"
                [ngClass]="{'dot-hovered': isDotVisible(rowIndex,colIndex,2)  && isDotsVisible}"
                (click)="dotClicked(rowIndex,colIndex)"
           ></div>

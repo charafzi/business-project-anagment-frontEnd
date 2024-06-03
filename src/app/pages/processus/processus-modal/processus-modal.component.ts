@@ -24,17 +24,14 @@ import {ProcessusService} from "../../../services/processus.service";
   styleUrl: './processus-modal.component.css'
 })
 export class ProcessusModalComponent {
-  processForm: FormGroup<{
-    nom:FormControl<string>;
-    description:FormControl<string>;
-  }>
+  processForm: FormGroup;
 
   constructor(private modalRef: NzModalRef,
               private processusService :ProcessusService,
               private fb: NonNullableFormBuilder) {
-    this.processForm = this.fb.group({
-      nom : [this.processusService.processusEdit.nom,[Validators.required,Validators.maxLength(255)]],
-      description : [this.processusService.processusEdit.description,[Validators.required,Validators.maxLength(255)]],
+    this.processForm = new FormGroup({
+      nom : new FormControl (this.processusService.processusEdit.nom,[Validators.required,Validators.maxLength(255)]),
+      description : new FormControl(this.processusService.processusEdit.description,[Validators.required,Validators.maxLength(255)]),
     })
   }
 

@@ -11,9 +11,8 @@
 </nz-card>
 
 <div class="actions-container" *ngIf="showButtons">
-  <ul class="actions">
-    <!-- <li><span nz-icon nzType="setting"></span></li>
-     <li><span nz-icon nzType="edit"></span></li>-->
+  <ul class="actions" *ngIf="_mode===1">
+    <!--<li><span nz-icon nzType="setting"></span></li>-->
     <li><span nz-icon nzType="node-index"
               (click)="onClickDisplayConnectionModal()"
               nz-tooltip

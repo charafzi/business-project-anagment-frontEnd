@@ -64,6 +64,14 @@ export class ProcessusComponent implements OnInit{
           } catch (error) {
             console.error(error);
           }
+        }else {
+          Object.values(modalComponentInst.processForm.controls).forEach(control => {
+            if (control.invalid) {
+              control.markAsDirty();
+              control.updateValueAndValidity({onlySelf: true});
+            }
+          });
+          return false;
         }
         //return false if the form is not valid
         return formIsValid;
@@ -135,10 +143,12 @@ export class ProcessusComponent implements OnInit{
 
   delete(processId:number){
     if(processId != -1){
-      this.modalService.warning({
+      const modal = this.modalService.confirm({
         nzTitle : "Attention !",
         nzContent : "By deleting, you lose all the information about the process including the schema, do you still want to delete?",
         nzWidth: 600,
+        nzOkText :'Confirm',
+        nzCancelText : 'Cancel',
         nzOnOk : ()=>{
           this.processusService.deleteProcessus(processId)
             .subscribe(responseData=>{
@@ -149,11 +159,14 @@ export class ProcessusComponent implements OnInit{
               },
               error =>{
                 this.modalService.error({
-                  nzTitle : "Unable to modify the process !",
+                  nzTitle : "Unable to delete the process !",
                   nzContent : "Error during suppression, please try again"
                 })
               })
         },
+        nzOnCancel : ()=>{
+          modal.close();
+        }
 
       })
     }
@@ -187,10 +200,11 @@ export class ProcessusComponent implements OnInit{
         })
   }
 
-  viewSchema(prcessId:number){
-    if(prcessId != -1){
-      const process = this.ProcessList.find(process=> process.idProcessus===prcessId);
+  viewSchema(processId:number){
+    if(processId != -1){
+      const process = this.ProcessList.find(process=> process.idProcessus===processId);
       if(process){
+        this.processusService.mode = 1;
         this.processusService.processus = process;
         this.router.navigate(['/workspace']);
       }

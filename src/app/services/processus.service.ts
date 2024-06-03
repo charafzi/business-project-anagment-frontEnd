@@ -14,6 +14,15 @@ export class ProcessusService{
   url:string = "http://localhost:8100/processus";
   processus!:Processus;
   processusEdit!:Processus;
+  /**
+   * mode = 1 : Edit mode (for process management)
+   * mode = 2 : View mode (for tasks management)
+   **/
+  mode:number = 1;
+  /**
+   * id of mainTask to get displayed if mode == 2
+   **/
+  idMainTask!:number;
   constructor(private http:HttpClient,
               private typeService:TypeService,
               private modalService : NzModalService

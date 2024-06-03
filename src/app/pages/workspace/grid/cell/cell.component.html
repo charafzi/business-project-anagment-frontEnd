@@ -5,7 +5,7 @@
      (cdkDropListDropped)="drop($event)"
      (click)="onClickCell()"
      [ngClass]="{
-     'cell-selected' : onDotClicked,
+     'cell-selected' : onDotClicked && mode==1,
      'cell-first' : processItem?.first && !onDotClicked,
      'cell-end' : processItem?.end && !onDotClicked
      }"
@@ -16,15 +16,24 @@
   </div>
   <ng-container *ngIf="processItem">
     <app-etape-display-modal
+      *ngIf="mode==1"
       [etape]="processItem"
       [isVisible]="processItem.editModalIsVisibe"
     >
     </app-etape-display-modal>
 
     <app-connections-modal
+      *ngIf="mode==1"
       [etape]="processItem"
       [isVisible]="processItem.connectionsModalIsVisibe"
     >
     </app-connections-modal>
+    <app-sub-task-display-modal
+      *ngIf="processItem.tache && mode == 2"
+      [isVisible]="processItem.subTaskModalIsVisibe"
+      [etape]="processItem"
+      [subTask]="processItem.tache"
+    >
+    </app-sub-task-display-modal>
   </ng-container>
 </div>
