@@ -89,7 +89,7 @@
                 <td>{{ data.etape?.description }}</td>
                 <td>
                   @if (data.priorite){
-                    @switch (getPrioriteToString(data.priorite.toString())){
+                    @switch (data.priorite.toString()){
                       @case ("HAUTE"){
                         <nz-badge nzSize="small" [nzText]="'High'" [nzColor]="'red'"></nz-badge>
                       }
@@ -107,7 +107,7 @@
                 </td>
                 <td>
                   @if (data.statutTache){
-                    @switch (getstatutTacheToString(data.statutTache.toString())){
+                    @switch (data.statutTache.toString()){
                       @case ("EN_COURS"){
                         <nz-badge nzSize="small" [nzText]="'Current'" nzStatus="processing"></nz-badge>
                       }

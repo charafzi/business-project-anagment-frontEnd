@@ -1,10 +1,7 @@
-import {StatutEtape} from "./StatutEtape";
-import {StatutTache} from "./StatutTache";
-
 export enum Priorite{
-  HAUTE = 0,
-  MOYENNE = 1,
-  BASSE= 2
+  HAUTE = "HAUTE",
+  MOYENNE = "MOYENNE",
+  BASSE = "BASSE"
 }
 
 export function getPrioriteFromString(priorite :string){
@@ -15,25 +12,21 @@ export function getPrioriteFromString(priorite :string){
       return Priorite.MOYENNE;
     case "BASSE":
       return Priorite.BASSE;
-    case "0":
-      return Priorite.HAUTE;
-    case "1":
-      return Priorite.MOYENNE;
-    case "2":
-      return Priorite.BASSE;
   }
   //default
   return Priorite.BASSE;
 }
 
+/*
 export function getPrioriteToString(priorite:string) {
   switch (priorite){
     case "0":
-      return Priorite.HAUTE;
+      return "HAUTE";
     case "1":
-      return Priorite.MOYENNE;
+      return "MOYENNE";
     case "2":
-      return Priorite.BASSE;
+      return "BASSE";
   }
   return priorite;
 }
+*/

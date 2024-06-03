@@ -4,11 +4,8 @@ import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, V
 import {NgForOf} from "@angular/common";
 import {BaseEtape} from "../Etape.class";
 import {Tache} from "../../../../models/tache.model";
-import {getStatutTacheFromString, getstatutTacheToString} from "../../../../models/StatutTache";
-import {DurationUnite} from "../../../../models/DurationUnite";
-import {FirstExistException} from "../../../../exceptions/firstExist.exception";
-import {EndExistException} from "../../../../exceptions/endExist.exception";
-import {getPrioriteFromString, getPrioriteToString} from "../../../../models/Priorite";
+import {getStatutTacheFromString} from "../../../../models/StatutTache";
+import {getPrioriteFromString} from "../../../../models/Priorite";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {TacheService} from "../../../../services/tache.service";
 
@@ -61,8 +58,8 @@ export class SubTaskDisplayModalComponent implements OnChanges{
       dateExpiration : this.subTask.dateExpiration,
       dateDebutEffective : this.subTask.dateDebutEffective,
       dateFinEffective : this.subTask.dateFinEffective,
-      statutTache : this.subTask.statutTache ? getstatutTacheToString(this.subTask.statutTache.toString()) : '',
-      priorite : this.subTask.priorite? getPrioriteToString(this.subTask.priorite.toString()) : ''
+      statutTache : this.subTask.statutTache ? this.subTask.statutTache.toString() : '',
+      priorite : this.subTask.priorite? this.subTask.priorite.toString() : ''
     });
     this.subTask.pourcentage ? this.percent = this.subTask.pourcentage : this.percent=0;
   }
@@ -95,6 +92,8 @@ export class SubTaskDisplayModalComponent implements OnChanges{
           try{
             let status = this.taskForm.value.statutTache;
             let priorite = this.taskForm.value.priorite;
+
+
 
             this.subTask.statutTache = getStatutTacheFromString(status);
             this.subTask.priorite = getPrioriteFromString(priorite);

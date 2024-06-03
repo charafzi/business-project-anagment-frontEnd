@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import {BaseEtape} from "../Etape.class";
 import {NzCardComponent} from "ng-zorro-antd/card";
 import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NgIf} from "@angular/common";
 import {BaseItem} from "../item.model";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
+import {NzBadgeComponent} from "ng-zorro-antd/badge";
 
 @Component({
   selector: 'app-circle',
@@ -14,7 +14,8 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
         NzCardComponent,
         NzIconDirective,
         NgIf,
-        NzTooltipDirective
+        NzTooltipDirective,
+        NzBadgeComponent
     ],
   styleUrl: './circle.component.css'
 })
@@ -24,6 +25,4 @@ export class CircleComponent extends BaseItem{
     super();
     this._componentName= 'circle';
   }
-
-
 }

@@ -1,10 +1,8 @@
-import {StatutEtape} from "./StatutEtape";
-
 export enum StatutTache {
-  EN_COURS = 0,
-  EN_ATTENTE_DE_VALIDATION = 1,
-  EN_ATTENTE_DU_DELAI = 2,
-  TERMINE = 3
+  EN_COURS = "EN_COURS ",
+  EN_ATTENTE_DE_VALIDATION = "EN_ATTENTE_DE_VALIDATION",
+  EN_ATTENTE_DU_DELAI = "EN_ATTENTE_DU_DELAI",
+  TERMINE = "TERMINE"
 }
 
 
@@ -18,20 +16,12 @@ export function getStatutTacheFromString(statut :string){
       return StatutTache.EN_ATTENTE_DU_DELAI;
     case "TERMINE":
       return StatutTache.TERMINE;
-    case "0":
-      return StatutTache.EN_COURS;
-    case "1":
-      return StatutTache.EN_ATTENTE_DE_VALIDATION;
-    case "2":
-      return StatutTache.EN_ATTENTE_DU_DELAI;
-    case "3":
-      return StatutTache.TERMINE;
   }
   //default
   return StatutTache.EN_COURS;
 }
 
-export function getstatutTacheToString(statut:string) {
+/*export function getstatutTacheToString(statut:string) {
   switch (statut){
     case "0":
       return "EN_COURS";
@@ -43,4 +33,4 @@ export function getstatutTacheToString(statut:string) {
       return "TERMINE";
   }
   return statut;
-}
+}*/

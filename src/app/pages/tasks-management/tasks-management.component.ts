@@ -8,8 +8,6 @@ import {TacheService} from "../../services/tache.service";
 import {Router} from "@angular/router";
 import {DatePipe} from "@angular/common";
 import {ProcessusService} from "../../services/processus.service";
-import {getstatutTacheToString} from "../../models/StatutTache";
-import {getPrioriteToString} from "../../models/Priorite";
 interface Task{
   tache : Tache,
   expand : boolean
@@ -231,8 +229,5 @@ export class TasksManagementComponent implements OnInit{
         })
     }
   }
-
-  protected readonly getstatutTacheToString = getstatutTacheToString;
-  protected readonly getPrioriteToString = getPrioriteToString;
 }
 
