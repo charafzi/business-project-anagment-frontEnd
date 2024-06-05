@@ -6,8 +6,9 @@ import {SousTraitant} from "../../models/sousTraitant.model";
 import {Travailleur} from "../../models/travailleur.model";
 import {TacheService} from "../../services/tache.service";
 import {Router} from "@angular/router";
-import {DatePipe} from "@angular/common";
 import {ProcessusService} from "../../services/processus.service";
+import {DurationUnite} from "../../models/DurationUnite";
+
 interface Task{
   tache : Tache,
   expand : boolean
@@ -26,8 +27,8 @@ export class TasksManagementComponent implements OnInit{
   constructor(private modalService : NzModalService,
               private tacheService : TacheService,
               private processusService :ProcessusService,
-              private router : Router,
-              private datePipe: DatePipe) {
+              private router : Router
+  ) {
   }
 
   ngOnInit(): void {
@@ -111,26 +112,6 @@ export class TasksManagementComponent implements OnInit{
               },()=>{
               })
 
-            /*const process:Processus = {
-              nom : <string>modalComponentInst.processForm.value.nom,
-              description : <string><string>modalComponentInst.processForm.value.description,
-              nbLignes : 3,
-              nbColonnes : 3
-            }
-            this.processusService.saveProcessus(process)
-              .subscribe(response=>{
-                  /!*this.modalService.success({
-                    nzTitle : "Processus enregistré !",
-                  })*!/
-                  this.processusService.processus = response;
-                  this.router.navigate(['/workspace']);
-                },
-                error =>{
-                  this.modalService.error({
-                    nzTitle : "Registration error !",
-                    nzContent : "Error during registration, please try again"
-                  })
-                })*/
           } catch (error) {
             console.error(error)
           }
@@ -183,6 +164,25 @@ export class TasksManagementComponent implements OnInit{
       //convert string to Date for all dates in maintasks and subTasks
       .subscribe(taches=>{
         taches.forEach(tache=>{
+          if(tache.dateDebutEffective){
+            // @ts-ignore
+            let hoursDiff:number = (new Date() - tache.dateDebutEffective)
+            let percentage:number = 0;
+
+            switch (tache.etape?.dureeEstimeeUnite){
+              case DurationUnite.HOUR:
+                percentage = (hoursDiff)/tache.etape.dureeEstimee;
+                break;
+              case DurationUnite.DAY:
+                percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24);
+                break;
+              case DurationUnite.MONTH:
+                percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24 * 30);
+                break;
+            }
+            percentage = percentage>1 ? 1 : percentage;
+            tache.pourcentage = percentage;
+          }
           // @ts-ignore
           tache.dateDebutPrevue = new Date(tache.dateDebutPrevue);
           // @ts-ignore
@@ -229,5 +229,7 @@ export class TasksManagementComponent implements OnInit{
         })
     }
   }
+
+  protected readonly Math = Math;
 }
 

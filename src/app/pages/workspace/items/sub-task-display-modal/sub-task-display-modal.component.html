@@ -12,15 +12,27 @@
       <div class="row"
            nz-row
       >
-        <div nz-col [nzSpan]="6">
+        <div nz-col [nzSpan]="4">
           <nz-form-item>
             <nz-form-label>Categorie &nbsp;</nz-form-label>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="18">
+        <div nz-col [nzSpan]="8">
           <nz-form-item>
             <nz-form-control>
               <input nz-input formControlName="categorie" [readOnly]="true">
+            </nz-form-control>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="4"  [nzOffset]="2">
+          <nz-form-item>
+            <nz-form-label >Progress</nz-form-label>
+          </nz-form-item>
+        </div>
+        <div nz-col [nzSpan]="6">
+          <nz-form-item>
+            <nz-form-control>
+              <nz-progress [nzPercent]="percent" nzType="circle" [nzWidth]="60"></nz-progress>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -134,7 +146,7 @@
           </nz-form-item>
         </div>
       </div>
-      <div nz-row>
+      <!--<div nz-row>
          <div nz-col [nzSpan]="6" [nzOffset]="6">
            <nz-form-item>
              <nz-form-label >Progress</nz-form-label>
@@ -153,7 +165,7 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-       </div>
+       </div>-->
     </form>
   </ng-template>
 </nz-modal>

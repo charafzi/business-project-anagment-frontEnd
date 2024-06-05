@@ -381,8 +381,7 @@ export class GridComponent implements OnInit,AfterViewInit{
                           },
                           ()=>{
                             this.modalService.success({
-                              nzTitle : "Sauvegarde réussite",
-                              nzContent : "<p>Le processus est bien enregistré !</p>",
+                              nzTitle : "Process saved successfully !",
                               nzFooter : null,
                               nzOnCancel : ()=>{
                                 return false;

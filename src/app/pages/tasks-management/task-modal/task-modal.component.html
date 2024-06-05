@@ -7,7 +7,7 @@
     </div>
     <div nz-col [nzSpan]="18">
       <nz-form-item>
-        <nz-form-control nzErrorTip="This field is required !">
+        <nz-form-control nzHasFeedback nzErrorTip="This field is required !">
           <nz-select formControlName="processus"
                      nzShowSearch
                      nzAllowClear
@@ -55,14 +55,30 @@
   <div nz-row class="row">
     <div nz-col [nzSpan]="10">
       <nz-form-item>
-        <nz-form-control nzErrorTip="This field is required !">
+        <nz-form-control nzHasFeedback [nzErrorTip]="dateStartErrorTpl" >
           <nz-date-picker nzShowTime formControlName="targetStartingDate"></nz-date-picker>
+          <ng-template #dateStartErrorTpl let-control>
+            @if (control.errors?.['required']) {
+              Please fill in the target start date
+            }
+            @if (control.errors?.['dateComparison']) {
+              {{ control.errors?.['dateComparison'].message }}
+            }
+          </ng-template>
         </nz-form-control>
       </nz-form-item>
     </div>
     <div nz-col [nzSpan]="10" [nzOffset]="4">
-      <nz-form-control nzErrorTip="This field is required !">
+      <nz-form-control nzHasFeedback [nzErrorTip]="dateEndErrorTpl" >
         <nz-date-picker nzShowTime formControlName="expirationDate"></nz-date-picker>
+        <ng-template #dateEndErrorTpl let-control>
+          @if (control.errors?.['required']) {
+            Please fill in the expiration date
+          }
+          @if (control.errors?.['dateComparison']) {
+            Expiration date must be after target start date
+          }
+        </ng-template>
       </nz-form-control>
     </div>
   </div>

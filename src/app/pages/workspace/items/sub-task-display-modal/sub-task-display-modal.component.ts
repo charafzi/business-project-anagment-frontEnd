@@ -8,6 +8,7 @@ import {getStatutTacheFromString} from "../../../../models/StatutTache";
 import {getPrioriteFromString} from "../../../../models/Priorite";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {TacheService} from "../../../../services/tache.service";
+import {DurationUnite} from "../../../../models/DurationUnite";
 
 @Component({
   selector: 'app-sub-task-display-modal',
@@ -61,7 +62,31 @@ export class SubTaskDisplayModalComponent implements OnChanges{
       statutTache : this.subTask.statutTache ? this.subTask.statutTache.toString() : '',
       priorite : this.subTask.priorite? this.subTask.priorite.toString() : ''
     });
-    this.subTask.pourcentage ? this.percent = this.subTask.pourcentage : this.percent=0;
+    /*if(this.subTask){
+      // @ts-ignore
+      console.log("Date debut effective :"+new Date(this.subTask.dateDebutEffective)," current date :",new  Date());
+      // @ts-ignore
+      let hoursDiff:number = (new Date() - new Date(tache.dateDebutEffective))/36e5;
+      let percentage:number = 0;
+
+        console.log("hours diff :"+hoursDiff)
+
+        switch (this.etape.dureeEstimeeUnite){
+          case DurationUnite.HOUR:
+            percentage = (hoursDiff)/this.etape.dureeEstimee;
+            break;
+          case DurationUnite.DAY:
+            percentage = (hoursDiff)/ (this.etape.dureeEstimee * 24);
+            break;
+          case DurationUnite.MONTH:
+            percentage = (hoursDiff)/ (this.etape.dureeEstimee * 24 * 30);
+            break;
+        }
+        percentage = percentage>1 ? 1 : percentage;
+        this.subTask.pourcentage = percentage;
+        this.percent = percentage;
+    }*/
+    this.subTask.pourcentage ? this.percent = Math.round(this.subTask.pourcentage* 10) / 10 : this.percent=0;
   }
 
   onClickHideModal(){

@@ -74,7 +74,7 @@
             <nz-table #innerTable [nzData]="data.tache.sous_taches ?? []" nzSize="middle" [nzShowPagination]="false">
               <thead>
               <tr>
-                <th>Step description</th>
+                <th [nzWidth]="'25%'">Step description</th>
                 <th>Priority</th>
                 <th>Percentage</th>
                 <th>Status Task</th>
@@ -103,7 +103,7 @@
                   }
                 </td>
                 <td [align]="'center'">
-                  <nz-progress [nzPercent]="data.pourcentage" nzType="circle" [nzWidth]="40"></nz-progress>
+                  <nz-progress [nzPercent]="Math.round((data.pourcentage ?? 0) * 10) / 10" nzType="circle" [nzWidth]="40"></nz-progress>
                 </td>
                 <td>
                   @if (data.statutTache){
@@ -120,7 +120,12 @@
                       @case ("TERMINE"){
                         <nz-badge nzSize="small" [nzText]="'Done'" nzStatus="success"></nz-badge>
                       }
+                      @default {
+                        <nz-badge nzSize="small" [nzText]="'Not started yet'" nzStatus="error"></nz-badge>
+                      }
                     }
+                  } @else {
+                    <nz-badge nzSize="small" [nzText]="'Not started yet'" nzStatus="error"></nz-badge>
                   }
                 </td>
                 <td>

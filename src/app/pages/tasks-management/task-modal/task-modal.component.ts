@@ -1,21 +1,23 @@
 import { Component } from '@angular/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormControl,
   FormGroup,
   NonNullableFormBuilder,
-  ReactiveFormsModule,
+  ReactiveFormsModule, ValidatorFn,
   Validators
 } from "@angular/forms";
 import {NzModalRef} from "ng-zorro-antd/modal";
 import {DemoNgZorroAntdModule} from "../../../ng-zorro-antd.module";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {Processus} from "../../../models/processus.model";
 import {ProcessusService} from "../../../services/processus.service";
 import {TravailleurService} from "../../../services/travailleur.service";
 import {Travailleur} from "../../../models/travailleur.model";
 import {SousTraitant} from "../../../models/sousTraitant.model";
 import {SousTraitantService} from "../../../services/sousTraitant.service";
+import {startDateLessThanEndDate} from "../../../validators/startDateLessThanEndDate";
 
 @Component({
   selector: 'app-task-modal',
@@ -24,7 +26,8 @@ import {SousTraitantService} from "../../../services/sousTraitant.service";
   imports: [
     DemoNgZorroAntdModule,
     ReactiveFormsModule,
-    NgForOf
+    NgForOf,
+    NgIf
   ],
   styleUrl: './task-modal.component.css'
 })
@@ -49,7 +52,7 @@ export class TaskModalComponent {
       agent: new FormControl([], Validators.required),
       subContractor: new FormControl (null, Validators.required),
       radioChoice: new FormControl('agent', Validators.required)
-    });
+    },{ validators: startDateLessThanEndDate });
     /*this.taskForm = this.fb.group({
       processus: [],
       objectOfTask: ['', [Validators.required, Validators.maxLength(255)]],
@@ -100,5 +103,4 @@ export class TaskModalComponent {
       this.taskForm.get('subContractor')!.disable();
     }
   }
-
 }
