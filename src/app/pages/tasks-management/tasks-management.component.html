@@ -66,6 +66,7 @@
             <td>
               <div class="icons-container">
                 <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'" (click)="viewSchema(data.tache.idTache ?? -1)" ></span></a>
+                <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'" (click)="dislplayEditModal(data.tache.idTache ?? -1)"></span></a>
                 <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'" (click)="delete(data.tache.idTache ?? -1)"></span></a>
               </div>
             </td>

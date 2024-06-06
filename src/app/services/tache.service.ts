@@ -8,8 +8,17 @@ import {Processus} from "../models/processus.model";
 })
 export class TacheService{
   url:string = 'http://localhost:8100/tache';
+  tacheEdit!:Tache;
 
   constructor(private http:HttpClient) {
+    this.tacheEdit ={
+      idTache : -1,
+      objetTache : '',
+      dateDebutPrevue : undefined,
+      dateExpiration : undefined,
+      travailleurs : [],
+      sousTraitant : null
+    }
   }
 
   retrieveAllTachesMere(){
@@ -31,9 +40,17 @@ export class TacheService{
   getProcessByIdTacheMere(idTacheMere:number){
     return this.http.get<Processus>(this.url+"/"+idTacheMere+"/process");
   }
-  
+
   updateSousTache(sousTache:Tache){
     return this.http.put(this.url+"/sousTache/"+sousTache.idTache,sousTache);
+  }
+
+  updateTacheMere(tache : Tache){
+    return this.http.put(this.url+"/"+tache.idTache,tache);
+  }
+
+  updateTacheMereDateExpiration(tache : Tache){
+    return this.http.put(this.url+"/"+tache.idTache+"/dateExpiration",tache);
   }
 
 }

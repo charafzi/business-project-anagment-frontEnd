@@ -1,0 +1,108 @@
+<form nz-form [formGroup]="taskEditForm">
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="24">
+      <nz-form-item>
+        <div nz-col [nzSpan]="6">
+          <nz-form-label nzRequired>Object of task</nz-form-label>
+        </div>
+        <div nz-col [nzSpan]="18">
+          <nz-form-control nzHasFeedback [nzErrorTip]="nomErrorTpl">
+            <input formControlName="objectOfTask" nz-input placeholder="Object of task..." type="text" />
+            <ng-template #nomErrorTpl let-control>
+              @if (control.errors?.['required']) {
+                Please fill in the object of task field
+              }
+              @if (control.errors?.['maxlength']) {
+                Please do not exceed 255 characters
+              }
+            </ng-template>
+          </nz-form-control>
+        </div>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row>
+    <div nz-col [nzSpan]="10">
+      <nz-form-item>
+        <nz-form-label nzRequired>Target starting date</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="10" [nzOffset]="4">
+      <nz-form-item>
+        <nz-form-label nzRequired>Expiration date</nz-form-label>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="10">
+      <nz-form-item>
+        <nz-form-control nzHasFeedback [nzErrorTip]="dateStartErrorTpl" >
+          <nz-date-picker nzShowTime formControlName="targetStartingDate"></nz-date-picker>
+          <ng-template #dateStartErrorTpl let-control>
+            @if (control.errors?.['required']) {
+              Please fill in the target start date
+            }
+            @if (control.errors?.['dateComparison']) {
+              {{ control.errors?.['dateComparison'].message }}
+            }
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="10" [nzOffset]="4">
+      <nz-form-control nzHasFeedback [nzErrorTip]="dateEndErrorTpl" >
+        <nz-date-picker nzShowTime formControlName="expirationDate"></nz-date-picker>
+        <ng-template #dateEndErrorTpl let-control>
+          @if (control.errors?.['required']) {
+            Please fill in the expiration date
+          }
+          @if (control.errors?.['dateComparison']) {
+            Expiration date must be after target start date
+          }
+        </ng-template>
+      </nz-form-control>
+    </div>
+  </div>
+  <div nz-row>
+    <div nz-col [nzSpan]="6">
+      <nz-form-item>
+        <nz-form-label nzRequired>Task assignment&nbsp;</nz-form-label>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="12" [nzOffset]="4">
+      <nz-form-item>
+        <nz-form-control>
+          <nz-radio-group formControlName="radioChoice">
+            <label nz-radio nzValue="agent">Agent</label>
+            <label nz-radio nzValue="subContractor">Subcontractor</label>
+          </nz-radio-group>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+  <div nz-row class="row">
+    <div nz-col [nzSpan]="10">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-select formControlName="agent"
+                     nzMode="multiple" nzShowSearch
+                     nzAllowClear
+                     nzPlaceHolder="Please select at least one agent"
+                     [nzLoading]="agents.length==0"
+          >
+            <nz-option *ngFor="let agent of agents" [nzLabel]="agent.nom+' '+agent.prenom" [nzValue]="agent.matricule"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+    <div nz-col [nzSpan]="10" [nzOffset]="4">
+      <nz-form-item>
+        <nz-form-control nzErrorTip="This field is required !">
+          <nz-select formControlName="subContractor" nzShowSearch nzAllowClear nzPlaceHolder="Please select a subcontractor">
+            <nz-option *ngFor="let subContractor of subContractors" [nzLabel]="subContractor.nom" [nzValue]="subContractor.idSousTraitant"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+    </div>
+  </div>
+</form>

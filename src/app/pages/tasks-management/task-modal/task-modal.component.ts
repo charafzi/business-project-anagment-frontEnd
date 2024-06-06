@@ -102,5 +102,6 @@ export class TaskModalComponent {
     if (this.taskForm.get('radioChoice')!.value === 'agent') {
       this.taskForm.get('subContractor')!.disable();
     }
+
   }
 }

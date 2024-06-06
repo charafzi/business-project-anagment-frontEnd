@@ -8,6 +8,7 @@ import {TacheService} from "../../services/tache.service";
 import {Router} from "@angular/router";
 import {ProcessusService} from "../../services/processus.service";
 import {DurationUnite} from "../../models/DurationUnite";
+import {TaskEditModalComponent} from "./task-edit-modal/task-edit-modal.component";
 
 interface Task{
   tache : Tache,
@@ -228,6 +229,142 @@ export class TasksManagementComponent implements OnInit{
           })
         })
     }
+  }
+
+  dislplayEditModal(tacheMereId:number){
+    if(tacheMereId != -1){
+      const tacheMere = this.listOfMainTasks.find(tache => tache.tache.idTache === tacheMereId);
+      if(tacheMere){
+        this.tacheService.tacheEdit.idTache = tacheMere.tache.idTache;
+        this.tacheService.tacheEdit.objetTache = tacheMere.tache.objetTache;
+        this.tacheService.tacheEdit.dateDebutPrevue = tacheMere.tache.dateDebutPrevue;
+        this.tacheService.tacheEdit.dateExpiration = tacheMere.tache.dateExpiration;
+        this.tacheService.tacheEdit.travailleurs = tacheMere.tache.travailleurs;
+        this.tacheService.tacheEdit.sousTraitant = tacheMere.tache.sousTraitant;
+        this.tacheService.tacheEdit.sous_taches = tacheMere.tache.sous_taches;
+
+        const modalRef = this.modalService.create({
+          nzTitle: 'Modify the information about the task :',
+          nzContent: TaskEditModalComponent,
+          nzWidth : 550,
+          nzOkText : "Ok",
+          nzCancelText : "Cancel",
+          nzKeyboard: true,
+          nzOnOk :()=>{
+            const modalComponentInst = modalRef.componentRef?.instance as TaskEditModalComponent;
+            let formIsValid = modalComponentInst.taskEditForm.valid;
+
+            //if form is valid then create the process
+            if(formIsValid){
+              console.log("Form  :");
+              try {
+                let targetStartingDateDisabled = modalComponentInst.taskEditForm.get('targetStartingDate')?.disabled;
+                tacheMere.tache.dateExpiration = modalComponentInst.taskEditForm.value.expirationDate;
+
+                if(tacheMere.tache.dateExpiration){
+                  if(targetStartingDateDisabled){
+                    console.log("DDate :::: "+tacheMere.tache.dateExpiration)
+                    this.tacheService.updateTacheMereDateExpiration(tacheMere.tache)
+                      .subscribe(response=>{
+                          this.modalService.success({
+                            nzTitle : "Expiration date modified successfully !",
+                          })
+                          this.resetEditTask();
+                          this.fetchMainTasks();
+                        },
+                        error =>{
+                          this.modalService.error({
+                            nzTitle : "Unable to modify the expiration date task !",
+                            nzContent : "Error during modification, please try again"
+                          })
+                          console.error(error);
+                        })
+
+                  }
+                  else{
+                    tacheMere.tache.objetTache = modalComponentInst.taskEditForm.value.objectOfTask;
+                    tacheMere.tache.dateDebutPrevue = modalComponentInst.taskEditForm.value.targetStartingDate;
+                    let subcontractor: SousTraitant | null;
+                    let travailleurs: Travailleur[] = [];
+
+
+                    if (modalComponentInst.taskEditForm.value.subContractor && modalComponentInst.taskEditForm.value.subContractor!= -1) {
+                      subcontractor = {
+                        idSousTraitant: modalComponentInst.taskEditForm.value.subContractor ,
+                        nom: '',
+                        tel: '',
+                        adresse: '',
+                        taches: []
+                      }
+                    } else {
+                      subcontractor = null;
+                      if(modalComponentInst.taskEditForm.value.agent){
+                        modalComponentInst.taskEditForm.value.agent.forEach((matricule: string) => {
+                          console.error("Selected matr :"+matricule)
+                          travailleurs.push({
+                            matricule: matricule,
+                            prenom: '',
+                            nom: '',
+                            email: '',
+                            numTel: '',
+                            taches: []
+                          });
+                        })
+                      }
+                    }
+
+                    tacheMere.tache.travailleurs = travailleurs;
+                    tacheMere.tache.sousTraitant = subcontractor;
+
+
+                    this.tacheService.updateTacheMere(tacheMere.tache)
+                      .subscribe(response=>{
+                          this.modalService.success({
+                            nzTitle : "Tache modified successfully !",
+                          })
+                          this.resetEditTask();
+                          this.fetchMainTasks();
+                        },
+                        error =>{
+                          this.modalService.error({
+                            nzTitle : "Unable to modify the task !",
+                            nzContent : "Error during modification, please try again"
+                          })
+                          console.error(error);
+                        })
+                  }
+                }else
+                  throw new Error("Date expiration undefined !");
+              } catch (error) {
+                this.modalService.error({
+                  nzTitle : "Unable to modify the task !",
+                  nzContent : "Error during modification, please try again"
+                })
+                console.error(error);
+              }
+            }
+            //return false if the form is not valid
+            return formIsValid;
+          },
+          nzOnCancel:()=>{
+            this.resetEditTask();
+            modalRef.close();
+          }
+        });
+      }
+      this.resetEditTask();
+    }
+
+  }
+
+  resetEditTask(){
+    this.tacheService.tacheEdit.idTache = -1;
+    this.tacheService.tacheEdit.objetTache = '';
+    this.tacheService.tacheEdit.dateDebutPrevue = undefined;
+    this.tacheService.tacheEdit.dateFinEffective = undefined;
+    this.tacheService.tacheEdit.travailleurs = [];
+    this.tacheService.tacheEdit.sousTraitant = null;
+    this.tacheService.tacheEdit.sous_taches = [];
   }
 
   protected readonly Math = Math;

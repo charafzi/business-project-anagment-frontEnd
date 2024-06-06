@@ -8,7 +8,6 @@ import {getStatutTacheFromString} from "../../../../models/StatutTache";
 import {getPrioriteFromString} from "../../../../models/Priorite";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {TacheService} from "../../../../services/tache.service";
-import {DurationUnite} from "../../../../models/DurationUnite";
 
 @Component({
   selector: 'app-sub-task-display-modal',
@@ -117,8 +116,6 @@ export class SubTaskDisplayModalComponent implements OnChanges{
           try{
             let status = this.taskForm.value.statutTache;
             let priorite = this.taskForm.value.priorite;
-
-
 
             this.subTask.statutTache = getStatutTacheFromString(status);
             this.subTask.priorite = getPrioriteFromString(priorite);
