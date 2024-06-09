@@ -43,6 +43,9 @@ export class BaseEtape implements Etape{
   private _editModalIsVisibe:boolean;
   private _connectionsModalIsVisibe:boolean;
   private _subTaskModalIsVisibe:boolean;
+  private _paymentModalIsVisible:boolean;
+  private _validationModalIsVisible:boolean;
+  private _acceptanceModalIsVisible:boolean;
   _displayInfo:boolean;
   public _cellRef: CellComponent | null;
   //used to assign tasks when selecting view in tasks-management
@@ -76,6 +79,9 @@ export class BaseEtape implements Etape{
     this._categorie = null;
     this._accepted = false;
     this._tache = null;
+    this._paymentModalIsVisible=false;
+    this._acceptanceModalIsVisible=false;
+    this._validationModalIsVisible=false;
     }
 
 
@@ -281,6 +287,31 @@ export class BaseEtape implements Etape{
 
   set subTaskModalIsVisibe(value: boolean) {
     this._subTaskModalIsVisibe = value;
+  }
+
+
+  get paymentModalIsVisible(): boolean {
+    return this._paymentModalIsVisible;
+  }
+
+  set paymentModalIsVisible(value: boolean) {
+    this._paymentModalIsVisible = value;
+  }
+
+  get validationModalIsVisible(): boolean {
+    return this._validationModalIsVisible;
+  }
+
+  set validationModalIsVisible(value: boolean) {
+    this._validationModalIsVisible = value;
+  }
+
+  get acceptanceModalIsVisible(): boolean {
+    return this._acceptanceModalIsVisible;
+  }
+
+  set acceptanceModalIsVisible(value: boolean) {
+    this._acceptanceModalIsVisible = value;
   }
 }
 

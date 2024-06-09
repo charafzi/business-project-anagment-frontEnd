@@ -67,22 +67,26 @@ export class TasksManagementComponent implements OnInit{
 
             if (formValue.subContractor != undefined) {
               subcontractor = {
-                idSousTraitant: formValue.subContractor,
-                nom: '',
-                tel: '',
+                idUser: formValue.subContractor,
+                nom : '',
                 adresse: '',
+                email : '',
+                numTel : '',
+                prenom : '',
+                role : '',
                 taches: []
               }
             } else {
               subcontractor = null;
-              formValue.agent.forEach((matricule: string) => {
+              formValue.agent.forEach((idUser: number) => {
                 travailleurs.push({
-                  matricule: matricule,
-                  prenom: '',
-                  nom: '',
-                  email: '',
-                  numTel: '',
-                  taches: []
+                  idUser : idUser,
+                  matricule: '',
+                  nom : '',
+                  email : '',
+                  numTel : '',
+                  prenom : '',
+                  role : '',
                 });
               })
             }
@@ -210,7 +214,7 @@ export class TasksManagementComponent implements OnInit{
         this.isLoading=false;
       },
         error => {
-        console.error('Error at fetching Tasks from back-end '+error);
+        console.error('Error at fetching Tasks from back-end :'+error);
         })
   }
 
@@ -256,7 +260,6 @@ export class TasksManagementComponent implements OnInit{
 
             //if form is valid then create the process
             if(formIsValid){
-              console.log("Form  :");
               try {
                 let targetStartingDateDisabled = modalComponentInst.taskEditForm.get('targetStartingDate')?.disabled;
                 tacheMere.tache.dateExpiration = modalComponentInst.taskEditForm.value.expirationDate;
@@ -279,7 +282,6 @@ export class TasksManagementComponent implements OnInit{
                           })
                           console.error(error);
                         })
-
                   }
                   else{
                     tacheMere.tache.objetTache = modalComponentInst.taskEditForm.value.objectOfTask;
@@ -290,23 +292,27 @@ export class TasksManagementComponent implements OnInit{
 
                     if (modalComponentInst.taskEditForm.value.subContractor && modalComponentInst.taskEditForm.value.subContractor!= -1) {
                       subcontractor = {
-                        idSousTraitant: modalComponentInst.taskEditForm.value.subContractor ,
-                        nom: '',
-                        tel: '',
+                        idUser: modalComponentInst.taskEditForm.value.subContractor ,
+                        nom : '',
                         adresse: '',
+                        email : '',
+                        numTel : '',
+                        prenom : '',
+                        role : '',
                         taches: []
                       }
                     } else {
                       subcontractor = null;
                       if(modalComponentInst.taskEditForm.value.agent){
-                        modalComponentInst.taskEditForm.value.agent.forEach((matricule: string) => {
-                          console.error("Selected matr :"+matricule)
+                        modalComponentInst.taskEditForm.value.agent.forEach((idUser: number) => {
                           travailleurs.push({
-                            matricule: matricule,
-                            prenom: '',
-                            nom: '',
-                            email: '',
-                            numTel: '',
+                            idUser : idUser,
+                            matricule : '',
+                            nom : '',
+                            email : '',
+                            numTel : '',
+                            prenom : '',
+                            role : '',
                             taches: []
                           });
                         })

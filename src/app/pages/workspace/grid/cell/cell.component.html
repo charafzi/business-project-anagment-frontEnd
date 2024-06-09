@@ -7,7 +7,8 @@
      [ngClass]="{
      'cell-selected' : onDotClicked && mode==1,
      'cell-first' : processItem?.first && !onDotClicked,
-     'cell-end' : processItem?.end && !onDotClicked
+     'cell-end' : processItem?.end && !onDotClicked,
+     'cell-done' : processItem?.tache?.statutTache === 'TERMINE'
      }"
 >
   <div
@@ -35,5 +36,19 @@
       [subTask]="processItem.tache"
     >
     </app-sub-task-display-modal>
+    <app-payment-modal
+      *ngIf="processItem.tache && processItem.tache && mode == 2"
+      [isVisible]="processItem.paymentModalIsVisible"
+      [etape]="processItem"
+      [subTask]="processItem.tache"
+    >
+      <app-validation-modal
+        *ngIf="processItem.tache && mode == 2"
+        [isVisible]="processItem.validationModalIsVisible"
+        [etape]="processItem"
+        [subTask]="processItem.tache"
+      >
+      </app-validation-modal>
+    </app-payment-modal>
   </ng-container>
 </div>

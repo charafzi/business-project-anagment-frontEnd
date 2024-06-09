@@ -80,4 +80,16 @@ export abstract class BaseItem{
       this._etape.subTaskModalIsVisibe=true;
     }
   }
+
+  onClickDisplayPaymentModal(){
+    if(this._etape && this._etape.tache){
+      this._etape.paymentModalIsVisible=true;
+    }
+  }
+
+  onClickDisplayValidationModal(){
+    if(this._etape && this._etape.tache){
+      this._etape.validationModalIsVisible=true;
+    }
+  }
 }

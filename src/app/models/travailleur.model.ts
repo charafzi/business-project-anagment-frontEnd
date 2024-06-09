@@ -1,10 +1,7 @@
 import {Tache} from "./tache.model";
+import {User} from "./user.model";
 
-export interface Travailleur{
+export interface Travailleur extends User{
   matricule : string;
-  nom : string;
-  prenom : string;
-  numTel : string;
-  email : string;
-  taches : Tache[];
+  taches? : Tache[];
 }

@@ -77,5 +77,21 @@
       }
     }
   </ul>
+  <ul class="actions" *ngIf="_mode===2">
+    <li *ngIf="tache?.etape?.validate"><span nz-icon nzType="check-circle"
+                                             nz-tooltip
+                                             nzTooltipTitle="Needs validation"
+                                             (click)="onClickDisplayValidationModal()"
+    ></span></li>
+    <li *ngIf="tache?.etape?.paid"><span nz-icon nzType="dollar"
+                                         nz-tooltip
+                                         nzTooltipTitle="Needs payment"
+                                         (click)="onClickDisplayPaymentModal()"
+    ></span></li>
+    <li *ngIf="tache?.etape?.accepted"><span nz-icon nzType="exclamation-circle"
+                                             nz-tooltip
+                                             nzTooltipTitle="Needs acceptance"
+    ></span></li>
+  </ul>
 </div>
 

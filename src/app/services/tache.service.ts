@@ -2,6 +2,8 @@ import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
 import {Tache} from "../models/tache.model";
 import {Processus} from "../models/processus.model";
+import {Paiement} from "../models/paiement.model";
+import {Validation} from "../models/validation.model";
 
 @Injectable({
   providedIn : "root"
@@ -51,6 +53,22 @@ export class TacheService{
 
   updateTacheMereDateExpiration(tache : Tache){
     return this.http.put(this.url+"/"+tache.idTache+"/dateExpiration",tache);
+  }
+
+  savePaiement(idTache : number,paiement : Paiement){
+    return this.http.post<Paiement>(this.url+"/"+idTache+"/payment",paiement)
+  }
+
+  retrieveAllPayments(idTache : number){
+    return this.http.get<Paiement[]>(this.url+"/"+idTache+"/payments");
+  }
+
+  saveValidation(idTache:number,validation : Validation){
+    return this.http.post<Validation>(this.url+"/"+idTache+"/validation",validation)
+  }
+
+  retrieveAllValidations(idTache : number){
+    return this.http.get<Validation[]>(this.url+"/"+idTache+"/validations");
   }
 
 }

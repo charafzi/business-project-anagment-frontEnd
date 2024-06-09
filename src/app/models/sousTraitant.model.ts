@@ -1,9 +1,7 @@
 import {Tache} from "./tache.model";
+import {User} from "./user.model";
 
-export interface SousTraitant{
-  idSousTraitant : number;
-  nom : string;
+export interface SousTraitant extends User{
   adresse : string;
-  tel : string;
   taches : Tache[];
 }

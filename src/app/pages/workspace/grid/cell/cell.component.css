@@ -24,6 +24,10 @@
   outline: 4px double #001529;
 }
 
+.cell-done{
+  outline: 4px solid #52c41a;
+}
+
 
 
 

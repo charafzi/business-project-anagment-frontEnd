@@ -1,0 +1,133 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  (nzOnCancel)="onClickHideModal()"
+  (nzOnOk)="validateForm()"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzWidth]="700"
+>
+  <ng-template #modalTitle>Task Payment :</ng-template>
+  <ng-template #modalContent>
+    <nz-tabset nzCentered [nzSize]="'small'" [nzTabPosition]="'top'">
+      <nz-tab nzTitle="Payment Informations" >
+        <form nz-form [formGroup]="payementForm">
+          <div nz-row class="row">
+          <div nz-col [nzSpan]="4">
+            <nz-form-item>
+              <nz-form-label nzRequired>Payment date &nbsp;</nz-form-label>
+            </nz-form-item>
+          </div>
+          <div nz-col [nzSpan]="8">
+            <nz-form-item>
+              <nz-form-control nzErrorTip="This field is required !">
+                <nz-date-picker nzShowTime formControlName="datePaiement"></nz-date-picker>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+            <div nz-col [nzSpan]="4" [nzOffset]="1">
+              <nz-form-item>
+                <nz-form-label nzRequired>Status &nbsp;</nz-form-label>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="7">
+              <nz-form-item>
+                <nz-form-control nzErrorTip="This field is required !">
+                  <nz-select formControlName="statut">
+                    <nz-option nzValue="COMPLETEE" nzLabel="Completed"></nz-option>
+                    <nz-option nzValue="ANNULEE" nzLabel="Cancelled"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+        </div>
+          <div nz-row class="row" [nzJustify]="'space-evenly'">
+            <div nz-col [nzSpan]="8">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="14" nzRequired>Total to pay<span>(Dh)</span></nz-form-label>
+                <nz-form-control [nzSpan]="10" nzErrorTip="This field is required !">
+                  <nz-input-number formControlName="total_a_payer" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="7">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="18" nzRequired>Amount paid<span>(Dh)</span></nz-form-label>
+                <nz-form-control [nzSpan]="4" nzErrorTip="This field is required !">
+                  <nz-input-number formControlName="montant_payee" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="7">
+              <nz-form-item>
+                <nz-form-label [nzSpan]="14" nzRequired>Rest<span>(Dh)</span></nz-form-label>
+                <nz-form-control  [nzSpan]="10" [nzErrorTip]="restErrorTpl">
+                  <nz-input-number formControlName="reste" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                  <ng-template #restErrorTpl let-control>
+                    @if (control.errors?.['min']) {
+                      Rest should be above 0
+                    } @else {
+                      This field is required !
+                    }
+                    </ng-template>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div class="row">
+            <div nz-col [nzSpan]="8">
+              <nz-form-item>
+                <nz-form-label nzRequired>Justification</nz-form-label>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="16">
+              <!--<nz-upload
+                [nzBeforeUpload]="beforeUpload"
+                [nzFileList]="fileList"
+                [nzLimit]="1"
+                (nzChange)="handleChange($event)"
+              >
+                <button nz-button (click)="$event.preventDefault()">
+                  <span nz-icon nzType="upload"></span>
+                  Upload
+                </button>
+              </nz-upload>-->
+            </div>
+          </div>
+        </form>
+      </nz-tab>
+      <nz-tab nzTitle="Payment History">
+        <nz-table #basicTable [nzData]="paiementList"
+                  [nzScroll]="{ y: 'calc(100vh - 50vh)' }"
+                  [nzShowPagination]="true"
+                  [nzFrontPagination]="true"
+                  [nzLoading]="isLoading"
+                  nzTableLayout="fixed"
+                  [nzPaginationType]="'small'"
+                  [nzPaginationPosition]="'bottom'"
+                  [nzSize]="'small'"
+                  [nzPageSize]="2"
+        >
+          <thead>
+          <tr
+          >
+            <th >Payment date</th>
+            <th>Total to pay (Dh)</th>
+            <th>Amount paid (Dh)</th>
+            <th>Rest (Dh)</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{ data.datePaiement.toLocaleDateString()+' '+data.datePaiement.toLocaleTimeString() }}</td>
+            <td>{{ data.total_a_payer }}</td>
+            <td>{{ data.montantPaye }}</td>
+            <td>{{ data.reste }}</td>
+            <td>{{ data.etat }}</td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+    </nz-tabset>
+  </ng-template>
+</nz-modal>

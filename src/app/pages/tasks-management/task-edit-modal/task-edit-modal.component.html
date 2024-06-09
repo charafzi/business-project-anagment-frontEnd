@@ -90,7 +90,7 @@
                      nzPlaceHolder="Please select at least one agent"
                      [nzLoading]="agents.length==0"
           >
-            <nz-option *ngFor="let agent of agents" [nzLabel]="agent.nom+' '+agent.prenom" [nzValue]="agent.matricule"></nz-option>
+            <nz-option *ngFor="let agent of agents" [nzLabel]="agent.nom+' '+agent.prenom" [nzValue]="agent.idUser"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>
@@ -99,7 +99,7 @@
       <nz-form-item>
         <nz-form-control nzErrorTip="This field is required !">
           <nz-select formControlName="subContractor" nzShowSearch nzAllowClear nzPlaceHolder="Please select a subcontractor">
-            <nz-option *ngFor="let subContractor of subContractors" [nzLabel]="subContractor.nom" [nzValue]="subContractor.idSousTraitant"></nz-option>
+            <nz-option *ngFor="let subContractor of subContractors" [nzLabel]="subContractor.nom" [nzValue]="subContractor.idUser"></nz-option>
           </nz-select>
         </nz-form-control>
       </nz-form-item>

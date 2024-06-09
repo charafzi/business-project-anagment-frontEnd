@@ -4,6 +4,10 @@ import {Etape} from "./etape.model";
 import {Travailleur} from "./travailleur.model";
 import {SousTraitant} from "./sousTraitant.model";
 import {StatutEtape} from "./StatutEtape";
+import {Paiement} from "./paiement.model";
+import {Validation} from "./validation.model";
+import {Responsable} from "./responsable.model";
+import {TeamLeader} from "./teamLeader.model";
 
 export interface Tache{
   idTache?:number;
@@ -21,6 +25,10 @@ export interface Tache{
   etape? : Etape | null;
   tache_mere? : (Tache | null);
   sous_taches?: Tache[];
+  paiements? : Paiement[];
+  validations? : Validation[];
+  responsable? : (Responsable | null);
+  teamLeader? : (TeamLeader | null);
 }
 
 export function getStatutTacheFromString(statut:string){

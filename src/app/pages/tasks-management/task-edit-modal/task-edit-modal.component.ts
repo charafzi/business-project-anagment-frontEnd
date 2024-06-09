@@ -23,7 +23,7 @@ import {NgForOf} from "@angular/common";
 export class TaskEditModalComponent {
   agents : Travailleur[] = [];
   subContractors : SousTraitant[] = [];
-  selectedAgents : string[] = [];
+  selectedAgents : number[] = [];
   selectedSubContractor : number = -1;
   radioSelected : string ='';
 
@@ -56,11 +56,11 @@ export class TaskEditModalComponent {
     // @ts-ignore
     let dateExpiration = new Date(this.tacheService.tacheEdit.dateExpiration);
     if(this.tacheService.tacheEdit.sousTraitant){
-      this.selectedSubContractor = this.tacheService.tacheEdit.sousTraitant.idSousTraitant;
+      this.selectedSubContractor = this.tacheService.tacheEdit.sousTraitant.idUser;
       this.radioSelected = 'subContractor';
     }else{
       this.tacheService.tacheEdit.travailleurs?.forEach(agent=>{
-        this.selectedAgents.push(agent.matricule);
+        this.selectedAgents.push(agent.idUser);
         this.radioSelected = 'agent';
       })
     }

@@ -1,0 +1,95 @@
+<nz-modal
+  [(nzVisible)]="isVisible"
+  (nzOnCancel)="onClickHideModal()"
+  (nzOnOk)="validateForm()"
+  [nzTitle]="modalTitle"
+  [nzContent]="modalContent"
+  [nzWidth]="700"
+>
+  <ng-template #modalTitle>Task Validation :</ng-template>
+  <ng-template #modalContent>
+    <nz-tabset nzCentered [nzSize]="'small'" [nzTabPosition]="'top'">
+      <nz-tab nzTitle="Validation Informations" >
+        <form nz-form [formGroup]="validationForm">
+          <div nz-row class="row">
+            <div nz-col [nzSpan]="5">
+              <nz-form-item>
+                <nz-form-label nzRequired>Validation date &nbsp;</nz-form-label>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="7">
+              <nz-form-item>
+                <nz-form-control nzErrorTip="This field is required !">
+                  <nz-date-picker nzShowTime formControlName="dateValidation"></nz-date-picker>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="4" [nzOffset]="4">
+              <nz-form-item>
+                <nz-form-label nzRequired>Status &nbsp;</nz-form-label>
+              </nz-form-item>
+            </div>
+            <div nz-col [nzSpan]="4">
+              <nz-form-item>
+                <nz-form-control nzErrorTip="This field is required !">
+                  <nz-select formControlName="statut">
+                    <nz-option nzValue="VALIDEE" nzLabel="VALID"></nz-option>
+                    <nz-option nzValue="NON_VALIDEE" nzLabel="INVALID"></nz-option>
+                  </nz-select>
+                </nz-form-control>
+              </nz-form-item>
+            </div>
+          </div>
+          <div nz-col [nzSpan]="24">
+            <nz-form-item>
+              <nz-form-control nzHasFeedback [nzErrorTip]="commentaireErrorTpl">
+                <nz-textarea-count class="text-area">
+                  <textarea formControlName="commentaire" nz-input rows="2" placeholder="Comment..."></textarea>
+                  <ng-template #commentaireErrorTpl let-control>
+                    @if (control.errors?.['required']) {
+                      Please fill in the description field
+                    }
+                    @if (control.errors?.['maxlength']) {
+                      Please do not exceed 255 characters
+                    }
+                  </ng-template>
+                </nz-textarea-count>
+              </nz-form-control>
+            </nz-form-item>
+          </div>
+        </form>
+      </nz-tab>
+      <nz-tab nzTitle="Validation History">
+        <nz-table #basicTable [nzData]="validationList"
+                  [nzScroll]="{ y: 'calc(100vh - 50vh)' }"
+                  [nzShowPagination]="true"
+                  [nzFrontPagination]="true"
+                  [nzLoading]="isLoading"
+                  nzTableLayout="fixed"
+                  [nzPaginationType]="'small'"
+                  [nzPaginationPosition]="'bottom'"
+                  [nzSize]="'small'"
+                  [nzPageSize]="2"
+        >
+          <thead>
+          <tr
+          >
+            <th >Validation date</th>
+            <th>Status</th>
+            <th>Comment</th>
+            <th>Responsible</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let data of basicTable.data">
+            <td>{{ data.dateValidation.toLocaleDateString()+' '+data.dateValidation.toLocaleTimeString() }}</td>
+            <td>{{ data.etat }}</td>
+            <td>{{ data.commentaire}}</td>
+            <td>{{ data.responsable.nom+' '+data.responsable.prenom }}</td>
+          </tr>
+          </tbody>
+        </nz-table>
+      </nz-tab>
+    </nz-tabset>
+  </ng-template>
+</nz-modal>

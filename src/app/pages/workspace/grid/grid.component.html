@@ -28,7 +28,7 @@
             (processItemDropped)="updateProcessItems($event)"
             (connectProcessItems)="connectProcessItems($event)"
             [onDotClicked]="onDotClickedCSS(rowIndex,colIndex)"
-            (click)="onCellClicked(rowIndex,colIndex)"
+            (dblclick)="onCellClicked(rowIndex,colIndex)"
           ></app-cell>
           <div *ngIf="mode==1"
                 class="dot dot-right"

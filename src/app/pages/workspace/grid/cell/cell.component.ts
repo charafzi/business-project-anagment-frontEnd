@@ -32,6 +32,8 @@ import {FirstExistException} from "../../../../exceptions/firstExist.exception";
 import {EndExistException} from "../../../../exceptions/endExist.exception";
 import {EtapeService} from "../../../../services/etape.service";
 import {SubTaskDisplayModalComponent} from "../../items/sub-task-display-modal/sub-task-display-modal.component";
+import {PaymentModalComponent} from "../../items/payment-modal/payment-modal.component";
+import {ValidationModalComponent} from "../../items/validation-modal/validation-modal.component";
 
 
 @Component({
@@ -50,7 +52,9 @@ import {SubTaskDisplayModalComponent} from "../../items/sub-task-display-modal/s
     EtapeDisplayModalComponent,
     NzBadgeComponent,
     ConnectionsModalComponent,
-    SubTaskDisplayModalComponent
+    SubTaskDisplayModalComponent,
+    PaymentModalComponent,
+    ValidationModalComponent
   ],
   styleUrl: './cell.component.css'
 })
