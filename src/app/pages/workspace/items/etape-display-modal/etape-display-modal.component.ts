@@ -1,53 +1,24 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {BaseEtape} from "../Etape.class";
-import {NzModalComponent, NzModalContentDirective, NzModalFooterDirective, NzModalService} from "ng-zorro-antd/modal";
-import {NzButtonComponent, NzButtonGroupComponent} from "ng-zorro-antd/button";
-import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
-import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
-import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from "ng-zorro-antd/form";
-import {NzInputDirective, NzTextareaCountComponent} from "ng-zorro-antd/input";
-import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
+import {NzModalService} from "ng-zorro-antd/modal";
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NzProgressComponent} from "ng-zorro-antd/progress";
-import {NzIconDirective} from "ng-zorro-antd/icon";
-import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
-import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
 import {CategorieService} from "../../../../services/categorie.service";
 import {Categorie} from "../../../../models/categorie.model";
 import {NgForOf} from "@angular/common";
-import {getstatutEtapeToString, StatutEtape} from "../../../../models/StatutEtape";
 import {DurationUnite, getDurationUniteFromString} from "../../../../models/DurationUnite";
-import {ConnexionService} from "../../../../services/connexion.service";
 import {FirstExistException} from "../../../../exceptions/firstExist.exception";
 import {EndExistException} from "../../../../exceptions/endExist.exception";
 import {EtapeService} from "../../../../services/etape.service";
+import {NzMessageService} from "ng-zorro-antd/message";
+import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 
 @Component({
   selector: 'app-etape-display-modal',
   templateUrl: './etape-display-modal.component.html',
   standalone: true,
   imports: [
-    NzModalContentDirective,
-    NzModalComponent,
-    NzModalFooterDirective,
-    NzButtonComponent,
-    NzCheckboxComponent,
-    NzColDirective,
-    NzFormControlComponent,
-    NzFormDirective,
-    NzFormLabelComponent,
-    NzInputDirective,
-    NzInputNumberComponent,
-    NzRowDirective,
-    NzTextareaCountComponent,
+    DemoNgZorroAntdModule,
     ReactiveFormsModule,
-    NzProgressComponent,
-    NzButtonGroupComponent,
-    NzIconDirective,
-    NzSelectComponent,
-    NzOptionComponent,
-    NzRadioComponent,
-    NzRadioGroupComponent,
     NgForOf
   ],
   styleUrl: './etape-display-modal.component.css'
@@ -61,7 +32,8 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
   constructor(private fb: FormBuilder,
               private modalService : NzModalService,
               private categorieService : CategorieService,
-              private etapeService : EtapeService) {}
+              private etapeService : EtapeService,
+              private msg : NzMessageService) {}
 
   ngOnInit(): void {
     this.categorieService.getAllCategories()
@@ -92,7 +64,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
   validateForm(){
     if(this.etapeForm.valid){
        try{
-         this.etapeService.printProcessItems();
          let isFirst : boolean = false;
          let isInterm : boolean = false;
          let isEnd : boolean = false;
@@ -122,7 +93,6 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
              break;
          }
 
-         console.log("CHOSES : "+this.etape.dureeEstimeeUnite)
          this.etape.first = this.etape.intermediate = this.etape.end = false;
          switch (selectedFIE){
            case 'F':
@@ -157,20 +127,14 @@ export class EtapeDisplayModalComponent implements OnInit,OnChanges{
          this.etape.categorie = this.categorieService.getCategorieById(this.etapeForm.value.categorie);
 
          this.onClickHideModal();
-         this.modalService.success({
-           nzTitle : "Step modified successfully !"
-         })
+         this.msg.success("Step modified successfully")
        }
        catch (error) {
          if (error instanceof FirstExistException) {
-           this.modalService.error({
-             nzTitle : "Unable to create this step, the first step already exists !"
-           })
+           this.msg.error('Unable to update this step, the initial step already exists')
            console.error(error.message);
          } else if (error instanceof EndExistException) {
-           this.modalService.error({
-             nzTitle : "Unable to create this step, the end step already exists !"
-           })
+           this.msg.error('Unable to update this step, the final step already exists')
            console.error(error.message);
          }
          console.error(error);

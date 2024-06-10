@@ -14,7 +14,7 @@
       >
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label>Steps before &nbsp;</nz-form-label>
+            <nz-form-label><strong>Steps before this step</strong>&nbsp;</nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="16">
@@ -22,7 +22,7 @@
             <nz-form-control>
               <nz-select formControlName="stepsBefore"
                          nzMode="multiple"
-                         nzPlaceHolder="Please select the steps before this step"
+                         nzPlaceHolder="Select one step or more"
               >
                 <nz-option *ngFor="let item of etapes"
                            nzCustomContent
@@ -44,7 +44,7 @@
       >
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label>Steps after &nbsp;</nz-form-label>
+            <nz-form-label><strong>Steps after this step</strong>&nbsp;</nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="16">
@@ -52,7 +52,7 @@
             <nz-form-control>
               <nz-select formControlName="stepsAfter"
                          nzMode="multiple"
-                         nzPlaceHolder="Please select the steps after this step"
+                         nzPlaceHolder="Select one step or more"
 
               >
                 <nz-option *ngFor="let item of etapes"
@@ -74,60 +74,60 @@
       <div class="row"
            nz-row
       >
-        <div nz-col [nzSpan]="12">
+        <div nz-col [nzSpan]="24">
           <nz-form-item>
-            <nz-form-label>The waiting period depending on status for steps before &nbsp;</nz-form-label>
+            <nz-form-label><strong>Waiting period applied to the steps before, before proceeding to this step&nbsp;</strong></nz-form-label>
           </nz-form-item>
         </div>
       </div>
       <ng-container formArrayName="stepsBeforeDetails">
-          <div class="row" nz-row  *ngFor="let detail of stepsBeforeDetails.controls; let i = index" [formGroupName]="i">
-           <div nz-col [nzSpan]="24">
-             <div nz-row>
-               <div nz-col [nzSpan]="24">
-                 <nz-form-item>
-                   <nz-form-label ><span>{{ getStepDescription(detail.value.step?? '') }}</span> &nbsp;</nz-form-label>
-                 </nz-form-item>
-               </div>
-             </div>
-             <div nz-row>
-               <div nz-col [nzSpan]="4">
-                 <nz-form-item>
-                   <nz-form-label>Waiting period &nbsp;</nz-form-label>
-                 </nz-form-item>
-               </div>
-               <div nz-col [nzSpan]="2">
-                 <nz-form-item>
-                   <nz-input-number formControlName="delaiAttente" [nzMin]="0" [nzStep]="1"></nz-input-number>
-                 </nz-form-item>
-               </div>
-               <div nz-col [nzSpan]="8" [nzOffset]="1">
-                 <nz-form-control nzErrorTip="This field is required !">
-                   <nz-radio-group formControlName="radioDelaiAttente">
-                     <label nz-radio nzValue="H">Hour<span>(s)</span></label>
-                     <label nz-radio nzValue="D">Day<span>(s)</span></label>
-                     <label nz-radio nzValue="M">Month<span>(s)</span></label>
-                   </nz-radio-group>
-                 </nz-form-control>
-               </div>
-               <div nz-col [nzSpan]="2">
-                 <nz-form-item>
-                   <nz-form-label>Statut &nbsp;</nz-form-label>
-                 </nz-form-item>
-               </div>
-               <div nz-col [nzSpan]="7" >
-                 <nz-form-item>
-                   <nz-form-control>
-                     <nz-select formControlName="statut" nzErrorTip="This field is required !">
-                       <nz-option nzValue="COMMENCEE" nzLabel="Started"></nz-option>
-                       <nz-option nzValue="TERMINE" nzLabel="Done"></nz-option>
-                     </nz-select>
-                   </nz-form-control>
-                 </nz-form-item>
-               </div>
-             </div>
-           </div>
-          </div>
+          <ul *ngFor="let detail of stepsBeforeDetails.controls; let i = index" [formGroupName]="i">
+          <li>
+            <div nz-row>
+              <div nz-col [nzSpan]="24">
+                <div nz-row>
+                  <div nz-col [nzSpan]="24">
+                    <nz-form-item>
+                      <nz-form-label >{{ getStepDescription(detail.value.step?? '') }}&nbsp;</nz-form-label>
+                    </nz-form-item>
+                  </div>
+                </div>
+                <div nz-row [nzJustify]="'space-evenly'">
+                  <div nz-col [nzSpan]="4">
+                    <nz-form-item>
+                      <nz-form-label>Waiting period&nbsp;</nz-form-label>
+                    </nz-form-item>
+                  </div>
+                  <div nz-col [nzSpan]="3">
+                    <nz-form-item>
+                      <nz-input-number formControlName="delaiAttente" [nzMin]="0" [nzStep]="1"></nz-input-number>
+                    </nz-form-item>
+                  </div>
+                  <div nz-col [nzSpan]="8" [nzOffset]="1">
+                    <nz-form-control nzErrorTip="This field is required !">
+                      <nz-radio-group formControlName="radioDelaiAttente">
+                        <label nz-radio nzValue="H">Hour<span>(s)</span></label>
+                        <label nz-radio nzValue="D">Day<span>(s)</span></label>
+                        <label nz-radio nzValue="M">Month<span>(s)</span></label>
+                      </nz-radio-group>
+                    </nz-form-control>
+                  </div>
+                  <div nz-col [nzSpan]="8">
+                    <nz-form-item>
+                      <nz-form-label [nzSpan]="12">Status&nbsp;</nz-form-label>
+                      <nz-form-control [nzSpan]="12">
+                        <nz-select formControlName="statut" nzErrorTip="This field is required !">
+                          <nz-option nzValue="COMMENCEE" nzLabel="Started"></nz-option>
+                          <nz-option nzValue="TERMINE" nzLabel="Done"></nz-option>
+                        </nz-select>
+                      </nz-form-control>
+                    </nz-form-item>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+          </ul>
 
       </ng-container>
     </form>

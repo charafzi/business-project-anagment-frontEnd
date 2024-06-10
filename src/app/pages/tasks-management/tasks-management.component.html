@@ -17,8 +17,10 @@
     <div nz-row>
       <div nz-col [nzSpan]="6">
         <button nz-button nzType="primary" [nzShape]="'round'" (click)="onAddTask()">
-          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
-          Add new task
+          <strong>
+            <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+            Add new task
+          </strong>
         </button>
       </div>
     </div>
@@ -52,8 +54,8 @@
           <tr>
             <td [(nzExpand)]="data.expand"></td>
             <td>{{ data.tache.objetTache}}</td>
-            <td>{{ data.tache.dateDebutPrevue ? data.tache.dateDebutPrevue.toLocaleDateString() +' '+data.tache.dateDebutPrevue.toLocaleTimeString() : '' }}</td>
-            <td>{{ data.tache.dateExpiration ? data.tache.dateExpiration.toLocaleDateString()+ ' '+data.tache.dateExpiration.toLocaleTimeString() : ''}}</td>
+            <td style="color: #0096FF;">{{ data.tache.dateDebutPrevue ? data.tache.dateDebutPrevue.toLocaleDateString() +' '+data.tache.dateDebutPrevue.toLocaleTimeString() : '' }}</td>
+            <td style="color:#D2042D;">{{ data.tache.dateExpiration ? data.tache.dateExpiration.toLocaleDateString()+ ' '+data.tache.dateExpiration.toLocaleTimeString() : ''}}</td>
             <td>
               <nz-list [nzSize]="'small'">
                 @for (travailleur of data.tache.travailleurs; track travailleur) {
@@ -65,9 +67,21 @@
             <td>{{ data.tache.sousTraitant?.nom }}</td>
             <td>
               <div class="icons-container">
-                <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'" (click)="viewSchema(data.tache.idTache ?? -1)" ></span></a>
-                <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'" (click)="dislplayEditModal(data.tache.idTache ?? -1)"></span></a>
-                <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'" (click)="delete(data.tache.idTache ?? -1)"></span></a>
+                <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'"
+                         (click)="viewSchema(data.tache.idTache ?? -1)"
+                         nz-tooltip
+                         nzTooltipTitle="View workflow"
+                ></span></a>
+                <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'"
+                         (click)="dislplayEditModal(data.tache.idTache ?? -1)"
+                         nz-tooltip
+                         nzTooltipTitle="Edit task"
+                ></span></a>
+                <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'"
+                         (click)="delete(data.tache.idTache ?? -1)"
+                         nz-tooltip
+                         nzTooltipTitle="Delete task"
+                ></span></a>
               </div>
             </td>
           </tr>
@@ -78,7 +92,7 @@
                 <th [nzWidth]="'25%'">Step description</th>
                 <th>Priority</th>
                 <th>Percentage</th>
-                <th>Status Task</th>
+                <th>Task status</th>
                 <th>Target starting date</th>
                 <th>Expiration date</th>
                 <th>Effective start date</th>
@@ -129,10 +143,11 @@
                     <nz-badge nzSize="small" [nzText]="'Not started yet'" nzStatus="error"></nz-badge>
                   }
                 </td>
-                <td>
+                <td style="color: #0096FF;">
                   {{ data.dateDebutPrevue ? data.dateDebutPrevue.toLocaleDateString() +' '+data.dateDebutPrevue.toLocaleTimeString() : ''}}
                 </td>
-                <td>{{data.dateExpiration ? data.dateExpiration.toLocaleDateString() +' '+data.dateExpiration.toLocaleTimeString() :  ''}}</td>
+                <td style="color:#D2042D;">
+                  {{data.dateExpiration ? data.dateExpiration.toLocaleDateString() +' '+data.dateExpiration.toLocaleTimeString() :  ''}}</td>
                 <td>{{ data.dateDebutEffective ? data.dateDebutEffective.toLocaleDateString()+' '+data.dateDebutEffective.toLocaleTimeString() : ''}}</td>
                 <td>{{ data.dateFinEffective ? data.dateFinEffective.toLocaleDateString()+' '+data.dateFinEffective.toLocaleTimeString() : ''}}</td>
               </tr>

@@ -4,6 +4,7 @@
   [nzContent]="modalContent"
   (nzOnCancel)="onClickHideModal()"
   (nzOnOk)="validateForm()"
+  [nzWidth]="550"
 >
   <ng-template #modalTitle>Informations about the step :</ng-template>
 
@@ -14,7 +15,7 @@
       >
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label>Categorie &nbsp;</nz-form-label>
+            <nz-form-label><strong>Category</strong>&nbsp;</nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="10">
@@ -30,7 +31,7 @@
         </div>
         <div nz-col [nzSpan]="3" [nzOffset]="1">
           <nz-form-item>
-            <nz-form-label>Order</nz-form-label>
+            <nz-form-label><strong>Order&nbsp;</strong></nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="4">
@@ -44,7 +45,7 @@
       >
         <div nz-col [nzSpan]="6">
           <nz-form-item>
-            <nz-form-label >Description</nz-form-label>
+            <nz-form-label ><strong>Description&nbsp;</strong></nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="18">
@@ -81,7 +82,7 @@
       <div nz-row class="row">
         <div nz-col [nzSpan]="7">
           <nz-form-item>
-            <nz-form-label nzRequired>Estimated duration&nbsp;</nz-form-label>
+            <nz-form-label><strong>Estimated duration</strong>&nbsp;</nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="3">
@@ -102,15 +103,15 @@
       <div nz-row class="row">
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label nzRequired>Is this a &nbsp;</nz-form-label>
+            <nz-form-label><strong>Is this a</strong>&nbsp;</nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="16">
           <nz-form-control nzErrorTip="This field is required !">
             <nz-radio-group formControlName="radioFIE">
-              <label nz-radio nzValue="F">First</label>
+              <label nz-radio nzValue="F">Initial</label>
               <label nz-radio nzValue="I">Intermediate</label>
-              <label nz-radio nzValue="E">End</label>
+              <label nz-radio nzValue="E">Final</label>
             </nz-radio-group>
           </nz-form-control>
         </div>
@@ -119,7 +120,7 @@
       >
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-label>To be paid </nz-form-label>
+            <nz-form-label><strong>To be paid&nbsp;</strong></nz-form-label>
           </nz-form-item>
         </div>
         <div nz-col>
@@ -136,7 +137,7 @@
         <div nz-col [nzSpan]="8">
           <nz-form-item>
             <nz-form-control nzErrorTip="This field is required !">
-              <nz-form-label>To be validated </nz-form-label>
+              <nz-form-label><strong>To be validated</strong>&nbsp;</nz-form-label>
             </nz-form-control>
           </nz-form-item>
         </div>
@@ -149,12 +150,12 @@
           </nz-form-control>
         </div>
       </div>
-      <div nz-row class="row"
+      <div nz-row
       >
         <div nz-col [nzSpan]="8">
           <nz-form-item>
             <nz-form-control>
-              <nz-form-label>To be accepted</nz-form-label>
+              <nz-form-label><strong>To be accepted</strong>&nbsp;</nz-form-label>
             </nz-form-control>
           </nz-form-item>
         </div>

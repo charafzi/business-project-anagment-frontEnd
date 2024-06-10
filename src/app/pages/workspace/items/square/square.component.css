@@ -68,11 +68,11 @@ nz-card:hover{
 }
 
 .actions span {
-  padding: 2px;
+  padding: 1px;
   border: 1px solid inherit;
   background-color: #fafafa;
   border-radius: 100%;
-  font-size: 8px;
+  font-size: 11px;
   animation: 1s;
   margin: 0;
   height: fit-content;
@@ -82,7 +82,7 @@ nz-card:hover{
 .actions span:hover {
   color: #004ea2;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .status{
@@ -91,7 +91,7 @@ nz-card:hover{
   flex-wrap: wrap;
   padding: 0;
   margin: 0;
-  justify-content: end;
+  justify-content: flex-end;
 }
 
 .badge{

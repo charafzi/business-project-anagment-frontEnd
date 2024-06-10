@@ -17,14 +17,12 @@ import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
 import {ConnexionService} from "../../../../services/connexion.service";
 import {NzButtonComponent} from "ng-zorro-antd/button";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
-import {ConnectionSet} from "../../grid/connection.class";
-import {StatutTache} from "../../../../models/StatutTache";
 import {NzInputDirective} from "ng-zorro-antd/input";
 import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
-import {statutTacheToString} from "../../../../models/tache.model";
 import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
 import {DurationUnite, getDurationUniteFromString} from "../../../../models/DurationUnite";
-import {getStatutEtapeFromString, getstatutEtapeToString, StatutEtape} from "../../../../models/StatutEtape";
+import {getstatutEtapeToString} from "../../../../models/StatutEtape";
+import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 
 
 @Component({
@@ -32,24 +30,11 @@ import {getStatutEtapeFromString, getstatutEtapeToString, StatutEtape} from "../
   templateUrl: './connections-modal.component.html',
   standalone: true,
   imports: [
-    NzModalComponent,
+    DemoNgZorroAntdModule,
     FormsModule,
     NgForOf,
-    NzColDirective,
-    NzFormControlComponent,
-    NzFormLabelComponent,
-    NzOptionComponent,
-    NzRowDirective,
-    NzSelectComponent,
     ReactiveFormsModule,
-    NzFormDirective,
-    NzButtonComponent,
-    NzTooltipDirective,
-    NgIf,
-    NzInputDirective,
-    NzInputNumberComponent,
-    NzRadioComponent,
-    NzRadioGroupComponent
+    NgIf
   ],
   styleUrl: './connections-modal.component.css'
 })
@@ -124,7 +109,7 @@ export class ConnectionsModalComponent implements OnInit, OnChanges{
   getStepDescription(step: string): string {
     const [ligne, colonne] = step.split('-');
     const selectedStep = this.etapes.find(item => item.indexLigne === Number(ligne) && item.indexColonne === Number(colonne));
-    return selectedStep ? selectedStep.description : '';
+    return selectedStep ? selectedStep.description+' ('+selectedStep.categorie?.nom+')' : '';
   }
 
   onClickHideModal(){

@@ -12,6 +12,7 @@ import {BaseItem} from "../items/item.model";
 import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {PlusComponent} from "../items/plus/plus.component";
 import {HexagonComponent} from "../items/hexagon/hexagon.component";
+import {DemoNgZorroAntdModule} from "../../../ng-zorro-antd.module";
 
 @Component({
   selector: 'app-item-list',
@@ -24,12 +25,9 @@ import {HexagonComponent} from "../items/hexagon/hexagon.component";
     SquareComponent,
     RhombusComponent,
     CircleComponent,
-    NzMenuDirective,
-    NzSubMenuComponent,
+    DemoNgZorroAntdModule,
     NgForOf,
     NgIf,
-    NzSpinComponent,
-    NzTooltipDirective,
     PlusComponent,
     HexagonComponent
   ],

@@ -1,4 +1,3 @@
-import {Tache} from "./tache.model";
 import {Responsable} from "./responsable.model";
 
 export interface Validation {

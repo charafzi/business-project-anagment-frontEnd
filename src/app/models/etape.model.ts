@@ -1,7 +1,6 @@
 import {Type} from "./type.model"
 import {Processus} from "./processus.model";
 import {Categorie} from "./categorie.model";
-import {StatutEtape} from "./StatutEtape";
 import {DurationUnite} from "./DurationUnite";
 
 export interface Etape{

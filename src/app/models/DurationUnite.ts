@@ -23,6 +23,7 @@ export function getDurationUniteFromString(unite :string) {
   return DurationUnite.HOUR;
 }
 
+/*
 
 export function getDurationUniteFromInt(unite : number):DurationUnite{
   switch (unite){
@@ -35,3 +36,4 @@ export function getDurationUniteFromInt(unite : number):DurationUnite{
   }
   return DurationUnite.HOUR;
 }
+*/

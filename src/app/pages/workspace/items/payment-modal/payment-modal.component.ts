@@ -3,13 +3,14 @@ import {BaseEtape} from "../Etape.class";
 import {Tache} from "../../../../models/tache.model";
 import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
-import {NzModalService} from "ng-zorro-antd/modal";
 import {TacheService} from "../../../../services/tache.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {NzUploadFile} from "ng-zorro-antd/upload";
 import {Paiement} from "../../../../models/paiement.model";
 import {NgForOf} from "@angular/common";
-import {NzTabChangeEvent} from "ng-zorro-antd/tabs";
+import {NzTabsCanDeactivateFn} from "ng-zorro-antd/tabs";
+import {HttpClient} from "@angular/common/http";
+import {NzImageService} from "ng-zorro-antd/image";
 
 @Component({
   selector: 'app-payment-modal',
@@ -28,6 +29,8 @@ export class PaymentModalComponent implements OnInit, OnChanges{
   @Input('etape') etape! : BaseEtape;
   @Input('subTask') subTask! : Tache;
   @Input('isVisible') isVisible!:boolean;
+  uploadUrl : string = "http://localhost:8100/files/upload";
+  getImageUrl : string = "http://localhost:8100/files/images/"
   isLoading : boolean = true;
   fileList: NzUploadFile[] = [];
   paiementList : Paiement[] = [];
@@ -35,8 +38,9 @@ export class PaymentModalComponent implements OnInit, OnChanges{
   payementForm!: FormGroup;
 
   constructor(private fb: FormBuilder,
+              private http : HttpClient,
               private nzMessage : NzMessageService,
-              private modalService : NzModalService,
+              private imageService : NzImageService,
               private tacheService : TacheService) {
     // @ts-ignore
     let date = new Date();
@@ -51,6 +55,7 @@ export class PaymentModalComponent implements OnInit, OnChanges{
 
 
   onClickHideModal(){
+    this.payementForm.reset();
     this.etape.paymentModalIsVisible=false;
   }
 
@@ -63,6 +68,8 @@ export class PaymentModalComponent implements OnInit, OnChanges{
       let reste = this.payementForm.value.reste;
       let etat : string =  this.payementForm.value.statut;
 
+      const fileCasted: File = this.fileList.at(0) as unknown as File;
+      console.log(fileCasted.name)
       const paiement : Paiement = {
         datePaiement : datePaiement,
         total_a_payer : total,
@@ -70,30 +77,22 @@ export class PaymentModalComponent implements OnInit, OnChanges{
         reste : reste,
         idPaiement : -1,
         etat : etat,
-        justification : null,
+        justification_url : fileCasted.name,
       }
+
       if(this.subTask.idTache){
         this.tacheService.savePaiement(this.subTask.idTache,paiement)
           .subscribe(response=>{
-              this.modalService.success({
-                nzTitle : "Payment saved successfully !"
-              })
+            this.nzMessage.success('Payment saved successfully')
+            this.fileList = [];
             },
             error => {
-              this.modalService.error({
-                nzTitle : "Error at saving payment !",
-                nzContent : "Error during saving, please try again"
-              })
+            this.nzMessage.error('Error during saving, please try again')
             })
       }else{
+        this.nzMessage.error('Error during saving, no subTask is selected')
         console.error("Error : subTask id not defined !")
       }
-      /*if(this.fileList.length>0){
-
-
-      }else{
-        this.nzMessage.warning('Justification is required before submitting !')
-      }*/
     }else{
       Object.values(this.payementForm.controls).forEach(control => {
         if (control.invalid) {
@@ -145,10 +144,62 @@ export class PaymentModalComponent implements OnInit, OnChanges{
     }
   }
 
-  onTabChanged(event: NzTabChangeEvent): void {
-    const selectedIndex = event.index;
-    if (selectedIndex === 1) {
-      this.fetchPayments();
-    }
+  beforeUpload = (file: NzUploadFile): boolean => {
+    console.log(file)
+    this.fileList = this.fileList.concat(file);
+
+    const fileCasted: File = file as unknown as File;
+    const formData = new FormData();
+    formData.append('file',fileCasted,fileCasted.name);
+
+    console.log('file name :'+fileCasted.name)
+    this.http.post(this.uploadUrl, formData, { observe: 'response' }).subscribe(
+      (response) => {
+        if (response.status === 200) {
+          this.nzMessage.success('File uploaded successfully');
+        } else if (response.status === 400) {
+          console.error('Response : '+response.statusText);
+          this.nzMessage.error('No file is provided');
+        } else {
+          console.error('Response : '+response.statusText);
+          this.nzMessage.error('Error at server, please try again ');
+        }
+      },
+      (error) => {
+        console.error('Upload error:', error);
+        this.nzMessage.error('Error during upload : ' + (error.message || error.statusText));
+      }
+    );
+    return false;
+  };
+
+  getJustificationImage(url:string){
+    console.log("Image URL: " + this.getImageUrl + url);
+
+    const images = [
+      {
+        src: this.getImageUrl+url,
+        width: '200px',
+        height: '200px',
+        alt: 'justification'
+      }
+    ];
+    this.imageService.preview(images, { nzZoom: 1.5, nzRotate: 0 });
   }
+
+  canDeactivate: NzTabsCanDeactivateFn = (fromIndex: number, toIndex: number) => {
+    switch (fromIndex) {
+      case 0:
+        console.log("at 0 :",fromIndex,'::',toIndex);
+        return true;
+      case 1:
+        console.log("at 1 :",fromIndex,'::',toIndex);
+        return true;
+      case 2:
+        console.log("at 2 :",fromIndex,'::',toIndex);
+        return true;
+      default:
+        return true;
+    }
+  };
 }

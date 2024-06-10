@@ -1,7 +1,6 @@
 <nz-card id="card"
          [nzBorderless]="false"
          [nzHoverable]="true"
-         (click)="displayButtons()"
 >
   <div class="card-container">
     <svg class="shape" xmlns="http://www.w3.org/2000/svg" id="Capa_1" x="0" y="0" version="1.1" viewBox="0 0 487.272 487.272">
@@ -14,7 +13,6 @@
 
 <div class="actions-container" *ngIf="showButtons">
   <ul class="actions" *ngIf="_mode===1">
-    <!--<li><span nz-icon nzType="setting"></span></li>-->
     <li><span nz-icon nzType="node-index"
               (click)="onClickDisplayConnectionModal()"
               nz-tooltip
@@ -24,11 +22,13 @@
               (click)="onClickDisplayEditModal()"
               nz-tooltip
               nzTooltipTitle="Show informations"
+              style="color: #FFC94A"
     ></span></li>
-    <li><span nz-icon nzType="delete"
+    <li><span nz-icon nzType="delete" nzTheme="fill"
               (click)="onClickDelete()"
               nz-tooltip
               nzTooltipTitle="Delete"
+              style="color: #D2042D"
     ></span></li>
   </ul>
   <ul class="status" *ngIf="_mode===2">
@@ -78,20 +78,20 @@
     }
   </ul>
   <ul class="actions" *ngIf="_mode===2">
-    <li *ngIf="tache?.etape?.validate"><span nz-icon nzType="check-circle"
+    <li *ngIf="tache?.etape?.validate"><span nz-icon nzType="file-done"
                                              nz-tooltip
                                              nzTooltipTitle="Needs validation"
                                              (click)="onClickDisplayValidationModal()"
+                                             style="color:#52c41a;"
     ></span></li>
     <li *ngIf="tache?.etape?.paid"><span nz-icon nzType="dollar"
                                          nz-tooltip
                                          nzTooltipTitle="Needs payment"
-                                         (click)="onClickDisplayPaymentModal()"
+                                         (click)="onClickDisplayPaymentModal()" style="color:#52c41a;"
     ></span></li>
     <li *ngIf="tache?.etape?.accepted"><span nz-icon nzType="exclamation-circle"
                                              nz-tooltip
-                                             nzTooltipTitle="Needs acceptance"
+                                             nzTooltipTitle="Needs acceptance" style="color: #FFC94A"
     ></span></li>
   </ul>
 </div>
-

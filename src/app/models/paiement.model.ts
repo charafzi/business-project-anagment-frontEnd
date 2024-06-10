@@ -1,4 +1,3 @@
-
 export interface Paiement{
   idPaiement: number;
   datePaiement: Date;
@@ -6,6 +5,5 @@ export interface Paiement{
   montantPaye: number;
   reste: number;
   etat: string;
-  //justification: string;
-  justification: File | null;
+  justification_url: string;
 }

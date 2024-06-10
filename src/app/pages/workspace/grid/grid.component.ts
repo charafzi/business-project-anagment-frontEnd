@@ -12,11 +12,9 @@ import {CellComponent} from "./cell/cell.component";
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {CdkDropList} from "@angular/cdk/drag-drop";
 import {BaseEtape} from "../items/Etape.class";
-import {NzFlexDirective} from "ng-zorro-antd/flex";
 import {DOCUMENT, NgClass, NgIf} from "@angular/common";
 import {ProcessusService} from "../../../services/processus.service";
 import {Etape} from "../../../models/etape.model";
-import {NzSpinComponent} from "ng-zorro-antd/spin";
 import {ConnexionService} from "../../../services/connexion.service";
 import {Connexion} from "../../../models/connexion.model";
 import {NzModalService} from "ng-zorro-antd/modal";
@@ -27,6 +25,8 @@ import {Tache} from "../../../models/tache.model";
 import {DurationUnite} from "../../../models/DurationUnite";
 import {EtapeService} from "../../../services/etape.service";
 import {TacheService} from "../../../services/tache.service";
+import {NzMessageService} from "ng-zorro-antd/message";
+import {DemoNgZorroAntdModule} from "../../../ng-zorro-antd.module";
 
 @Component({
   selector: 'app-grid',
@@ -36,9 +36,8 @@ import {TacheService} from "../../../services/tache.service";
     NzColDirective,
     NzRowDirective,
     CdkDropList,
-    NzFlexDirective,
+    DemoNgZorroAntdModule,
     NgClass,
-    NzSpinComponent,
     NgIf
   ],
   standalone: true,
@@ -73,6 +72,7 @@ export class GridComponent implements OnInit,AfterViewInit{
               private connexionService : ConnexionService,
               private etapeService : EtapeService,
               private tacheService : TacheService,
+              private msg : NzMessageService,
               private router : Router) {
     //this page is accessed directly
     if(this.processusService.processus.idProcessus === -1)
@@ -153,6 +153,7 @@ export class GridComponent implements OnInit,AfterViewInit{
             }
           },
           error => {
+          this.msg.error('Error at fetching steps');
             console.error("Error at fetching 'Etapes' at grid OnInit : "+error);
           },
           ()=>{
@@ -202,7 +203,7 @@ export class GridComponent implements OnInit,AfterViewInit{
       }
     },100)
   }
-  printProcessItems()
+  /*printProcessItems()
   {
     for(let i=0; i<this.nbRows; i++)
     {
@@ -216,7 +217,7 @@ export class GridComponent implements OnInit,AfterViewInit{
         }
       }
     }
-  }
+  }*/
 
   updateRefProcessItems(eventData:{processItem:BaseEtape ,rowIndex:number,colIndex:number})
   {
@@ -226,9 +227,9 @@ export class GridComponent implements OnInit,AfterViewInit{
   deleteRefProcessItems(eventData:{rowIndex:number,colIndex:number})
   {
     this.connexionService.deleteAllConnectionsToCell(eventData.rowIndex,eventData.colIndex);
-    console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"] BEFORE DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
+    //console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"] BEFORE DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
     this.processItems[eventData.rowIndex][eventData.colIndex] = null;
-    console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"]  AFTER DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
+    //console.log("PROCESS ITEM AT GRID["+eventData.rowIndex+"]["+eventData.colIndex+"]  AFTER DELETE : "+ this.processItems[eventData.rowIndex][eventData.colIndex]);
   }
 
   addRow(){
@@ -368,39 +369,16 @@ export class GridComponent implements OnInit,AfterViewInit{
                             console.log("Response PUT connexions : "+response);
                           },
                           error => {
-                            this.modalService.error({
-                              nzTitle : "Erreur dans le serveur :",
-                              nzContent : "Erreur lors de l'enregistrement du processus",
-                              nzFooter : null,
-                              nzOnCancel : ()=>{
-                                return false;
-                              }
-                            })
+                          this.msg.error('Server error : error during saving')
                             this.loading.emit(false);
                             console.error("Error at updating Connexions :  "+error);
                           },
                           ()=>{
-                            this.modalService.success({
-                              nzTitle : "Process saved successfully !",
-                              nzFooter : null,
-                              nzOnCancel : ()=>{
-                                return false;
-                              }
-                            })
+                           this.msg.success("Process saved successfully")
                             this.loading.emit(false);
-                            /*
-                             * Linker needs upadte here because of spin for loading
-                             */
                           })
                     },error => {
-                      this.modalService.error({
-                        nzTitle : "Erreur dans le serveur :",
-                        nzContent : "Erreur lors de l'enregistrement du processus",
-                        nzFooter : null,
-                        nzOnCancel : ()=>{
-                          return false;
-                        }
-                      })
+                      this.msg.error('Server error : error during saving')
                       this.loading.emit(false);
                       console.error("Error at retrieving Etapes IDS :  "+error);
                     })
@@ -513,11 +491,6 @@ export class GridComponent implements OnInit,AfterViewInit{
   onDotClickedCSS(indexRow:number,indexCol:number){
     return this.indexRowDotCurr == indexRow && this.indexColDotCurr == indexCol;
   }
-
-  printConnexions():void {
-    console.log("****************************** CONNEXIONS :")
-  }
-
 
   updateProcessItems(eventData:{}){
     //update the matrix of steps on connexion service when an item is dropped in grid

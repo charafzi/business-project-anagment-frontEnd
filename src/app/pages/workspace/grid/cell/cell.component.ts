@@ -1,11 +1,9 @@
 import {
-  AfterContentInit,
   AfterViewInit,
   Component,
   ComponentFactoryResolver,
   EventEmitter,
   Input,
-  OnInit,
   Output,
   ViewChild,
   ViewContainerRef
@@ -18,22 +16,21 @@ import {RhombusComponent} from "../../items/rhombus/rhombus.component";
 import {CircleComponent} from "../../items/circle/circle.component";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {EtapeModalComponent} from "../../items/etape-modal/etape-modal.component";
-import {EtapeDisplayModalComponent} from "../../items/etape-display-modal/etape-display-modal.component";
-import {NzBadgeComponent} from "ng-zorro-antd/badge";
 import {TypeService} from "../../../../services/type.service";
 import {BaseItem} from "../../items/item.model";
 import {ProcessusService} from "../../../../services/processus.service";
 import {ConnectionsModalComponent} from "../../items/connections-modal/connections-modal.component";
 import {CategorieService} from "../../../../services/categorie.service";
-import {StatutEtape} from "../../../../models/StatutEtape";
 import {DurationUnite} from "../../../../models/DurationUnite";
-import {ConnexionService} from "../../../../services/connexion.service";
 import {FirstExistException} from "../../../../exceptions/firstExist.exception";
 import {EndExistException} from "../../../../exceptions/endExist.exception";
 import {EtapeService} from "../../../../services/etape.service";
 import {SubTaskDisplayModalComponent} from "../../items/sub-task-display-modal/sub-task-display-modal.component";
 import {PaymentModalComponent} from "../../items/payment-modal/payment-modal.component";
 import {ValidationModalComponent} from "../../items/validation-modal/validation-modal.component";
+import {NzMessageService} from "ng-zorro-antd/message";
+import {EtapeDisplayModalComponent} from "../../items/etape-display-modal/etape-display-modal.component";
+import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 
 
 @Component({
@@ -49,16 +46,16 @@ import {ValidationModalComponent} from "../../items/validation-modal/validation-
     SquareComponent,
     RhombusComponent,
     CircleComponent,
-    EtapeDisplayModalComponent,
-    NzBadgeComponent,
+    DemoNgZorroAntdModule,
     ConnectionsModalComponent,
     SubTaskDisplayModalComponent,
     PaymentModalComponent,
-    ValidationModalComponent
+    ValidationModalComponent,
+    EtapeDisplayModalComponent
   ],
   styleUrl: './cell.component.css'
 })
-export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
+export class CellComponent implements AfterViewInit{
 
   @Input('processItem') processItem: BaseEtape | null = null;
   @Input('mode') mode : number = 1;
@@ -78,52 +75,52 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
               private typeService : TypeService,
               private processusService : ProcessusService,
               private categorieService : CategorieService,
-              private connexionService : ConnexionService,
-              private etapeService : EtapeService
+              private etapeService : EtapeService,
+              private msg : NzMessageService
   ) {
-    /*setTimeout(() => {
-      if(this.processItem != null)
-      {
-        console.log("CELL at ["+this.rowIndex+"]["+this.colIndex+"] is type === "+this.processItem.type);
-        console.log("CELL at ["+this.rowIndex+"]["+this.colIndex+"] is desc === "+this.processItem.description);
-      }
-      else
-      {
-        console.log("CELL at ["+this.rowIndex+"]["+this.colIndex+"] is null");
-      }
-
-    }, 8000);*/
   }
 
   ngAfterViewInit(): void {
-    if(this.processItem) {
-      //timeout to avoid Angular error for changing properties before view is initialized
-      setTimeout(()=>{
-        if(this.processItem){
-          if(this.processItem.type){
-            console.log("YES BRO I GOT IT")
-            this.createItemProcess(1);
+    try {
+      if(this.processItem) {
+        //timeout to avoid Angular error for changing properties before view is initialized
+        setTimeout(()=>{
+          if(this.processItem){
+            if(this.processItem.type){
+              if(!this. createItemProcess(1)){
+                throw new Error("Error at creating retrieved steps")
+              }
+            }
+          }else{
+            console.error("Error at creating component at Cell AfterViewInit ["+this.rowIndex+"]["+this.colIndex+"] : Cell is null or Type is undefined.")
           }
-        }else{
-          console.error("Error at creating component at Cell AfterViewInit ["+this.rowIndex+"]["+this.colIndex+"] : Cell is null or Type is undefined.")
-        }
-      },0)
+        },0)
+      }
+    }
+    catch (error){
+      this.msg.error('Error at creating retrieved steps')
     }
   }
 
-  ngOnInit(): void {
-
-  }
-
-  ngAfterContentInit(): void {
-
+  getCellClasses() {
+    const classes = [];
+    if (this.processItem?.first && !this.onDotClicked) {
+      classes.push('cell-first');
+    } else if (this.processItem?.end && !this.onDotClicked) {
+      classes.push('cell-end');
+    } else if (this.onDotClicked && this.mode === 1) {
+      classes.push('cell-selected');
+    }
+    if (this.processItem?.tache?.statutTache === 'TERMINE') {
+      classes.push('cell-done');
+    }
+    return classes;
   }
 
   onClickCell() {
-    console.log("Cell["+this.rowIndex+"]["+this.colIndex+"]  clicked !")
   }
 
-  /**Create an item on drop on a cell
+  /** Create an item on drop on a cell
    scenarios : Cell is empty
               Cell already contains a processItem (Etape)
    **/
@@ -136,7 +133,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
         nzTitle: 'Please fill in the informations about the step :',
         nzContent: EtapeModalComponent,
         nzWidth : 550,
-        nzOkText : "Ok",
+        nzOkText : "Confirm",
         nzCancelText : "Cancel",
         nzKeyboard: true,
         nzOnOk :()=>{
@@ -200,25 +197,24 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
                   break;
               }
 
-              this.createItemProcess(0);
-
-              //send this emitter to grid to create connexions after the creation of this process
-              this.connectProcessItems.emit({
-                indexRow : this.rowIndex,
-                indexCol : this.colIndex,
-                stepsBefore : <string[]>modalComponentInst.etapeForm.value.stepsBefore,
-                stepsAfter : <string[]>modalComponentInst.etapeForm.value.stepsAfter,
-              })
+              if(this.createItemProcess(0)){
+                //send this emitter to grid to create connexions after the creation of this process
+                this.connectProcessItems.emit({
+                  indexRow : this.rowIndex,
+                  indexCol : this.colIndex,
+                  stepsBefore : <string[]>modalComponentInst.etapeForm.value.stepsBefore,
+                  stepsAfter : <string[]>modalComponentInst.etapeForm.value.stepsAfter,
+                })
+                this.msg.success("Step created successfully")
+              }else{
+                this.msg.error("Error during creating of the step, please try again")
+              }
             } catch (error) {
               if (error instanceof FirstExistException) {
-                this.modalService.error({
-                  nzTitle : "Unable to create this step, the first step already exists !"
-                })
+                this.msg.error("Unable to create this step, the initial step already exists");
                 console.error(error.message);
               } else if (error instanceof EndExistException) {
-                this.modalService.error({
-                  nzTitle : "Unable to create this step, the end step already exists !"
-                })
+                this.msg.error('Unable to create this step, the final step already exists !');
                 console.error(error.message);
               }
               console.error(error);
@@ -241,7 +237,7 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
   0: from front
   1: from back
    */
-  createItemProcess(source:number) {
+  createItemProcess(source:number) : boolean {
     let newProcessItem : BaseEtape;
     if (!this.container)
       throw new Error('ViewContainerRef is not defined at CellComponent.');
@@ -255,9 +251,8 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
 
       //component
       newProcessItem = childComponentRef.instance as BaseEtape;
+
       //assign values from formulaire
-
-
       if(source == 0){
         if(this.processItem == null)
           this.processItem = new BaseEtape();
@@ -310,37 +305,40 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
 
       //assing Etape to this Cell
       //this.processItem = newProcessItem;
-      this.processItem.enableShowButtons = true;
+      //this.processItem.enableShowButtons = true;
       this.processItemCreated.emit({
         processItem : newProcessItem,
         rowIndex : this.rowIndex,
         colIndex : this.colIndex
       })
+      return true;
     }else
+    {
       throw new Error('Error at cell : cannot create Etape because processItem is null.')
-
+      return false;
+    }
   }
 
   deleteItemProcess(){
     if(this.processItem != null){
 
       const deleteModal = this.modalService.warning({
-        nzTitle: "Attention !",
-        nzContent: "All connections associated with this step will be lost, do you still want to delete?",
-        nzWidth : 450,
-        nzOkText : "Ok",
+        nzTitle: "Attention : All informations and connections  associated with this step will be lost !",
+        nzContent: "Do you still want to delete?",
+        nzWidth : 600,
+        nzOkDanger : true,
+        nzOkText : "Yes",
+        nzCancelText : "No",
         nzOnOk: () => {
           this.container.clear();
-          console.log("PROCESS ITEM AT CELL BEFORE DELETE : "+this.processItem);
+          //console.log("PROCESS ITEM AT CELL BEFORE DELETE : "+this.processItem);
           this.processItem = null;
-          console.log("PROCESS ITEM A CELL AFTER DELETE : "+this.processItem);
+          //console.log("PROCESS ITEM A CELL AFTER DELETE : "+this.processItem);
           this.processItemDeleted.emit({
             rowIndex : this.rowIndex,
             colIndex : this.colIndex
           });
-          this.modalService.success({
-            nzTitle : "Step deleted successfully !"
-          })
+          this.msg.success('Step deleted successfully');
         },
         nzOnCancel: () => {
           deleteModal.close();
@@ -353,10 +351,12 @@ export class CellComponent implements OnInit,AfterViewInit,AfterContentInit{
     if (this.processItem != null) {
       return new Promise<void>((resolve, reject) => {
         const warningModal = this.modalService.warning({
-          nzTitle: "Attention: You want to replace an already created step !",
-          nzContent: "Do you still want to replace the current step?",
-          nzOkText : "Ok",
-          nzWidth : 450,
+          nzTitle: "Attention: All informations about this current step will be lost !",
+          nzContent: "Do you still want to replace?",
+          nzOkDanger : true,
+          nzOkText : "Yes",
+          nzCancelText : "No",
+          nzWidth : 600,
           nzOnOk: () => {
             this.container.clear();
             this.processItem = null;

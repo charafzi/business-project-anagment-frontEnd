@@ -5,7 +5,7 @@ import {Tache} from "../../../models/tache.model";
 
 export abstract class BaseItem{
   public _enableShowButtons: boolean;
-  public _showButtons: boolean;
+  private _showButtons: boolean;
   public _etape: BaseEtape | null;
   public _cellRef: CellComponent | null;
   public _componentName: string;
@@ -23,6 +23,8 @@ export abstract class BaseItem{
     this._tache = null;
     this._mode=-1;
   }
+
+
   get showButtons(): boolean {
     return this._showButtons;
   }
@@ -30,15 +32,6 @@ export abstract class BaseItem{
   set showButtons(value: boolean) {
     this._showButtons = value;
   }
-
-  get enableShowButtons(): boolean {
-    return this._enableShowButtons;
-  }
-
-  set enableShowButtons(value: boolean) {
-    this._enableShowButtons = value;
-  }
-
 
   get tache(): Tache | null {
     return this._tache;
@@ -48,15 +41,13 @@ export abstract class BaseItem{
     this._tache = value;
   }
 
-  displayButtons()
+  /*displayButtons()
   {
-    /*if(this._enableShowButtons)
+    if(this._enableShowButtons)
     {
       this._showButtons = !this._showButtons;
-    }*/
-  }
-
-
+    }
+  }*/
 
   onClickDelete(){
     this._etape?._cellRef?.deleteItemProcess()
@@ -92,4 +83,6 @@ export abstract class BaseItem{
       this._etape.validationModalIsVisible=true;
     }
   }
+
+
 }

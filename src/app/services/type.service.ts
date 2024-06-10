@@ -19,7 +19,7 @@ export class TypeService{
         this.types=types;
       },
         error => {
-        console.log("Error at fetching types from back-end :" + error);
+        console.error("Error at fetching types from back-end :" + error);
         }
       )
   }

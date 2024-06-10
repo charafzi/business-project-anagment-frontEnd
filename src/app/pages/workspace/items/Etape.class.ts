@@ -3,20 +3,8 @@ import {Etape} from "../../../models/etape.model";
 import {Type} from "../../../models/type.model";
 import {Processus} from "../../../models/processus.model";
 import {Categorie} from "../../../models/categorie.model";
-import {StatutEtape, getStatutEtapeFromString} from "../../../models/StatutEtape";
-import {DurationUnite, getDurationUniteFromString} from "../../../models/DurationUnite";
+import {DurationUnite} from "../../../models/DurationUnite";
 import {Tache} from "../../../models/tache.model";
-
-/*export function statutEtapeToString(statut:StatutEtape) {
-  switch (statut){
-    case StatutEtape.COMMENCEE:
-      return "Commencée";
-    case StatutEtape.PAS_ENCORE_COMMENCEE:
-      return "Pas encore commencée";
-  }
-}*/
-
-
 
 export class BaseEtape implements Etape{
   private _idEtape: number;
@@ -194,10 +182,10 @@ export class BaseEtape implements Etape{
 
   displayButtons()
   {
-    if(this._enableShowButtons)
+   /* if(this._enableShowButtons)
     {
       this._showButtons = !this._showButtons;
-    }
+    }*/
   }
 
 
@@ -313,5 +301,7 @@ export class BaseEtape implements Etape{
   set acceptanceModalIsVisible(value: boolean) {
     this._acceptanceModalIsVisible = value;
   }
+
+
 }
 

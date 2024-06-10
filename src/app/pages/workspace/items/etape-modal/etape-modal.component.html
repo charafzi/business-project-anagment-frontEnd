@@ -4,7 +4,7 @@
   >
     <div nz-col [nzSpan]="6">
       <nz-form-item>
-        <nz-form-label>Categorie &nbsp;</nz-form-label>
+        <nz-form-label nzRequired><strong>Category</strong>&nbsp;</nz-form-label>
       </nz-form-item>
     </div>
     <div nz-col [nzSpan]="18">
@@ -22,7 +22,7 @@
   <div nz-row class="row">
     <div nz-col [nzSpan]="6">
       <nz-form-item>
-        <nz-form-label nzRequired>Description</nz-form-label>
+        <nz-form-label nzRequired><strong>Description</strong>&nbsp;</nz-form-label>
       </nz-form-item>
     </div>
     <div nz-col [nzSpan]="18">
@@ -46,7 +46,7 @@
   <div nz-row class="row">
     <div nz-col [nzSpan]="7">
       <nz-form-item>
-        <nz-form-label nzRequired>Estimated duration&nbsp;</nz-form-label>
+        <nz-form-label nzRequired><strong>Estimated duration</strong>&nbsp;</nz-form-label>
       </nz-form-item>
     </div>
     <div nz-col [nzSpan]="3">
@@ -67,15 +67,15 @@
   <div nz-row class="row">
     <div nz-col [nzSpan]="8">
       <nz-form-item>
-        <nz-form-label nzRequired>Is this a &nbsp;</nz-form-label>
+        <nz-form-label nzRequired><strong>Is this a</strong>&nbsp;</nz-form-label>
       </nz-form-item>
     </div>
     <div nz-col [nzSpan]="16">
       <nz-form-control nzErrorTip="This field is required !">
         <nz-radio-group formControlName="radioFIE">
-          <label nz-radio nzValue="F">First</label>
+          <label nz-radio nzValue="F">Initial</label>
           <label nz-radio nzValue="I">Intermediate</label>
-          <label nz-radio nzValue="E">End</label>
+          <label nz-radio nzValue="E">Final</label>
         </nz-radio-group>
       </nz-form-control>
     </div>
@@ -84,7 +84,7 @@
   >
     <div nz-col [nzSpan]="8">
       <nz-form-item>
-        <nz-form-label>To be paid </nz-form-label>
+        <nz-form-label nzRequired><strong>To be paid</strong> </nz-form-label>
       </nz-form-item>
     </div>
     <div nz-col>
@@ -101,7 +101,7 @@
     <div nz-col [nzSpan]="8">
       <nz-form-item>
         <nz-form-control>
-          <nz-form-label>To be validated </nz-form-label>
+          <nz-form-label nzRequired><strong>To be validated</strong> </nz-form-label>
         </nz-form-control>
       </nz-form-item>
     </div>
@@ -119,7 +119,7 @@
     <div nz-col [nzSpan]="8">
       <nz-form-item>
         <nz-form-control>
-          <nz-form-label>To be accepted</nz-form-label>
+          <nz-form-label nzRequired><strong>To be accepted</strong></nz-form-label>
         </nz-form-control>
       </nz-form-item>
     </div>
@@ -136,17 +136,17 @@
   <div class="row"
        nz-row
   >
-    <div nz-col [nzSpan]="8">
+    <div nz-col [nzSpan]="12">
       <nz-form-item>
-        <nz-form-label>Steps before &nbsp;</nz-form-label>
+        <nz-form-label><strong>Select steps to be before this step</strong>&nbsp;</nz-form-label>
       </nz-form-item>
     </div>
-    <div nz-col [nzSpan]="16">
+    <div nz-col [nzSpan]="12">
       <nz-form-item>
         <nz-form-control>
           <nz-select formControlName="stepsBefore"
                      nzMode="multiple"
-                     nzPlaceHolder="Please select the steps before this step"
+                     nzPlaceHolder="Select one step or more"
           >
             <nz-option *ngFor="let item of etapes"
                        nzCustomContent
@@ -163,20 +163,20 @@
       </nz-form-item>
     </div>
   </div>
-  <div class="row"
+  <div
        nz-row
   >
-    <div nz-col [nzSpan]="8">
+    <div nz-col [nzSpan]="12">
       <nz-form-item>
-        <nz-form-label>Steps after &nbsp;</nz-form-label>
+        <nz-form-label><strong>Select steps to be before this step</strong></nz-form-label>
       </nz-form-item>
     </div>
-    <div nz-col [nzSpan]="16">
+    <div nz-col [nzSpan]="12">
       <nz-form-item>
         <nz-form-control>
           <nz-select formControlName="stepsAfter"
                      nzMode="multiple"
-                     nzPlaceHolder="Please select the steps after this step"
+                     nzPlaceHolder="Select one step or more"
 
           >
             <nz-option *ngFor="let item of etapes"

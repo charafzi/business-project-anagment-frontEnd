@@ -1,7 +1,12 @@
 import {Component, EventEmitter, OnInit, Output} from '@angular/core';
-import {NzModalComponent, NzModalContentDirective, NzModalRef} from "ng-zorro-antd/modal";
-import {NzButtonComponent} from "ng-zorro-antd/button";
-import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
+import {NzModalRef} from "ng-zorro-antd/modal";
+import {ConnexionService} from "../../../../services/connexion.service";
+import {BaseEtape} from "../Etape.class";
+import {NgForOf} from "@angular/common";
+import {Categorie} from "../../../../models/categorie.model";
+import {CategorieService} from "../../../../services/categorie.service";
+import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
+
 import {
   FormControl,
   FormGroup,
@@ -10,52 +15,15 @@ import {
   ReactiveFormsModule,
   Validators
 } from "@angular/forms";
-import {
-  NzInputDirective,
-  NzInputGroupComponent,
-  NzInputGroupWhitSuffixOrPrefixDirective,
-  NzTextareaCountComponent
-} from "ng-zorro-antd/input";
-import {NzIconDirective} from "ng-zorro-antd/icon";
-import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
-import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from "ng-zorro-antd/form";
-import {NzCheckboxComponent} from "ng-zorro-antd/checkbox";
-import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
-import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
-import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
-import {ConnexionService} from "../../../../services/connexion.service";
-import {BaseEtape} from "../Etape.class";
-import {NgForOf} from "@angular/common";
-import {Categorie} from "../../../../models/categorie.model";
-import {CategorieService} from "../../../../services/categorie.service";
 
 @Component({
   selector: 'app-etape-modal',
   templateUrl: './etape-modal.component.html',
   standalone: true,
   imports: [
-    NzModalComponent,
-    NzModalContentDirective,
-    NzButtonComponent,
-    NzRowDirective,
-    NzColDirective,
+    DemoNgZorroAntdModule,
     FormsModule,
-    NzInputDirective,
-    NzIconDirective,
-    NzInputGroupWhitSuffixOrPrefixDirective,
-    NzInputGroupComponent,
-    NzTooltipDirective,
-    NzFormControlComponent,
-    NzFormDirective,
-    NzTextareaCountComponent,
-    NzFormLabelComponent,
     ReactiveFormsModule,
-    NzCheckboxComponent,
-    NzInputNumberComponent,
-    NzRadioGroupComponent,
-    NzRadioComponent,
-    NzSelectComponent,
-    NzOptionComponent,
     NgForOf
   ],
   styleUrl: './etape-modal.component.css'

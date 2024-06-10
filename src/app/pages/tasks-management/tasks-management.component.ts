@@ -9,6 +9,7 @@ import {Router} from "@angular/router";
 import {ProcessusService} from "../../services/processus.service";
 import {DurationUnite} from "../../models/DurationUnite";
 import {TaskEditModalComponent} from "./task-edit-modal/task-edit-modal.component";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 interface Task{
   tache : Tache,
@@ -28,7 +29,8 @@ export class TasksManagementComponent implements OnInit{
   constructor(private modalService : NzModalService,
               private tacheService : TacheService,
               private processusService :ProcessusService,
-              private router : Router
+              private router : Router,
+              private msg : NzMessageService
   ) {
   }
 
@@ -53,14 +55,13 @@ export class TasksManagementComponent implements OnInit{
           try {
             const formValue = modalComponentInst.taskForm.value;
 
-            // Print the values of each form control
-            console.log('Processus:', formValue.processus);
+           /* console.log('Processus:', formValue.processus);
             console.log('Object of Task:', formValue.objectOfTask);
             console.log('Target Starting Date:', formValue.targetStartingDate);
             console.log('Expiration Date:', formValue.expirationDate);
             console.log('Agent:', formValue.agent);
             console.log('Sub-Contractor:', formValue.subContractor);
-            console.log('Radio Choice:', formValue.radioChoice);
+            console.log('Radio Choice:', formValue.radioChoice);*/
 
             let subcontractor: SousTraitant | null;
             let travailleurs: Travailleur[] = [];
@@ -100,15 +101,8 @@ export class TasksManagementComponent implements OnInit{
 
             this.tacheService.createTacheMere(mainTask,formValue.processus)
               .subscribe(tache=>{
-                this.modalService.success({
-                  nzTitle : "Tasks created successfully !",
-                  nzOnCancel : ()=>{
-                    this.fetchMainTasks();
-                  },
-                  nzOnOk : ()=>{
-                    this.fetchMainTasks();
-                }
-                })
+                this.msg.success('Tasks created successfully');
+                this.fetchMainTasks();
               },error => {
                 this.modalService.error({
                   nzTitle : "Registration error !",
@@ -140,20 +134,16 @@ export class TasksManagementComponent implements OnInit{
   delete(idTache : number){
     const modal = this.modalService.confirm({
       nzTitle : 'Are you sure to delete this task ?',
-      nzOkText : "Confirm",
-      nzCancelText : "Cancel",
+      nzOkDanger : true,
+      nzOkText : "Yes",
+      nzCancelText : "No",
       nzOnOk : ()=>{
         this.tacheService.deleteTacheMere(idTache)
           .subscribe(responseData=>{
-            this.modalService.success({
-              nzTitle : "Task deleted successfully !"
-            })
+            this.msg.success('Tasks deleted successfully');
             this.fetchMainTasks();
           },error => {
-            this.modalService.error({
-              nzTitle : "Unable to delete the task !",
-              nzContent : "Error during suppression, please try again"
-            })
+            this.msg.error('Error during suppression, please try again');
           })
       },
       nzOnCancel : ()=>{
@@ -251,7 +241,7 @@ export class TasksManagementComponent implements OnInit{
           nzTitle: 'Modify the information about the task :',
           nzContent: TaskEditModalComponent,
           nzWidth : 550,
-          nzOkText : "Ok",
+          nzOkText : "Confirm",
           nzCancelText : "Cancel",
           nzKeyboard: true,
           nzOnOk :()=>{
@@ -266,20 +256,14 @@ export class TasksManagementComponent implements OnInit{
 
                 if(tacheMere.tache.dateExpiration){
                   if(targetStartingDateDisabled){
-                    console.log("DDate :::: "+tacheMere.tache.dateExpiration)
                     this.tacheService.updateTacheMereDateExpiration(tacheMere.tache)
                       .subscribe(response=>{
-                          this.modalService.success({
-                            nzTitle : "Expiration date modified successfully !",
-                          })
+                        this.msg.success('Expiration date modified successfully');
                           this.resetEditTask();
                           this.fetchMainTasks();
                         },
                         error =>{
-                          this.modalService.error({
-                            nzTitle : "Unable to modify the expiration date task !",
-                            nzContent : "Error during modification, please try again"
-                          })
+                        this.msg.error('Error during modification, please try again');
                           console.error(error);
                         })
                   }
@@ -325,27 +309,19 @@ export class TasksManagementComponent implements OnInit{
 
                     this.tacheService.updateTacheMere(tacheMere.tache)
                       .subscribe(response=>{
-                          this.modalService.success({
-                            nzTitle : "Tache modified successfully !",
-                          })
+                        this.msg.success('Task modified successfully');
                           this.resetEditTask();
                           this.fetchMainTasks();
                         },
                         error =>{
-                          this.modalService.error({
-                            nzTitle : "Unable to modify the task !",
-                            nzContent : "Error during modification, please try again"
-                          })
+                        this.msg.error('Error during modification, please try again');
                           console.error(error);
                         })
                   }
                 }else
                   throw new Error("Date expiration undefined !");
               } catch (error) {
-                this.modalService.error({
-                  nzTitle : "Unable to modify the task !",
-                  nzContent : "Error during modification, please try again"
-                })
+                this.msg.error('Error during modification, please try again')
                 console.error(error);
               }
             }

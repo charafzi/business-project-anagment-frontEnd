@@ -4,17 +4,33 @@
   (nzOnOk)="validateForm()"
   [nzTitle]="modalTitle"
   [nzContent]="modalContent"
-  [nzWidth]="700"
+  [nzWidth]="800"
 >
   <ng-template #modalTitle>Task Validation :</ng-template>
   <ng-template #modalContent>
+    <nz-row class="row" [nzAlign]="'middle'">
+      <nz-col [nzSpan]="5">
+        <nz-form-label><strong>Category</strong>&nbsp;</nz-form-label>
+      </nz-col>
+      <nz-col [nzSpan]="19">
+        <span>{{subTask.etape?.categorie?.nom}}</span>
+      </nz-col>
+    </nz-row>
+    <nz-row class="row">
+      <nz-col [nzSpan]="5">
+        <nz-form-label><strong>Description</strong>&nbsp;</nz-form-label>
+      </nz-col>
+      <nz-col [nzSpan]="19">
+        <span>{{subTask.etape?.description}}</span>
+      </nz-col>
+    </nz-row>
     <nz-tabset nzCentered [nzSize]="'small'" [nzTabPosition]="'top'">
       <nz-tab nzTitle="Validation Informations" >
         <form nz-form [formGroup]="validationForm">
           <div nz-row class="row">
             <div nz-col [nzSpan]="5">
               <nz-form-item>
-                <nz-form-label nzRequired>Validation date &nbsp;</nz-form-label>
+                <nz-form-label nzRequired><strong>Validation date</strong>&nbsp;</nz-form-label>
               </nz-form-item>
             </div>
             <div nz-col [nzSpan]="7">
@@ -26,15 +42,15 @@
             </div>
             <div nz-col [nzSpan]="4" [nzOffset]="4">
               <nz-form-item>
-                <nz-form-label nzRequired>Status &nbsp;</nz-form-label>
+                <nz-form-label nzRequired><strong>Status</strong>&nbsp;</nz-form-label>
               </nz-form-item>
             </div>
             <div nz-col [nzSpan]="4">
               <nz-form-item>
                 <nz-form-control nzErrorTip="This field is required !">
                   <nz-select formControlName="statut">
-                    <nz-option nzValue="VALIDEE" nzLabel="VALID"></nz-option>
-                    <nz-option nzValue="NON_VALIDEE" nzLabel="INVALID"></nz-option>
+                    <nz-option nzValue="VALIDEE" nzLabel="Valid"></nz-option>
+                    <nz-option nzValue="NON_VALIDEE" nzLabel="Invalid"></nz-option>
                   </nz-select>
                 </nz-form-control>
               </nz-form-item>
@@ -74,18 +90,27 @@
           <thead>
           <tr
           >
-            <th >Validation date</th>
-            <th>Status</th>
+            <th [nzWidth]="'20%'">Validation date</th>
+            <th [nzWidth]="'20%'">Responsible</th>
+            <th [nzWidth]="'10%'">Status</th>
             <th>Comment</th>
-            <th>Responsible</th>
           </tr>
           </thead>
           <tbody>
           <tr *ngFor="let data of basicTable.data">
             <td>{{ data.dateValidation.toLocaleDateString()+' '+data.dateValidation.toLocaleTimeString() }}</td>
-            <td>{{ data.etat }}</td>
-            <td>{{ data.commentaire}}</td>
             <td>{{ data.responsable.nom+' '+data.responsable.prenom }}</td>
+            <td>
+              @switch (data.etat){
+                @case ("VALIDEE"){
+                  <nz-badge nzSize="small" [nzText]="'Valid'" nzStatus="success"></nz-badge>
+                }
+                @case ("NON_VALIDEE") {
+                  <nz-badge nzSize="small" [nzText]="'Invalid'" nzStatus="error"></nz-badge>
+                }
+              }
+            </td>
+            <td>{{ data.commentaire}}</td>
           </tr>
           </tbody>
         </nz-table>

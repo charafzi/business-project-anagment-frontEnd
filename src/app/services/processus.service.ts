@@ -1,13 +1,10 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {BaseEtape} from "../pages/workspace/items/Etape.class";
 import {Etape} from "../models/etape.model";
 import {Processus} from "../models/processus.model";
 import {map} from "rxjs/operators"
 import {TypeService} from "./type.service";
 import {NzModalService} from "ng-zorro-antd/modal";
-import {ProcessusModalComponent} from "../pages/processus/processus-modal/processus-modal.component";
-import {StatutEtape} from "../models/StatutEtape";
 
 @Injectable({providedIn : "root"})
 export class ProcessusService{
@@ -62,7 +59,7 @@ export class ProcessusService{
       .pipe(
         map(responseData=>{
           responseData.forEach(etape=>{
-            console.log("Id rerived : "+etape.idEtape)
+            //console.log("Id rerived : "+etape.idEtape)
           })
           return responseData;
         })

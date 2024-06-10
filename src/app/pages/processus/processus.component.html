@@ -18,8 +18,10 @@
     <div nz-row>
       <div nz-col [nzSpan]="6">
         <button nz-button nzType="primary" [nzShape]="'round'" (click)="onAddProcess()">
-          <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
-          Add new process
+          <strong>
+            <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+            Add new process
+          </strong>
         </button>
       </div>
     </div>
@@ -50,9 +52,21 @@
           <td>{{ data.description }}</td>
           <td>
             <div class="icons-container">
-              <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'" (click)="viewSchema(data.idProcessus ?? -1)"></span></a>
-              <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'" (click)="displayEditModal(data.idProcessus?? -1)"></span></a>
-              <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'" (click)="delete(data.idProcessus?? -1)"></span></a>
+              <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'"
+                       (click)="viewSchema(data.idProcessus ?? -1)"
+                       nz-tooltip
+                       nzTooltipTitle="View process schema"
+              ></span></a>
+              <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'"
+                       (click)="displayEditModal(data.idProcessus?? -1)"
+                       nz-tooltip
+                       nzTooltipTitle="Edit process"
+              ></span></a>
+              <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'"
+                       (click)="delete(data.idProcessus?? -1)"
+                       nz-tooltip
+                       nzTooltipTitle="Delete process"
+              ></span></a>
             </div>
           </td>
         </tr>

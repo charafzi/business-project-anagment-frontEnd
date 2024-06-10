@@ -8,17 +8,6 @@ import {BaseEtape} from "../pages/workspace/items/Etape.class";
 export class EtapeService{
   processItems:(BaseEtape | null)[][] = [];
 
-  printProcessItems()
-  {
-    for(let i=0; i<this.processItems.length; i++)
-    {
-      for(let j=0;j<this.processItems[i].length;j++)
-      {
-        console.log("FIRST ::: "+this.processItems[i][j]?.first)
-      }
-    }
-  }
-
   checkFirstExists(indexRow:number,indexCol:number):boolean
   {
     for(let i=0; i<this.processItems.length; i++)

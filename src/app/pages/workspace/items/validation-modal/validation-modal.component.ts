@@ -43,6 +43,7 @@ export class ValidationModalComponent implements OnChanges{
   }
 
   onClickHideModal(){
+    this.validationForm.reset();
     this.etape.validationModalIsVisible=false;
   }
 

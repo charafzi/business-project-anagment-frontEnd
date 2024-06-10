@@ -1,11 +1,9 @@
 import {ElementRef, Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-
 import {Connexion} from "../models/connexion.model";
 import {BaseEtape} from "../pages/workspace/items/Etape.class";
 import {Connection, ConnectionSet} from "../pages/workspace/grid/connection.class";
 import LinkerLine from "linkerline";
-import {StatutTache} from "../models/StatutTache";
 import {DurationUnite} from "../models/DurationUnite";
 import {getStatutEtapeFromString, StatutEtape} from "../models/StatutEtape";
 
@@ -69,7 +67,6 @@ export class ConnexionService{
                   statut? : StatutEtape
   ):number{
     try {
-      console.log("i will create :::"+this.grid)
       //wait the grid to be ready before creating connections
       let idFrom:string = 'cell-'+indexRowFrom+'-'+indexColFrom;
       let idTo:string = 'cell-'+indexRowTo+'-'+indexColTo;
@@ -77,7 +74,7 @@ export class ConnexionService{
       const el1 = this.document.getElementById(idFrom);
       const el2 = this.document.getElementById(idTo);
       const grid = this.grid.nativeElement;
-      console.log("this is the grid :"+this.grid.nativeElement)
+
       if (el1 && el2
         && this.processItems[indexRowFrom][indexColFrom]
         && this.processItems[indexRowTo][indexColTo]) {
@@ -111,7 +108,7 @@ export class ConnexionService{
             statut?? StatutEtape.PAS_ENCORE_COMMENCEE
           );
           this.connectionSet.add(conn);
-          this.connectionSet.print();
+          //this.connectionSet.print();
           /*conn.getLineConnection().element.addEventListener('click', (event) => {
             console.log('Line clicked!', event);
           });*/
@@ -164,19 +161,6 @@ export class ConnexionService{
     return connetion;
   }
 
-  getEtape(indexRow:number,
-           indexCol:number,){
-    let connetion = this.connectionSet.connections.find(conn =>
-      conn.getTo()?.indexLigne==indexRow&& conn.getTo()?.indexColonne==indexCol)
-
-    if(connetion == undefined){
-      connetion = this.connectionSet.connections.find(conn =>
-        conn.getFrom()?.indexLigne==indexRow && conn.getFrom()?.indexColonne==indexCol)
-      return connetion?.getFrom();
-    }
-    return connetion?.getTo();
-  }
-
   deleteConnection(rowFromIndex:number,colFromIndex:number,rowToIndex:number,colToIndex:number):number{
    try {
      let connection = this.connectionSet.connections.find(cnx=>
@@ -199,16 +183,6 @@ export class ConnexionService{
    }
   }
 
-  getSubConnectionSet(indexRow:number,indexCol:number) : ConnectionSet{
-    let subConnectionSet = new ConnectionSet();
-    this.connectionSet.connections.forEach(conn=>{
-      if((conn.getFrom()?.indexLigne==indexRow && conn.getFrom()?.indexColonne==indexCol)
-        || (conn.getTo()?.indexLigne==indexRow && conn.getTo()?.indexColonne==indexCol))
-        subConnectionSet.connections.push(conn);
-    })
-    return subConnectionSet;
-  }
-
   updateConnexionValues(indexRowFrom:number,
                         indexColFrom:number,
                         indexRowTo:number,
@@ -220,26 +194,11 @@ export class ConnexionService{
     conn.getFrom()?.indexLigne==indexRowFrom && conn.getFrom()?.indexColonne==indexColFrom
     && conn.getTo()?.indexLigne==indexRowTo && conn.getTo()?.indexColonne==indexColTo)
     if(connexion!=undefined){
-      console.log("THIS CONN BRO :"+statut,",",getStatutEtapeFromString(statut))
       connexion.statut = getStatutEtapeFromString(statut);
       connexion.delaiAttente = delaiAttente;
       connexion.delaiAttenteUnite = delaiAttenteUnite;
     }else
       throw new Error("Error at updating connection attributes : From or To is not found !")
-  }
-
-  checkFirstExists():boolean{
-    let connection = this.connectionSet.connections.find(conn=>{
-      conn.getFrom()?.first==true || conn.getTo()?.first==true
-    })
-    return connection != undefined;
-  }
-
-  checkEndExists():boolean{
-    let connection = this.connectionSet.connections.find(conn=>{
-      conn.getFrom()?.end==true || conn.getTo()?.end==true
-    })
-    return connection != undefined;
   }
 
   generateRandomColor(): string {

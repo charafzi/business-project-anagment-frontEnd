@@ -5,21 +5,15 @@ import {NzFormControlComponent, NzFormDirective, NzFormItemComponent, NzFormLabe
 import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
 import {NzInputDirective, NzTextareaCountComponent} from "ng-zorro-antd/input";
 import {ProcessusService} from "../../../services/processus.service";
+import {DemoNgZorroAntdModule} from "../../../ng-zorro-antd.module";
 
 @Component({
   selector: 'app-processus-modal',
   templateUrl: './processus-modal.component.html',
   standalone: true,
   imports: [
-    NzFormDirective,
-    ReactiveFormsModule,
-    NzColDirective,
-    NzTextareaCountComponent,
-    NzFormItemComponent,
-    NzRowDirective,
-    NzFormLabelComponent,
-    NzInputDirective,
-    NzFormControlComponent
+    DemoNgZorroAntdModule,
+    ReactiveFormsModule
   ],
   styleUrl: './processus-modal.component.css'
 })

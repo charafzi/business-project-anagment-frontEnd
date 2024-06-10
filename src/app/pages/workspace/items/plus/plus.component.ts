@@ -20,7 +20,6 @@ import {NzBadgeComponent} from "ng-zorro-antd/badge";
   styleUrl: './plus.component.css'
 })
 export class PlusComponent extends BaseItem{
-
   constructor() {
     super();
     this._componentName='plus';

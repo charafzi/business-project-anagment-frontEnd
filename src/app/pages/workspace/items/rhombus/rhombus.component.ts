@@ -5,17 +5,15 @@ import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {NgIf} from "@angular/common";
 import {BaseItem} from "../item.model";
 import {NzBadgeComponent} from "ng-zorro-antd/badge";
+import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 
 @Component({
   selector: 'app-rhombus',
   templateUrl: './rhombus.component.html',
   standalone: true,
     imports: [
-        NzCardComponent,
-        NzIconDirective,
-        NzTooltipDirective,
-        NgIf,
-        NzBadgeComponent
+        DemoNgZorroAntdModule,
+        NgIf
     ],
   styleUrl: './rhombus.component.css'
 })

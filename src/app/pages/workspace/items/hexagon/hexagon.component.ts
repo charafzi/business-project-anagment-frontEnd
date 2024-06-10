@@ -1,10 +1,7 @@
 import { Component } from '@angular/core';
 import {NgIf} from "@angular/common";
-import {NzCardComponent} from "ng-zorro-antd/card";
-import {NzIconDirective} from "ng-zorro-antd/icon";
-import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {BaseItem} from "../item.model";
-import {NzBadgeComponent} from "ng-zorro-antd/badge";
+import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 
 @Component({
   selector: 'app-hexagon',
@@ -12,10 +9,7 @@ import {NzBadgeComponent} from "ng-zorro-antd/badge";
   standalone: true,
     imports: [
         NgIf,
-        NzCardComponent,
-        NzIconDirective,
-        NzTooltipDirective,
-        NzBadgeComponent
+       DemoNgZorroAntdModule
     ],
   styleUrl: './hexagon.component.css'
 })

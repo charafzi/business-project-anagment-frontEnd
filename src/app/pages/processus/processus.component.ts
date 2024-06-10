@@ -4,6 +4,7 @@ import {ProcessusService} from "../../services/processus.service";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {Router} from "@angular/router";
 import {ProcessusModalComponent} from "./processus-modal/processus-modal.component";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: 'app-processus',
@@ -18,6 +19,7 @@ export class ProcessusComponent implements OnInit{
 
   constructor(private processusService: ProcessusService,
               private modalService : NzModalService,
+              private msg : NzMessageService,
               private router : Router) {
   }
 
@@ -30,7 +32,7 @@ export class ProcessusComponent implements OnInit{
       nzTitle: 'Please fill in the informations about the process :',
       nzContent: ProcessusModalComponent,
       nzWidth : 550,
-      nzOkText : "Ok",
+      nzOkText : "Confirm",
       nzCancelText : "Cancel",
       nzKeyboard: true,
       nzOnOk :()=>{
@@ -56,12 +58,10 @@ export class ProcessusComponent implements OnInit{
                 this.router.navigate(['/workspace']);
               },
                 error =>{
-                this.modalService.error({
-                  nzTitle : "Registration error !",
-                  nzContent : "Error during registration, please try again"
-                })
+                this.msg.error('Error during registration, please try again')
             })
           } catch (error) {
+            this.msg.error('Error during modification, please try again');
             console.error(error);
           }
         }else {
@@ -91,10 +91,10 @@ export class ProcessusComponent implements OnInit{
         this.processusService.processusEdit.description = process.description;
 
         const modalRef = this.modalService.create({
-          nzTitle: 'Modify the information about the process :',
+          nzTitle: 'Modify the informations about the process :',
           nzContent: ProcessusModalComponent,
           nzWidth : 550,
-          nzOkText : "Ok",
+          nzOkText : "Confirm",
           nzCancelText : "Cancel",
           nzKeyboard: true,
           nzOnOk :()=>{
@@ -109,21 +109,18 @@ export class ProcessusComponent implements OnInit{
                 process.description= <string>modalComponentInst.processForm.value.description;
                 this.processusService.updateProcessus(process)
                   .subscribe(response=>{
-                      this.modalService.success({
-                        nzTitle : "Process modified successfully !",
-                      })
+
+                    this.msg.success('Process modified successfully');
                       this.processusService.processusEdit.nom='';
                       this.processusService.processusEdit.description='';
                       this.fetchProcessus();
                     },
                     error =>{
-                      this.modalService.error({
-                        nzTitle : "Unable to modify the process !",
-                        nzContent : "Error during modification, please try again"
-                      })
+                    this.msg.error('Error during modification, please try again');
                       console.error(error);
                     })
               } catch (error) {
+                this.msg.error('Error during modification, please try again');
                 console.error(error);
               }
             }
@@ -144,24 +141,20 @@ export class ProcessusComponent implements OnInit{
   delete(processId:number){
     if(processId != -1){
       const modal = this.modalService.confirm({
-        nzTitle : "Attention !",
-        nzContent : "By deleting, you lose all the information about the process including the schema, do you still want to delete?",
+        nzTitle : "Attention : By deleting, you lose all the information about the process including the schema!",
+        nzContent : "Do you still want to delete?",
         nzWidth: 600,
-        nzOkText :'Confirm',
-        nzCancelText : 'Cancel',
+        nzOkDanger : true,
+        nzOkText :'Yes',
+        nzCancelText : 'No',
         nzOnOk : ()=>{
           this.processusService.deleteProcessus(processId)
             .subscribe(responseData=>{
-                this.modalService.success({
-                  nzTitle : "Process deleted successfully !"
-                })
+              this.msg.success('Process deleted successfully');
                 this.fetchProcessus();
               },
               error =>{
-                this.modalService.error({
-                  nzTitle : "Unable to delete the process !",
-                  nzContent : "Error during suppression, please try again"
-                })
+              this.msg.error('Error during suppression, please try again');
               })
         },
         nzOnCancel : ()=>{
@@ -172,20 +165,6 @@ export class ProcessusComponent implements OnInit{
     }
   }
 
-  /*generateData(): Processus[] {
-    const data:Processus[] = [];
-    for (let i = 1; i <= 100; i++) {
-      data.push({
-        nom : "test"+i,
-        description : ".....",
-        idProcessus : -1,
-        nbColonnes : 0,
-        nbLignes : 0
-      });
-    }
-    return data;
-  }*/
-
   fetchProcessus(){
     this.isLoading = true;
     this.processusService.retrieveAllProcessus()
@@ -193,6 +172,7 @@ export class ProcessusComponent implements OnInit{
           this.ProcessList = processus;
         },
         error => {
+        this.msg.error('Error at fetching processes')
           console.error("Error at fetching processus :"+error);
         }
         ,()=>{

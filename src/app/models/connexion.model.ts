@@ -1,5 +1,4 @@
 import {Etape} from "./etape.model";
-import {StatutTache} from "./StatutTache";
 import {DurationUnite} from "./DurationUnite";
 import {StatutEtape} from "./StatutEtape";
 

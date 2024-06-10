@@ -4,12 +4,7 @@
      cdkDropListSortingDisabled
      (cdkDropListDropped)="drop($event)"
      (click)="onClickCell()"
-     [ngClass]="{
-     'cell-selected' : onDotClicked && mode==1,
-     'cell-first' : processItem?.first && !onDotClicked,
-     'cell-end' : processItem?.end && !onDotClicked,
-     'cell-done' : processItem?.tache?.statutTache === 'TERMINE'
-     }"
+     [ngClass]="getCellClasses()"
 >
   <div
     #container>
