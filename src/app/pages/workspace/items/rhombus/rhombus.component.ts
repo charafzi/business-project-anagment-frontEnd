@@ -6,6 +6,7 @@ import {NgIf} from "@angular/common";
 import {BaseItem} from "../item.model";
 import {NzBadgeComponent} from "ng-zorro-antd/badge";
 import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
+import {UserService} from "../../../../services/user.service";
 
 @Component({
   selector: 'app-rhombus',
@@ -19,7 +20,7 @@ import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 })
 export class RhombusComponent extends BaseItem{
 
-  constructor() {
+  constructor(protected userService : UserService) {
     super();
     this._componentName='rhombus';
   }

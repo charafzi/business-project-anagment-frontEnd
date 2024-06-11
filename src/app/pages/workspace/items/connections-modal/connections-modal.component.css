@@ -1,8 +1,4 @@
-.row{
-  margin-bottom: 20px;
-}
-
-label span{
+.label span{
   padding-top: 4px;
   font-size: 11px;
 }

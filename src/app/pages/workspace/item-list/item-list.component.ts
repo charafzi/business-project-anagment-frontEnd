@@ -3,16 +3,14 @@ import {CdkDrag, CdkDropList, CdkDropListGroup} from "@angular/cdk/drag-drop";
 import {SquareComponent} from "../items/square/square.component";
 import {RhombusComponent} from "../items/rhombus/rhombus.component";
 import {CircleComponent} from "../items/circle/circle.component";
-import {NzMenuDirective, NzSubMenuComponent} from "ng-zorro-antd/menu";
 import {TypeService} from "../../../services/type.service";
 import {Type} from "../../../models/type.model"
 import {NgForOf, NgIf} from "@angular/common";
-import {NzSpinComponent} from "ng-zorro-antd/spin";
 import {BaseItem} from "../items/item.model";
-import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
 import {PlusComponent} from "../items/plus/plus.component";
 import {HexagonComponent} from "../items/hexagon/hexagon.component";
 import {DemoNgZorroAntdModule} from "../../../ng-zorro-antd.module";
+import {UserService} from "../../../services/user.service";
 
 @Component({
   selector: 'app-item-list',
@@ -38,7 +36,8 @@ export class ItemListComponent implements OnInit{
   items:BaseItem[] = [];
   @Input('isCollapsed') isCollapsed:boolean = false;
   isLoading:boolean=false;
-  constructor(protected typeService:TypeService) {
+  constructor(protected typeService:TypeService,
+              protected userService : UserService) {
 
   }
 
@@ -51,19 +50,19 @@ export class ItemListComponent implements OnInit{
 
           switch (this.typeService.getComponentNameByType(type.nom)){
             case 'square':
-              this.items.push(new SquareComponent());
+              this.items.push(new SquareComponent(this.userService));
               break;
             case 'rhombus':
-              this.items.push(new RhombusComponent());
+              this.items.push(new RhombusComponent(this.userService));
               break;
             case 'circle':
-              this.items.push(new CircleComponent());
+              this.items.push(new CircleComponent(this.userService));
               break;
             case 'plus':
-              this.items.push(new PlusComponent());
+              this.items.push(new PlusComponent(this.userService));
               break;
             case 'hexagon':
-              this.items.push(new HexagonComponent());
+              this.items.push(new HexagonComponent(this.userService));
               break;
             default:
               throw new Error('Error at item-list : Unknown component name for type :'+type.nom);

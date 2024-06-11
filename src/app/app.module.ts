@@ -41,6 +41,7 @@ import {TasksManagementComponent} from "./pages/tasks-management/tasks-managemen
 import {
   SubTaskDisplayModalComponent
 } from "./pages/workspace/items/sub-task-display-modal/sub-task-display-modal.component";
+import {UserComponent} from "./pages/user/user.component";
 
 registerLocaleData(fr);
 
@@ -58,9 +59,10 @@ const appRoutes : Routes =[
 
 
 @NgModule({
-  declarations: [
-    AppComponent
-  ],
+    declarations: [
+        AppComponent,
+        UserComponent
+    ],
   imports: [
     HttpClientModule,
     HttpClientJsonpModule,

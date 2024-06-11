@@ -25,8 +25,12 @@
         <span>{{subTask.etape?.description}}</span>
       </nz-col>
     </nz-row>
-    <nz-tabset nzCentered [nzSize]="'small'" [nzTabPosition]="'top'"  [nzCanDeactivate]="canDeactivate">
-      <nz-tab nzTitle="Payment Informations" >
+    <nz-tabset nzCentered [nzSize]="'small'" [nzTabPosition]="'top'"  (nzSelectChange)="currentIndex($event)">
+      <nz-tab [nzTitle]="titleTemplate1" >
+        <ng-template #titleTemplate1>
+          <span nz-icon nzType="dollar"></span>
+          {{ 'Payment Informations' }}
+        </ng-template>
         <form nz-form [formGroup]="payementForm">
           <div nz-row class="row">
           <div nz-col [nzSpan]="7">
@@ -36,7 +40,7 @@
           </div>
           <div nz-col [nzSpan]="6">
             <nz-form-item>
-              <nz-form-control nzErrorTip="This field is required !">
+              <nz-form-control nzErrorTip="This field is required">
                 <nz-date-picker nzShowTime formControlName="datePaiement"></nz-date-picker>
               </nz-form-control>
             </nz-form-item>
@@ -48,7 +52,7 @@
             </div>
             <div nz-col [nzSpan]="4">
               <nz-form-item>
-                <nz-form-control nzErrorTip="This field is required !">
+                <nz-form-control nzErrorTip="This field is required">
                   <nz-select formControlName="statut">
                     <nz-option nzValue="COMPLETEE" nzLabel="Completed"></nz-option>
                     <nz-option nzValue="ANNULEE" nzLabel="Cancelled"></nz-option>
@@ -65,7 +69,7 @@
             </div>
             <div nz-col [nzSpan]="4">
               <nz-form-item>
-                <nz-form-control nzErrorTip="This field is required !">
+                <nz-form-control nzErrorTip="This field is required">
                   <nz-input-number formControlName="total_a_payer" [nzMin]="0" [nzStep]="1"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
@@ -77,7 +81,7 @@
             </div>
             <div nz-col [nzSpan]="4">
               <nz-form-item>
-                <nz-form-control nzErrorTip="This field is required !">
+                <nz-form-control nzErrorTip="This field is required">
                   <nz-input-number formControlName="montant_payee" [nzMin]="0" [nzStep]="1"></nz-input-number>
                 </nz-form-control>
               </nz-form-item>
@@ -95,7 +99,7 @@
                     @if (control.errors?.['min']) {
                       Rest should be above 0
                     } @else {
-                      This field is required !
+                      This field is required
                     }
                   </ng-template>
                 </nz-form-control>
@@ -125,7 +129,11 @@
           <button nz-button nzType="default" (click)="onClickHideModal()">Cancel</button>
         </ng-template>
       </nz-tab>
-      <nz-tab nzTitle="Payment History">
+      <nz-tab [nzTitle]="titleTemplate2">
+        <ng-template #titleTemplate2>
+          <span nz-icon nzType="history"></span>
+          {{ 'Payment History' }}
+        </ng-template>
         <nz-table #basicTable [nzData]="paiementList"
                   [nzScroll]="{ y: 'calc(100vh - 50vh)' }"
                   [nzShowPagination]="true"

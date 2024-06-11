@@ -129,12 +129,16 @@
             </nz-form-control>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="4" [nzOffset]="4">
+        <div
+          *ngIf="['Responsible','Teamleader'].includes(userService.getRole())"
+          nz-col [nzSpan]="4" [nzOffset]="4">
           <nz-form-item>
             <nz-form-label>Priority</nz-form-label>
           </nz-form-item>
         </div>
-        <div nz-col [nzSpan]="6">
+        <div
+          *ngIf="['Responsible','Teamleader'].includes(userService.getRole())"
+          nz-col [nzSpan]="6">
           <nz-form-item>
             <nz-form-control>
               <nz-select formControlName="priorite">

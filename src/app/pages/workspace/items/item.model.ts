@@ -1,6 +1,7 @@
 import {CellComponent} from "../grid/cell/cell.component";
 import {BaseEtape} from "./Etape.class";
 import {Tache} from "../../../models/tache.model";
+import {UserService} from "../../../services/user.service";
 
 
 export abstract class BaseItem{

@@ -71,4 +71,11 @@ export class TacheService{
     return this.http.get<Validation[]>(this.url+"/"+idTache+"/validations");
   }
 
+  retrieveAllTachesMereByAgent(idAgent : number){
+    return this.http.get<Tache[]>(this.url+"/travailleur/"+idAgent);
+  }
+
+  retrieveAllTachesMereBySubcontractor(idSt : number){
+    return this.http.get<Tache[]>(this.url+"/sousTraitant/"+idSt);
+  }
 }

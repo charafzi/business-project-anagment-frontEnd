@@ -31,6 +31,7 @@ import {ValidationModalComponent} from "../../items/validation-modal/validation-
 import {NzMessageService} from "ng-zorro-antd/message";
 import {EtapeDisplayModalComponent} from "../../items/etape-display-modal/etape-display-modal.component";
 import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
+import {UserService} from "../../../../services/user.service";
 
 
 @Component({
@@ -76,7 +77,8 @@ export class CellComponent implements AfterViewInit{
               private processusService : ProcessusService,
               private categorieService : CategorieService,
               private etapeService : EtapeService,
-              private msg : NzMessageService
+              private msg : NzMessageService,
+              protected userService : UserService
   ) {
   }
 

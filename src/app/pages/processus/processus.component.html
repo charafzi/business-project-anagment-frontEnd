@@ -1,7 +1,7 @@
 <nz-breadcrumb>
   <nz-breadcrumb-item>
     <a>
-      <span nz-icon nzType="dashboard"></span>
+      <span nz-icon nzType="share-alt"></span>
       <span>Workflows</span>
     </a>
   </nz-breadcrumb-item>
@@ -52,19 +52,20 @@
           <td>{{ data.description }}</td>
           <td>
             <div class="icons-container">
-              <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'"
+              <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'twotone'"
                        (click)="viewSchema(data.idProcessus ?? -1)"
                        nz-tooltip
-                       nzTooltipTitle="View process schema"
+                       nzTooltipTitle="View workflow schema"
               ></span></a>
-              <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'"
+              <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'twotone'"
                        (click)="displayEditModal(data.idProcessus?? -1)"
                        nz-tooltip
                        nzTooltipTitle="Edit process"
               ></span></a>
-              <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'"
+              <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'twotone'"
                        (click)="delete(data.idProcessus?? -1)"
                        nz-tooltip
+                       [nzTwotoneColor]="'#ff4d4f'"
                        nzTooltipTitle="Delete process"
               ></span></a>
             </div>

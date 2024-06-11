@@ -24,8 +24,12 @@
         <span>{{subTask.etape?.description}}</span>
       </nz-col>
     </nz-row>
-    <nz-tabset nzCentered [nzSize]="'small'" [nzTabPosition]="'top'">
-      <nz-tab nzTitle="Validation Informations" >
+    <nz-tabset nzCentered [nzSize]="'small'" [nzTabPosition]="'top'" (nzSelectChange)="currentIndex($event)">
+      <nz-tab [nzTitle]="titleTemplate1" >
+        <ng-template #titleTemplate1>
+          <span nz-icon nzType="file-done"></span>
+          {{ 'Validation Informations' }}
+        </ng-template>
         <form nz-form [formGroup]="validationForm">
           <div nz-row class="row">
             <div nz-col [nzSpan]="5">
@@ -35,7 +39,7 @@
             </div>
             <div nz-col [nzSpan]="7">
               <nz-form-item>
-                <nz-form-control nzErrorTip="This field is required !">
+                <nz-form-control nzErrorTip="This field is required">
                   <nz-date-picker nzShowTime formControlName="dateValidation"></nz-date-picker>
                 </nz-form-control>
               </nz-form-item>
@@ -47,7 +51,7 @@
             </div>
             <div nz-col [nzSpan]="4">
               <nz-form-item>
-                <nz-form-control nzErrorTip="This field is required !">
+                <nz-form-control nzErrorTip="This field is required">
                   <nz-select formControlName="statut">
                     <nz-option nzValue="VALIDEE" nzLabel="Valid"></nz-option>
                     <nz-option nzValue="NON_VALIDEE" nzLabel="Invalid"></nz-option>
@@ -75,7 +79,11 @@
           </div>
         </form>
       </nz-tab>
-      <nz-tab nzTitle="Validation History">
+      <nz-tab [nzTitle]="titleTemplate2">
+        <ng-template #titleTemplate2>
+          <span nz-icon nzType="history"></span>
+          {{ 'Validation History' }}
+        </ng-template>
         <nz-table #basicTable [nzData]="validationList"
                   [nzScroll]="{ y: 'calc(100vh - 50vh)' }"
                   [nzShowPagination]="true"

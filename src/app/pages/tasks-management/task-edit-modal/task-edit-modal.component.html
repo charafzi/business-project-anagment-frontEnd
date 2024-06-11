@@ -83,7 +83,7 @@
   <div nz-row class="row">
     <div nz-col [nzSpan]="10">
       <nz-form-item>
-        <nz-form-control nzErrorTip="This field is required !">
+        <nz-form-control nzErrorTip="This field is required">
           <nz-select formControlName="agent"
                      nzMode="multiple" nzShowSearch
                      nzAllowClear
@@ -97,7 +97,7 @@
     </div>
     <div nz-col [nzSpan]="10" [nzOffset]="4">
       <nz-form-item>
-        <nz-form-control nzErrorTip="This field is required !">
+        <nz-form-control nzErrorTip="This field is required">
           <nz-select formControlName="subContractor" nzShowSearch nzAllowClear nzPlaceHolder="Please select a subcontractor">
             <nz-option *ngFor="let subContractor of subContractors" [nzLabel]="subContractor.nom" [nzValue]="subContractor.idUser"></nz-option>
           </nz-select>

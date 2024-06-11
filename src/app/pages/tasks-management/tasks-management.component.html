@@ -1,8 +1,9 @@
 <nz-breadcrumb>
   <nz-breadcrumb-item>
     <a>
-      <span nz-icon nzType="unordered-list"></span>
-      <span>Tasks Management</span>
+      <span nz-icon nzType="schedule"></span>
+      <span  *ngIf="['Responsible','Teamleader'].includes(userService.getRole())">Tasks Management</span>
+      <span  *ngIf="['Subcontractor','Agent'].includes(userService.getRole())">My Tasks</span>
     </a>
   </nz-breadcrumb-item>
 </nz-breadcrumb>
@@ -10,15 +11,17 @@
   <nz-header>
     <div nz-row>
       <div nz-col [nzSpan]="6">
-        <h1>List of tasks</h1>
+        <h1 *ngIf="['Responsible','Teamleader'].includes(userService.getRole())">List of tasks</h1>
+        <h1 *ngIf="['Subcontractor','Agent'].includes(userService.getRole())">My Tasks</h1>
       </div>
     </div>
 
-    <div nz-row>
+    <div nz-row *ngIf="['Responsible','Teamleader'].includes(userService.getRole())">
       <div nz-col [nzSpan]="6">
         <button nz-button nzType="primary" [nzShape]="'round'" (click)="onAddTask()">
           <strong>
-            <span nz-icon nzType="plus-circle" nzTheme="outline"></span>
+            <span
+              nz-icon nzType="plus-circle" nzTheme="outline"></span>
             Add new task
           </strong>
         </button>
@@ -44,8 +47,8 @@
           <th>Object of task</th>
           <th>Target starting date</th>
           <th>Expiration date</th>
-          <th [nzWidth]="'20%'">Agents</th>
-          <th>Subcontractor</th>
+          <th [nzWidth]="'20%'" *ngIf="['Responsible','Teamleader'].includes(userService.getRole())">Agents</th>
+          <th *ngIf="['Responsible','Teamleader'].includes(userService.getRole())">Subcontractor</th>
           <th [nzAlign]="'right'">Actions</th>
         </tr>
         </thead>
@@ -55,8 +58,8 @@
             <td [(nzExpand)]="data.expand"></td>
             <td>{{ data.tache.objetTache}}</td>
             <td style="color: #0096FF;">{{ data.tache.dateDebutPrevue ? data.tache.dateDebutPrevue.toLocaleDateString() +' '+data.tache.dateDebutPrevue.toLocaleTimeString() : '' }}</td>
-            <td style="color:#D2042D;">{{ data.tache.dateExpiration ? data.tache.dateExpiration.toLocaleDateString()+ ' '+data.tache.dateExpiration.toLocaleTimeString() : ''}}</td>
-            <td>
+            <td style="color:#ff4d4f;">{{ data.tache.dateExpiration ? data.tache.dateExpiration.toLocaleDateString()+ ' '+data.tache.dateExpiration.toLocaleTimeString() : ''}}</td>
+            <td *ngIf="['Responsible','Teamleader'].includes(userService.getRole())">
               <nz-list [nzSize]="'small'">
                 @for (travailleur of data.tache.travailleurs; track travailleur) {
                   <nz-list-item>{{ travailleur.nom+' '+travailleur.prenom }}</nz-list-item>
@@ -64,22 +67,28 @@
 
               </nz-list>
             </td>
-            <td>{{ data.tache.sousTraitant?.nom }}</td>
+            <td *ngIf="['Responsible','Teamleader'].includes(userService.getRole())">{{ data.tache.sousTraitant?.nom }}</td>
             <td>
               <div class="icons-container">
-                <a><span nz-icon nzType="eye" nzTheme="outline" [theme]="'fill'"
+                <a><span nz-icon nzType="eye" nzTheme="twotone" [theme]="'twotone'"
                          (click)="viewSchema(data.tache.idTache ?? -1)"
                          nz-tooltip
                          nzTooltipTitle="View workflow"
                 ></span></a>
-                <a><span nz-icon nzType="edit" nzTheme="outline" [theme]="'fill'"
+                <a><span
+                  *ngIf="['Responsible','Teamleader'].includes(userService.getRole())"
+                  nz-icon nzType="edit" nzTheme="outline" [theme]="'twotone'"
+                  [nzTwotoneColor]="''"
                          (click)="dislplayEditModal(data.tache.idTache ?? -1)"
                          nz-tooltip
                          nzTooltipTitle="Edit task"
                 ></span></a>
-                <a><span nz-icon nzType="delete" nzTheme="outline" [theme]="'fill'"
+                <a><span
+                  *ngIf="['Responsible','Teamleader'].includes(userService.getRole())"
+                  nz-icon nzType="delete" nzTheme="outline" [theme]="'twotone'"
                          (click)="delete(data.tache.idTache ?? -1)"
                          nz-tooltip
+                  [nzTwotoneColor]="'#ff4d4f'"
                          nzTooltipTitle="Delete task"
                 ></span></a>
               </div>
@@ -146,7 +155,7 @@
                 <td style="color: #0096FF;">
                   {{ data.dateDebutPrevue ? data.dateDebutPrevue.toLocaleDateString() +' '+data.dateDebutPrevue.toLocaleTimeString() : ''}}
                 </td>
-                <td style="color:#D2042D;">
+                <td style="color:#ff4d4f;">
                   {{data.dateExpiration ? data.dateExpiration.toLocaleDateString() +' '+data.dateExpiration.toLocaleTimeString() :  ''}}</td>
                 <td>{{ data.dateDebutEffective ? data.dateDebutEffective.toLocaleDateString()+' '+data.dateDebutEffective.toLocaleTimeString() : ''}}</td>
                 <td>{{ data.dateFinEffective ? data.dateFinEffective.toLocaleDateString()+' '+data.dateFinEffective.toLocaleTimeString() : ''}}</td>

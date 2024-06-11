@@ -1,13 +1,14 @@
 import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 import {FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule} from "@angular/forms";
-import {NgForOf} from "@angular/common";
+import {NgForOf, NgIf} from "@angular/common";
 import {BaseEtape} from "../Etape.class";
 import {Tache} from "../../../../models/tache.model";
 import {getStatutTacheFromString} from "../../../../models/StatutTache";
 import {getPrioriteFromString} from "../../../../models/Priorite";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {TacheService} from "../../../../services/tache.service";
+import {UserService} from "../../../../services/user.service";
 
 @Component({
   selector: 'app-sub-task-display-modal',
@@ -16,7 +17,8 @@ import {TacheService} from "../../../../services/tache.service";
     DemoNgZorroAntdModule,
     FormsModule,
     NgForOf,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    NgIf
   ],
   standalone: true,
   styleUrl: './sub-task-display-modal.component.css'
@@ -28,6 +30,7 @@ export class SubTaskDisplayModalComponent implements OnChanges{
   percent : number = 0;
   taskForm!: FormGroup;
   constructor(private fb: FormBuilder,
+              protected userService : UserService,
               private modalService : NzModalService,
               private tacheService : TacheService) {
     this.taskForm = new FormGroup({

@@ -8,7 +8,7 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {NzUploadFile} from "ng-zorro-antd/upload";
 import {Paiement} from "../../../../models/paiement.model";
 import {NgForOf} from "@angular/common";
-import {NzTabsCanDeactivateFn} from "ng-zorro-antd/tabs";
+import {NzTabChangeEvent, NzTabsCanDeactivateFn} from "ng-zorro-antd/tabs";
 import {HttpClient} from "@angular/common/http";
 import {NzImageService} from "ng-zorro-antd/image";
 
@@ -187,19 +187,10 @@ export class PaymentModalComponent implements OnInit, OnChanges{
     this.imageService.preview(images, { nzZoom: 1.5, nzRotate: 0 });
   }
 
-  canDeactivate: NzTabsCanDeactivateFn = (fromIndex: number, toIndex: number) => {
-    switch (fromIndex) {
-      case 0:
-        console.log("at 0 :",fromIndex,'::',toIndex);
-        return true;
-      case 1:
-        console.log("at 1 :",fromIndex,'::',toIndex);
-        return true;
-      case 2:
-        console.log("at 2 :",fromIndex,'::',toIndex);
-        return true;
-      default:
-        return true;
+  currentIndex(event: NzTabChangeEvent){
+    if(event.index===1){
+
     }
-  };
+  }
+
 }

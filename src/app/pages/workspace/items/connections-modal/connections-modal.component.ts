@@ -1,5 +1,5 @@
 import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {NzModalComponent, NzModalService} from "ng-zorro-antd/modal";
+import {NzModalService} from "ng-zorro-antd/modal";
 import {BaseEtape} from "../Etape.class";
 import {
   FormArray,
@@ -11,18 +11,11 @@ import {
   Validators,
 } from "@angular/forms";
 import {NgForOf, NgIf} from "@angular/common";
-import {NzColDirective, NzRowDirective} from "ng-zorro-antd/grid";
-import {NzFormControlComponent, NzFormDirective, NzFormLabelComponent} from "ng-zorro-antd/form";
-import {NzOptionComponent, NzSelectComponent} from "ng-zorro-antd/select";
 import {ConnexionService} from "../../../../services/connexion.service";
-import {NzButtonComponent} from "ng-zorro-antd/button";
-import {NzTooltipDirective} from "ng-zorro-antd/tooltip";
-import {NzInputDirective} from "ng-zorro-antd/input";
-import {NzInputNumberComponent} from "ng-zorro-antd/input-number";
-import {NzRadioComponent, NzRadioGroupComponent} from "ng-zorro-antd/radio";
 import {DurationUnite, getDurationUniteFromString} from "../../../../models/DurationUnite";
 import {getstatutEtapeToString} from "../../../../models/StatutEtape";
 import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 
 @Component({
@@ -53,7 +46,8 @@ export class ConnectionsModalComponent implements OnInit, OnChanges{
 
   constructor(private fb: NonNullableFormBuilder,
               private connexionService : ConnexionService,
-              private nzModalService : NzModalService) {
+              private nzModalService : NzModalService,
+              private msg : NzMessageService) {
     this.connectionsForm = this.fb.group({
       stepsAfter: [['']],
       stepsBefore : [['']],
@@ -236,14 +230,10 @@ export class ConnectionsModalComponent implements OnInit, OnChanges{
               );
         })
         this.onClickHideModal();
-        this.nzModalService.success({
-          nzTitle : "Connections updated successfully !"
-        })
+        this.msg.success('Connections updated successfully');
       }
       catch(error){
-        this.nzModalService.error({
-          nzTitle : "Error at updating connections please try again !"
-        })
+        this.msg.error('Error at updating connections, please try again');
         console.error(error);
       }
     }

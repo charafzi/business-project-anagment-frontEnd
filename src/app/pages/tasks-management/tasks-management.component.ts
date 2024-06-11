@@ -10,6 +10,7 @@ import {ProcessusService} from "../../services/processus.service";
 import {DurationUnite} from "../../models/DurationUnite";
 import {TaskEditModalComponent} from "./task-edit-modal/task-edit-modal.component";
 import {NzMessageService} from "ng-zorro-antd/message";
+import {UserService} from "../../services/user.service";
 
 interface Task{
   tache : Tache,
@@ -26,16 +27,27 @@ interface Task{
 export class TasksManagementComponent implements OnInit{
   isLoading:boolean = false;
   listOfMainTasks :Task[] = [];
+  userRole : string = '';
   constructor(private modalService : NzModalService,
               private tacheService : TacheService,
               private processusService :ProcessusService,
               private router : Router,
-              private msg : NzMessageService
+              private msg : NzMessageService,
+              protected userService : UserService
   ) {
   }
 
   ngOnInit(): void {
-    this.fetchMainTasks();
+    // subscribing here to always ensure getting user role because we will fetch tasks based on role
+    this.userService.getUserById(this.userService.userId)
+      .subscribe(user=>{
+        this.userService.user = user;
+        this.fetchMainTasks();
+      },
+        error=>{
+        this.msg.error('Error at getting userId');
+        console.error(error)
+    })
   }
   onAddTask(){
     const modalRef = this.modalService.create({
@@ -155,57 +167,162 @@ export class TasksManagementComponent implements OnInit{
   fetchMainTasks(){
     this.isLoading = true;
     this.listOfMainTasks = [];
-    this.tacheService.retrieveAllTachesMere()
-      //convert string to Date for all dates in maintasks and subTasks
-      .subscribe(taches=>{
-        taches.forEach(tache=>{
-          if(tache.dateDebutEffective){
-            // @ts-ignore
-            let hoursDiff:number = (new Date() - tache.dateDebutEffective)
-            let percentage:number = 0;
+    if(['Responsible','Teamleader'].includes(this.userService.getRole())){
+      this.tacheService.retrieveAllTachesMere()
+        //convert string to Date for all dates in maintasks and subTasks
+        .subscribe(taches=>{
+            taches.forEach(tache=>{
+              if(tache.dateDebutEffective){
+                // @ts-ignore
+                let hoursDiff:number = (new Date() - tache.dateDebutEffective)
+                let percentage:number = 0;
 
-            switch (tache.etape?.dureeEstimeeUnite){
-              case DurationUnite.HOUR:
-                percentage = (hoursDiff)/tache.etape.dureeEstimee;
-                break;
-              case DurationUnite.DAY:
-                percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24);
-                break;
-              case DurationUnite.MONTH:
-                percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24 * 30);
-                break;
-            }
-            percentage = percentage>1 ? 1 : percentage;
-            tache.pourcentage = percentage;
-          }
-          // @ts-ignore
-          tache.dateDebutPrevue = new Date(tache.dateDebutPrevue);
-          // @ts-ignore
-          tache.dateExpiration = new Date(tache.dateExpiration);
-          tache.sous_taches?.forEach(sous_tache=>{
-            // @ts-ignore
-            sous_tache.dateDebutPrevue = new Date(sous_tache.dateDebutPrevue);
-            // @ts-ignore
-            sous_tache.dateExpiration = new Date(sous_tache.dateExpiration);
-            if(sous_tache.dateDebutEffective){
+                switch (tache.etape?.dureeEstimeeUnite){
+                  case DurationUnite.HOUR:
+                    percentage = (hoursDiff)/tache.etape.dureeEstimee;
+                    break;
+                  case DurationUnite.DAY:
+                    percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24);
+                    break;
+                  case DurationUnite.MONTH:
+                    percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24 * 30);
+                    break;
+                }
+                percentage = percentage>1 ? 1 : percentage;
+                tache.pourcentage = percentage;
+              }
               // @ts-ignore
-              sous_tache.dateDebutEffective = new Date(sous_tache.dateDebutPrevue);
-            }
-            if(sous_tache.dateFinEffective){
+              tache.dateDebutPrevue = new Date(tache.dateDebutPrevue);
               // @ts-ignore
-              sous_tache.dateFinEffective = new Date(sous_tache.dateFinEffective);
-            }
+              tache.dateExpiration = new Date(tache.dateExpiration);
+              tache.sous_taches?.forEach(sous_tache=>{
+                // @ts-ignore
+                sous_tache.dateDebutPrevue = new Date(sous_tache.dateDebutPrevue);
+                // @ts-ignore
+                sous_tache.dateExpiration = new Date(sous_tache.dateExpiration);
+                if(sous_tache.dateDebutEffective){
+                  // @ts-ignore
+                  sous_tache.dateDebutEffective = new Date(sous_tache.dateDebutPrevue);
+                }
+                if(sous_tache.dateFinEffective){
+                  // @ts-ignore
+                  sous_tache.dateFinEffective = new Date(sous_tache.dateFinEffective);
+                }
+              })
+            })
+            this.listOfMainTasks = taches.map(tache => ({
+              tache: tache,
+              expand: false
+            }));
+            this.isLoading=false;
+          },
+          error => {
+            console.error('Error at fetching Tasks from back-end :'+error);
           })
-        })
-        this.listOfMainTasks = taches.map(tache => ({
-          tache: tache,
-          expand: false
-        }));
-        this.isLoading=false;
-      },
-        error => {
-        console.error('Error at fetching Tasks from back-end :'+error);
-        })
+    }else if(['Agent'].includes(this.userService.getRole())){
+      this.tacheService.retrieveAllTachesMereByAgent(this.userService.userId)
+        .subscribe(taches=>{
+            taches.forEach(tache=>{
+              if(tache.dateDebutEffective){
+                // @ts-ignore
+                let hoursDiff:number = (new Date() - tache.dateDebutEffective)
+                let percentage:number = 0;
+
+                switch (tache.etape?.dureeEstimeeUnite){
+                  case DurationUnite.HOUR:
+                    percentage = (hoursDiff)/tache.etape.dureeEstimee;
+                    break;
+                  case DurationUnite.DAY:
+                    percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24);
+                    break;
+                  case DurationUnite.MONTH:
+                    percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24 * 30);
+                    break;
+                }
+                percentage = percentage>1 ? 1 : percentage;
+                tache.pourcentage = percentage;
+              }
+              // @ts-ignore
+              tache.dateDebutPrevue = new Date(tache.dateDebutPrevue);
+              // @ts-ignore
+              tache.dateExpiration = new Date(tache.dateExpiration);
+              tache.sous_taches?.forEach(sous_tache=>{
+                // @ts-ignore
+                sous_tache.dateDebutPrevue = new Date(sous_tache.dateDebutPrevue);
+                // @ts-ignore
+                sous_tache.dateExpiration = new Date(sous_tache.dateExpiration);
+                if(sous_tache.dateDebutEffective){
+                  // @ts-ignore
+                  sous_tache.dateDebutEffective = new Date(sous_tache.dateDebutPrevue);
+                }
+                if(sous_tache.dateFinEffective){
+                  // @ts-ignore
+                  sous_tache.dateFinEffective = new Date(sous_tache.dateFinEffective);
+                }
+              })
+            })
+            this.listOfMainTasks = taches.map(tache => ({
+              tache: tache,
+              expand: false
+            }));
+            this.isLoading=false;
+          },
+          error => {
+            console.error('Error at fetching Tasks from back-end :'+error);
+          })
+    }else if(['Subcontractor'].includes(this.userService.getRole())){
+      this.tacheService.retrieveAllTachesMereBySubcontractor(this.userService.userId)
+        .subscribe(taches=>{
+            taches.forEach(tache=>{
+              if(tache.dateDebutEffective){
+                // @ts-ignore
+                let hoursDiff:number = (new Date() - tache.dateDebutEffective)
+                let percentage:number = 0;
+
+                switch (tache.etape?.dureeEstimeeUnite){
+                  case DurationUnite.HOUR:
+                    percentage = (hoursDiff)/tache.etape.dureeEstimee;
+                    break;
+                  case DurationUnite.DAY:
+                    percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24);
+                    break;
+                  case DurationUnite.MONTH:
+                    percentage = (hoursDiff)/ (tache.etape.dureeEstimee * 24 * 30);
+                    break;
+                }
+                percentage = percentage>1 ? 1 : percentage;
+                tache.pourcentage = percentage;
+              }
+              // @ts-ignore
+              tache.dateDebutPrevue = new Date(tache.dateDebutPrevue);
+              // @ts-ignore
+              tache.dateExpiration = new Date(tache.dateExpiration);
+              tache.sous_taches?.forEach(sous_tache=>{
+                // @ts-ignore
+                sous_tache.dateDebutPrevue = new Date(sous_tache.dateDebutPrevue);
+                // @ts-ignore
+                sous_tache.dateExpiration = new Date(sous_tache.dateExpiration);
+                if(sous_tache.dateDebutEffective){
+                  // @ts-ignore
+                  sous_tache.dateDebutEffective = new Date(sous_tache.dateDebutPrevue);
+                }
+                if(sous_tache.dateFinEffective){
+                  // @ts-ignore
+                  sous_tache.dateFinEffective = new Date(sous_tache.dateFinEffective);
+                }
+              })
+            })
+            this.listOfMainTasks = taches.map(tache => ({
+              tache: tache,
+              expand: false
+            }));
+            this.isLoading=false;
+          },
+          error => {
+            console.error('Error at fetching Tasks from back-end :'+error);
+          })
+
+    }
   }
 
   viewSchema(idMainTask:number){

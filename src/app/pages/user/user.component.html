@@ -1,0 +1,16 @@
+<div class="user-profile">
+  <div class="details">
+    <ul>
+      <li style="font-weight: bold">{{userService.getFullName()}}</li>
+      <li>{{userService.getRole()}}</li>
+    </ul>
+  </div>
+  <div class="profile-pic">
+    <nz-avatar class="avatar" [nzSize]="44" nzIcon="user" nzShape="square"></nz-avatar>
+    <button class="btn-logout" nz-button [nzDanger]="true" nzShape="round"
+            nz-tooltip
+            nzTooltipTitle = "Logout"
+            nzTooltipPlacement="bottom"
+    ><span nz-icon nzType="logout"></span></button>
+  </div>
+</div>

@@ -20,7 +20,7 @@
         </div>
         <div nz-col [nzSpan]="10">
           <nz-form-item>
-            <nz-form-control nzErrorTip="This field is required !">
+            <nz-form-control nzErrorTip="This field is required">
               <nz-select formControlName="categorie" nzShowSearch nzAllowClear nzPlaceHolder="Please select the category"
                          [nzLoading]="categories.length==0"
               >
@@ -70,7 +70,7 @@
         <div nz-col [nzSpan]="12">
           <nz-form-item>
             <nz-form-label>Status</nz-form-label>
-            <nz-form-control nzErrorTip="This field is required !">
+            <nz-form-control nzErrorTip="This field is required">
               <nz-select formControlName="statutEtape">
                 <nz-option nzValue="Commencée" nzLabel="Started"></nz-option>
                 <nz-option nzValue="Pas encore commencée" nzLabel="Not started yet"></nz-option>
@@ -91,7 +91,7 @@
           </nz-form-control>
         </div>
         <div nz-col [nzSpan]="12" [nzOffset]="2">
-          <nz-form-control nzErrorTip="This field is required !">
+          <nz-form-control nzErrorTip="This field is required">
             <nz-radio-group formControlName="radioDureeEstimee" >
               <label nz-radio nzValue="H">Hour<span>(s)</span></label>
               <label nz-radio nzValue="D">Day<span>(s)</span></label>
@@ -107,7 +107,7 @@
           </nz-form-item>
         </div>
         <div nz-col [nzSpan]="16">
-          <nz-form-control nzErrorTip="This field is required !">
+          <nz-form-control nzErrorTip="This field is required">
             <nz-radio-group formControlName="radioFIE">
               <label nz-radio nzValue="F">Initial</label>
               <label nz-radio nzValue="I">Intermediate</label>
@@ -124,7 +124,7 @@
           </nz-form-item>
         </div>
         <div nz-col>
-          <nz-form-control nzErrorTip="This field is required !">
+          <nz-form-control nzErrorTip="This field is required">
             <nz-radio-group formControlName="radioPaid">
               <label nz-radio nzValue="Y">Yes</label>
               <label nz-radio nzValue="N">No</label>
@@ -136,7 +136,7 @@
       >
         <div nz-col [nzSpan]="8">
           <nz-form-item>
-            <nz-form-control nzErrorTip="This field is required !">
+            <nz-form-control nzErrorTip="This field is required">
               <nz-form-label><strong>To be validated</strong>&nbsp;</nz-form-label>
             </nz-form-control>
           </nz-form-item>
@@ -160,7 +160,7 @@
           </nz-form-item>
         </div>
         <div nz-col>
-          <nz-form-control nzErrorTip="This field is required !">
+          <nz-form-control nzErrorTip="This field is required">
             <nz-radio-group formControlName="radioAccepted">
               <label nz-radio nzValue="Y">Yes</label>
               <label nz-radio nzValue="N">No</label>

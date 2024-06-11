@@ -4,6 +4,7 @@ import {NzIconDirective} from "ng-zorro-antd/icon";
 import {NgIf} from "@angular/common";
 import {BaseItem} from "../item.model";
 import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
+import {UserService} from "../../../../services/user.service";
 
 @Component({
   selector: 'app-square',
@@ -18,7 +19,7 @@ import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 export class SquareComponent extends BaseItem {
   message:string='Test';
 
-  constructor() {
+  constructor(protected userService : UserService) {
     super();
     this._componentName='square';
   }

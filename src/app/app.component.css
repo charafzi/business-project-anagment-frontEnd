@@ -74,10 +74,12 @@ nz-header {
 
 .app-header {
   position: relative;
-  height: 64px;
   padding: 0;
-  background: #fff;
-  box-shadow: 0 1px 4px rgba(0,21,41,.08);
+  background: #001529;
+  box-shadow: 0 1px 4px rgba(0, 21, 41, .08);
+  border-radius: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
 }
 
 .inner-content {
@@ -88,4 +90,9 @@ nz-header {
 }
 
 
+.user{
+  display: flex;
+  justify-content: end;
+  height: 75px;
+}
 

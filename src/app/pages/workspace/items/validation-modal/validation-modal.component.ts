@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, SimpleChanges} from '@angular/core';
+import {ChangeDetectorRef, Component, Input, OnChanges, SimpleChanges} from '@angular/core';
 import {BaseEtape} from "../Etape.class";
 import {Tache} from "../../../../models/tache.model";
 import {FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -25,7 +25,7 @@ export class ValidationModalComponent implements OnChanges{
   @Input('etape') etape! : BaseEtape;
   @Input('subTask') subTask! : Tache;
   @Input('isVisible') isVisible!:boolean;
-  isLoading : boolean = true;
+  isLoading : boolean = false;
   validationList : Validation[] = [];
   validationForm!: FormGroup;
 
@@ -115,18 +115,19 @@ export class ValidationModalComponent implements OnChanges{
               validation.dateValidation = new Date(validation.dateValidation);
               this.validationList.push(validation);
             })
-            this.isLoading=false;
           },
           error => {
+            this.nzMessage.error('Error at fetching Tasks');
             console.error('Error at fetching Tasks from back-end '+error);
+          },()=>{
+            this.isLoading=false;
           })
     }
   }
 
-  onTabChanged(event: NzTabChangeEvent): void {
-    const selectedIndex = event.index;
-    if(selectedIndex === 1){
-      this.fetchValidations();
+  currentIndex(event: NzTabChangeEvent){
+    if(event.index===1){
+      //this.fetchValidations();
     }
   }
 

@@ -1,0 +1,50 @@
+.user-profile{
+  padding-right: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  display: flex;
+}
+
+
+.details {
+  flex-grow: 1;
+  margin-left: -20px;
+  font-size: 10px;
+}
+
+.btn-logout{
+  width: 44px;
+  height: 15px;
+  background-color: #ff4d4f;
+  color: #fafafa ;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-size: 8px;
+}
+
+.btn-logout >span{
+  font-size: 8px;
+}
+
+.details > ul{
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  margin-top: -20px;
+}
+.details > ul > li{
+  list-style: none;
+  color: #fafafa;
+  height: 20px;
+}
+
+.avatar{
+  margin-top: -15px;
+  margin-bottom: 5px;
+}
+
+.profile-pic{
+  margin-top: 17px;
+  display: flex;
+  flex-direction: column;
+}

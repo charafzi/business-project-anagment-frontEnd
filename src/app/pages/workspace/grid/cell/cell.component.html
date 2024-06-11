@@ -32,18 +32,18 @@
     >
     </app-sub-task-display-modal>
     <app-payment-modal
-      *ngIf="processItem.tache && processItem.tache && mode == 2"
+      *ngIf="processItem.tache && mode == 2"
       [isVisible]="processItem.paymentModalIsVisible"
       [etape]="processItem"
       [subTask]="processItem.tache"
     >
-      <app-validation-modal
-        *ngIf="processItem.tache && mode == 2"
-        [isVisible]="processItem.validationModalIsVisible"
-        [etape]="processItem"
-        [subTask]="processItem.tache"
-      >
-      </app-validation-modal>
     </app-payment-modal>
+    <app-validation-modal
+      *ngIf="processItem.tache && mode == 2"
+      [isVisible]="processItem.validationModalIsVisible"
+      [etape]="processItem"
+      [subTask]="processItem.tache"
+    >
+    </app-validation-modal>
   </ng-container>
 </div>

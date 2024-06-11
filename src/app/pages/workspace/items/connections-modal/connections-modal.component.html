@@ -104,7 +104,7 @@
                     </nz-form-item>
                   </div>
                   <div nz-col [nzSpan]="8" [nzOffset]="1">
-                    <nz-form-control nzErrorTip="This field is required !">
+                    <nz-form-control nzErrorTip="This field is required">
                       <nz-radio-group formControlName="radioDelaiAttente">
                         <label nz-radio nzValue="H">Hour<span>(s)</span></label>
                         <label nz-radio nzValue="D">Day<span>(s)</span></label>
@@ -116,7 +116,7 @@
                     <nz-form-item>
                       <nz-form-label [nzSpan]="12">Status&nbsp;</nz-form-label>
                       <nz-form-control [nzSpan]="12">
-                        <nz-select formControlName="statut" nzErrorTip="This field is required !">
+                        <nz-select formControlName="statut" nzErrorTip="This field is required">
                           <nz-option nzValue="COMMENCEE" nzLabel="Started"></nz-option>
                           <nz-option nzValue="TERMINE" nzLabel="Done"></nz-option>
                         </nz-select>

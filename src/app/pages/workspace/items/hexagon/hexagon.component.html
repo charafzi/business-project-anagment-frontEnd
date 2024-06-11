@@ -10,7 +10,7 @@
 </nz-card>
 
 <div class="actions-container" *ngIf="showButtons">
-  <ul class="actions" *ngIf="_mode===1">
+  <ul class="actions" *ngIf="_mode===1 && ['Responsible'].includes(userService.getRole())">
     <li><span nz-icon nzType="node-index"
               (click)="onClickDisplayConnectionModal()"
               nz-tooltip
@@ -75,12 +75,13 @@
       }
     }
   </ul>
-  <ul class="actions" *ngIf="_mode===2">
-    <li *ngIf="tache?.etape?.validate"><span nz-icon nzType="file-done"
-                                             nz-tooltip
-                                             nzTooltipTitle="Needs validation"
-                                             (click)="onClickDisplayValidationModal()"
-                                             style="color:#52c41a;"
+  <ul class="actions" *ngIf="_mode===2 && ['Responsible','Teamleader'].includes(userService.getRole())">
+    <li *ngIf="
+    ['Responsible'].includes(userService.getRole()) && tache?.etape?.validate"><span nz-icon nzType="file-done"
+                                                                                     nz-tooltip
+                                                                                     nzTooltipTitle="Needs validation"
+                                                                                     (click)="onClickDisplayValidationModal()"
+                                                                                     style="color:#52c41a;"
     ></span></li>
     <li *ngIf="tache?.etape?.paid"><span nz-icon nzType="dollar"
                                          nz-tooltip
@@ -93,4 +94,5 @@
     ></span></li>
   </ul>
 </div>
+
 
