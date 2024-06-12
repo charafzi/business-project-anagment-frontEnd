@@ -27,6 +27,8 @@ import {EtapeService} from "../../../services/etape.service";
 import {TacheService} from "../../../services/tache.service";
 import {NzMessageService} from "ng-zorro-antd/message";
 import {DemoNgZorroAntdModule} from "../../../ng-zorro-antd.module";
+import {UserService} from "../../../services/user.service";
+import {StatutTache} from "../../../models/StatutTache";
 
 @Component({
   selector: 'app-grid',
@@ -72,6 +74,7 @@ export class GridComponent implements OnInit,AfterViewInit{
               private connexionService : ConnexionService,
               private etapeService : EtapeService,
               private tacheService : TacheService,
+              private userService : UserService,
               private msg : NzMessageService,
               private router : Router) {
     //this page is accessed directly
@@ -88,6 +91,14 @@ export class GridComponent implements OnInit,AfterViewInit{
           .fill(null)
           .map(()=> new Array(this.nbCols).fill(null));
       this.etapeService.processItems = this.processItems;
+      this.userService.getUserById(this.userService.userId)
+        .subscribe(user=>{
+            this.userService.user = user;
+          },
+          error=>{
+            this.msg.error('Error at getting userId');
+            console.error(error)
+          })
     }
   }
 
@@ -473,9 +484,7 @@ export class GridComponent implements OnInit,AfterViewInit{
       this.connexionService.processItems=this.processItems;
       let result = this.connexionService.createConnexion(this.indexRowDotCurr,this.indexColDotCurr, this.indexRowDotNext,this.indexColDotNext)
       if(result == 0){
-        this.modalService.warning({
-          nzTitle : "This connection has already been set up !",
-        })
+        this.msg.warning('This connection has already been set up');
       }
       this.indexRowDotCurr = -1;
       this.indexColDotCurr = -1;
@@ -506,9 +515,7 @@ export class GridComponent implements OnInit,AfterViewInit{
           let indexs = eventData.stepsBefore[i].split("-");
           let result = this.connexionService.createConnexion(parseInt(indexs[0]),parseInt(indexs[1]),eventData.indexRow,eventData.indexCol)
           if(result == 0){
-            this.modalService.warning({
-              nzTitle : "This connection has already been set up !",
-            })
+            this.msg.warning('This connection has already been set up');
           }
         }
       }
@@ -518,9 +525,7 @@ export class GridComponent implements OnInit,AfterViewInit{
           let indexs = eventData.stepsAfter[i].split("-");
           let result = this.connexionService.createConnexion(eventData.indexRow,eventData.indexCol,parseInt(indexs[0]),parseInt(indexs[1]))
           if(result == 0){
-            this.modalService.warning({
-              nzTitle : "This connection has already been set up !",
-            })
+            this.msg.warning('This connection has already been set up');
           }
         }
       }
@@ -539,11 +544,30 @@ export class GridComponent implements OnInit,AfterViewInit{
         this.isDotsVisible = !this.isDotsVisible;
         break;
       case 2:
-
         if(this.processItems[rowIndex][colIndex])
         {
-          if(this.processItems[rowIndex][colIndex]?.tache)
-            (this.processItems[rowIndex][colIndex] as BaseEtape).subTaskModalIsVisibe=true;
+          if(this.processItems[rowIndex][colIndex]?.tache){
+            if(['Subcontractor','Agent'].includes(this.userService.getRole())){
+              if(!this.processItems[rowIndex][colIndex]?.first){
+                let etapes : BaseEtape [] = this.connexionService.getEtapesTo(rowIndex,colIndex);
+                let allDones = true;
+                etapes.forEach(etape=>{
+                  if(etape.tache && etape.tache.statutTache!=StatutTache.TERMINE){
+                    allDones = false;
+                  }
+                })
+                if(!allDones){
+                  this.msg.warning('All previous tasks should be done before accessing to this')
+                }else{
+                  (this.processItems[rowIndex][colIndex] as BaseEtape).subTaskModalIsVisibe=true;
+                }
+              }else{
+                (this.processItems[rowIndex][colIndex] as BaseEtape).subTaskModalIsVisibe=true;
+              }
+            }else{
+              (this.processItems[rowIndex][colIndex] as BaseEtape).subTaskModalIsVisibe=true;
+            }
+          }
         }
         break;
     }

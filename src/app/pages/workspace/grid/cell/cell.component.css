@@ -30,7 +30,10 @@
 
 .cell-done{
   outline: 4px solid #52c41a;
-  opacity: 0.6;
+}
+
+.cell-not-available{
+  opacity: 0.5;
 }
 
 

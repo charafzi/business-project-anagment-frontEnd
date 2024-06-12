@@ -9,6 +9,7 @@ import {getPrioriteFromString} from "../../../../models/Priorite";
 import {NzModalService} from "ng-zorro-antd/modal";
 import {TacheService} from "../../../../services/tache.service";
 import {UserService} from "../../../../services/user.service";
+import {NzMessageService} from "ng-zorro-antd/message";
 
 @Component({
   selector: 'app-sub-task-display-modal',
@@ -32,6 +33,7 @@ export class SubTaskDisplayModalComponent implements OnChanges{
   constructor(private fb: FormBuilder,
               protected userService : UserService,
               private modalService : NzModalService,
+              private msg : NzMessageService,
               private tacheService : TacheService) {
     this.taskForm = new FormGroup({
       categorie : new FormControl(''),
@@ -137,23 +139,15 @@ export class SubTaskDisplayModalComponent implements OnChanges{
 
             this.tacheService.updateSousTache(subTask)
               .subscribe(response=>{
-                this.modalService.success({
-                  nzTitle : 'Task updated successfully !'
-                })
+                this.msg.success('Task updated successfully');
               },
                 error => {
-                  this.modalService.error({
-                    nzTitle : "Unable to update this task !",
-                    nzContent : "Problem in server, please try again later"
-                  })
+                this.msg.error('Problem in server, please try again');
                   console.error(error)
               })
           }
           catch (error) {
-            this.modalService.error({
-              nzTitle : "Unable to update this task !",
-              nzContent : "Problem during update, please try again"
-            })
+            this.msg.error('Problem in server, please try again');
             console.error(error);
           }
         },

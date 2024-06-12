@@ -14,8 +14,6 @@ export class ConnexionService{
   grid!: ElementRef; //this to refere the parent component that hold cells to create connections with LeaderLine
   document!:Document;
   private connectionSet : ConnectionSet = new ConnectionSet();
-  firstExists : boolean = false;
-  endExists : boolean = false;
   url:string = 'http://localhost:8100/connexions';
   /**
    it's used to hold temporarily the matrix of "Etape" to help to transfer it from the grid component

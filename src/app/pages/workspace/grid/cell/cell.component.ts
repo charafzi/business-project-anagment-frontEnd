@@ -32,6 +32,8 @@ import {NzMessageService} from "ng-zorro-antd/message";
 import {EtapeDisplayModalComponent} from "../../items/etape-display-modal/etape-display-modal.component";
 import {DemoNgZorroAntdModule} from "../../../../ng-zorro-antd.module";
 import {UserService} from "../../../../services/user.service";
+import {ConnexionService} from "../../../../services/connexion.service";
+import {StatutTache} from "../../../../models/StatutTache";
 
 
 @Component({
@@ -78,6 +80,7 @@ export class CellComponent implements AfterViewInit{
               private categorieService : CategorieService,
               private etapeService : EtapeService,
               private msg : NzMessageService,
+              private connexionService : ConnexionService,
               protected userService : UserService
   ) {
   }
@@ -116,10 +119,21 @@ export class CellComponent implements AfterViewInit{
     if (this.processItem?.tache?.statutTache === 'TERMINE') {
       classes.push('cell-done');
     }
+    if(this.processItem){
+      if(!this.processItem.first){
+        let etapes : BaseEtape [] = this.connexionService.getEtapesTo(this.processItem.indexLigne,this.processItem.indexColonne);
+        let allDones = true;
+        etapes.forEach(etape=>{
+          if(etape.tache && etape.tache.statutTache!=StatutTache.TERMINE){
+            allDones = false;
+          }
+        })
+        if(!allDones){
+          classes.push('cell-not-available');
+        }
+      }
+    }
     return classes;
-  }
-
-  onClickCell() {
   }
 
   /** Create an item on drop on a cell
