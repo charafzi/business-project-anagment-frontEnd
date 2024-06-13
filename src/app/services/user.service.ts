@@ -13,7 +13,7 @@ export class UserService{
     role : '',
     idUser :  -1
   }
-  userId : number =5;
+  userId : number =3;
 
   constructor(private http: HttpClient) {
     this.getUserById(this.userId)
